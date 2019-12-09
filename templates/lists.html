@@ -6,27 +6,30 @@
 </head>
 <body>
     <h1>Ask Mate</h1><br>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Submission time</th>
-            <th>View number</th>
-            <th>Vote number</th>
-            <th>Title</th>
-            <th>Message</th>
-            <th>Image</th>
-        </tr>
-        {% for quest in question[::-1] %}
+    {% for quest in question[::-1] %}
+        <table>
             <tr>
+                <th><h5>ID:</h5></th>
                 <td>{{ quest['id'] }}</td>
+                <th><h5>Title:</h5></th>
                 <td>{{ quest['title'] }}</td>
-                <td>{{ quest['message'] }}</td>
-                <td>{{ quest['image'] }}</td>
-                <td>{{ quest['view_number'] }}</td>
-                <td>{{ quest['vote_number'] }}</td>
+                <th><h5>Submission time:</h5></th>
                 <td>{{ quest['submission_time'] }}</td>
+                <th><h5>View:</h5></th>
+                <td>{{ quest['view_number'] }}</td>
+                <th><h5>Like:</h5></th>
+                <td>{{ quest['vote_number'] }}</td>
             </tr>
-        {% endfor %}
-    </table>
+        </table>
+        <table>
+            <tr>
+                <th rowspan="2"><h5>Message:</h5></th>
+                <td colspan="9">{{ quest['message'] }}</td>
+            </tr>
+            <tr>
+                <td>No image</td>
+            </tr>
+        </table>
+    {% endfor %}
 </body>
 </html>
