@@ -27,3 +27,12 @@ def get_question_by_id(id):
     for question in all_questions:
         if question['id'] == id:
             return question
+
+
+def next_id_generator(path):
+    data = get_list_of_dictionaries_from_csv(path)
+    try:
+        next_id = int(data[-1]['id']) + 1
+    except ValueError:
+        next_id = 0
+    return  next_id
