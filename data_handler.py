@@ -14,8 +14,8 @@ def get_all_answers():
     return  all_answers
 
 
-def get_list_of_dictionaries_from_csv():
-    with open(QUESTION_FILE_PATH) as csvfile:
+def get_list_of_dictionaries_from_csv(path):
+    with open(path) as csvfile:
         reader = csv.DictReader(csvfile, fieldnames=DATA_HEADER)
         all_data = [data for data in reader]
     return all_data
