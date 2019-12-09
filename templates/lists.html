@@ -19,12 +19,12 @@
         {% for quest in question[::-1] %}
             <tr>
                 <td>{{ quest['id'] }}</td>
-                <td>{{ quest['submission_time'] }}</td>
-                <td>{{ quest['view_number'] }}</td>
-                <td>{{ quest['vote_number'] }}</td>
                 <td>{{ quest['title'] }}</td>
                 <td>{{ quest['message'] }}</td>
                 <td>{{ quest['image'] }}</td>
+                <td>{{ quest['view_number'] }}</td>
+                <td>{{ quest['vote_number'] }}</td>
+                <td>{{ quest['submission_time'] }}</td>
             </tr>
         {% endfor %}
     </table>
