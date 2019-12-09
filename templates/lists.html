@@ -2,9 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Ask mate forum</title>
 </head>
 <body>
-
+    <h1>Ask Mate</h1><br>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Submission time</th>
+            <th>View number</th>
+            <th>Vote number</th>
+            <th>Title</th>
+            <th>Message</th>
+            <th>Image</th>
+        </tr>
+        {% for quest in question[::-1] %}
+            <tr>
+                <td>{{ quest['id'] }}</td>
+                <td>{{ quest['submission_time'] }}</td>
+                <td>{{ quest['view_number'] }}</td>
+                <td>{{ quest['vote_number'] }}</td>
+                <td>{{ quest['title'] }}</td>
+                <td>{{ quest['message'] }}</td>
+                <td>{{ quest['image'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
