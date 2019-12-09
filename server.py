@@ -7,14 +7,17 @@ def route_index():
 
     return render_template('index.html')
 
-@app.route('/edit-note', methods=['GET', 'POST'])
+@app.route('/add_question', methods=['GET', 'POST'])
 def route_edit():
     if request.method == 'POST':
+        question={}
 
-
+        for titles in data_handler.DATA_HEADER[1:]:
+            question.update({titles : request.form[titles]})
+        data_handler.add_question(question)
         return redirect('/'),
 
-    return render_template('edit.html')
+    return render_template('add_question.html.html')
 
 @app.route('/lists')
 def show_questions():
