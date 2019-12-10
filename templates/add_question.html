@@ -12,12 +12,12 @@
         <p>
             {% if type == 'question' %}
             <label for="title">{{ comment_title }}</label><br>
-            <input type="text" name="title" id="title" value="{{ comment['title'] }}">
+            <input type="text" name="title" id="title">
             {% endif %}
         </p>
         <p>
             <label for="message">{{ comment_message }}</label><br>
-            <textarea name="message" id="message" cols="40" rows="6" required>{{ comment['message'] }}</textarea>
+            <textarea name="message" id="message" cols="40" rows="6" required></textarea>
         </p>
         <p>
             <label for="image">Image:</label>
@@ -26,10 +26,8 @@
         {% if comment is not defined and type == "question" %}
             <input type="hidden" name="view_number" value="0">
             <input type="hidden" name="vote_number" value="0">
-            <input type="hidden" name="submission_time" value="{{ time_stamp }}">
         {% elif comment is not defined and type == "answer" %}
             <input type="hidden" name="vote_number" value="0">
-            <input type="hidden" name="submission_time" value="{{ time_stamp }}">
             <input type="hidden" name="question_id" value="{{ question_id }}">
         {% endif %}
         <p>

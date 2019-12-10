@@ -19,8 +19,8 @@ def get_all_answers(time=False):
 
 
 def get_list_of_dictionaries_from_csv(path, header, time=False):
-    with open(path) as csvfile:
-        reader = csv.DictReader(csvfile, fieldnames=header)
+    with open(path, encoding='utf-8') as csv_file:
+        reader = csv.DictReader(csv_file, fieldnames=header)
         all_data = []
         if not time:
             for data in reader:
@@ -42,8 +42,8 @@ def get_question_by_id(id):
             return question
 
 
-def next_id_generator(path):
-    data = get_list_of_dictionaries_from_csv(path)
+def next_id_generator(path, header):
+    data = get_list_of_dictionaries_from_csv(path, header)
     try:
         next_id = int(data[-1]['id']) + 1
     except ValueError:
@@ -51,7 +51,8 @@ def next_id_generator(path):
     return next_id
 
 def add_question(question):
-    question['id'] = next_id_generator(question)
+    question['id'] = next_id_generator(QUESTION_FILE_PATH, DATA_HEADER)
+    question['submission_time'] = date_time_in_timestamp()
     write_the_file(QUESTION_FILE_PATH, question, append=True)
 
 def write_the_file(file_name, write_elements, append=True):
@@ -89,3 +90,4 @@ def date_time_in_timestamp():
 
 def real_date_time(timestamp):
     return datetime.fromtimestamp(timestamp)
+

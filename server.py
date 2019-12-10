@@ -12,7 +12,11 @@ def route_lists():
 def route_new_question():
     if request.method == 'POST':
         comment = {'title': request.form.get('title'),
-                   'message': request.form.get('message')}
+                   'message': request.form.get('message'),
+                   'submission_time': request.form.get('submission_time'),
+                   'view_number': request.form.get('view_number'),
+                   'vote_number': request.form.get('vote_number'),
+                   'image': request.form.get('image')}
         data_handler.add_question(comment)
         return redirect('/lists')
 
@@ -21,7 +25,7 @@ def route_new_question():
                            form_url=url_for('route_new_question'),
                            comment_title='Question title',
                            comment_message='Question message',
-                           timestamp=data_handler.date_time_in_timestamp())
+                           type='question')
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
