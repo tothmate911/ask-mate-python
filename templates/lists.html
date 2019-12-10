@@ -19,9 +19,9 @@
                 <th>Message</th>
                 <th>Image</th>
             </tr>
-    {% for question in all_questions[-1:0:-1] %}
+            {% for question in all_questions[-1:0:-1] %}
             <tr>
-                <td width="10"><a href="{{ url_for('show_question', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                <td width="10"><a href="{{ url_for('show_question', question_id = question['id']) }}">{{ question['id'] }}</a></td>
                 <td width="100">{{ question['submission_time'] }}</td>
                 <td width="50">{{ question['view_number'] }}</td>
                 <td width="50">{{ question['vote_number'] }}</td>
@@ -29,7 +29,9 @@
                 <td width="800">{{ question['message'] | safe }}</td>
                 <td><img src="{{ question['image'] }}" alt="" height="100" width="100"></td>
             </tr>
-    {% endfor %}
-    </table>
+                <p></p>
+                <p></p>
+            {% endfor %}
+        </table>
 </body>
 </html>
