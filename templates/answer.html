@@ -24,7 +24,7 @@
         <tr>
             <td><h5>Message:</h5></td>
             <td width="1000" colspan="11">{{ question['message'] | safe }}</td>
-            <td rowspan="2"><img src={{ question['image'] }} alt="" height="100" width="100"></td>
+            <td rowspan="2"><img src={{ question['image'] }} alt=""></td>
         </tr>
     </table>
     <table>
@@ -50,12 +50,12 @@
                 <td width="100"></td>
                 <td><h5>Message:</h5></td>
                 <td width="900" colspan="11">{{ comment['message'] | safe }}</td>
-                <td rowspan="2"><img src={{ comment['image'] }} alt="" height="100" width="100"></td>
+                <td rowspan="2"><img src={{ comment['image'] }} alt=""></td>
             </tr>
         </table>
     {% endfor %}
     <p>
-        <input type="button" value="Back" onclick="history.back()">
+        <a href="{{ url_for('route_lists', question_id=question_id) }}">Back</a>
     </p>
 </body>
 </html>
