@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ comment_title }}</title>
+    <title>{{ comment_name }}</title>
 </head>
 <body>
-    <h1>{{ comment_title }}</h1>
+    <h1>{{ comment_name }}</h1>
     <br>
     <form action="{{ form_url }}" method="post">
         <input type="hidden" name="id" value="{{ comment['id'] }}">
