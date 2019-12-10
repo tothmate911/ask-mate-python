@@ -18,7 +18,10 @@ def get_all_answers():
 def get_list_of_dictionaries_from_csv(path):
     with open(path) as csvfile:
         reader = csv.DictReader(csvfile, fieldnames=DATA_HEADER)
-        all_data = [data for data in reader]
+        all_data = []
+        for data in reader:
+            if data['id'] != 'id':
+                all_data.append(data)
     return all_data
 
 
@@ -43,7 +46,7 @@ def add_question(question):
 
 def write_the_file(file_name, write_elements, append=True):
     existing_data = get_all_questions()
-    with open(file_name, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(file_name, 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER)
         writer.writeheader()
 
@@ -56,3 +59,17 @@ def write_the_file(file_name, write_elements, append=True):
 
         if append:
             writer.writerow(write_elements)
+
+def one_question(question_id):
+    all_question = get_all_questions()
+    for question in all_question:
+        if question['id'] == question_id:
+            return question
+
+def all_answer_for_one_question(question_id):
+    answers = []
+    all_answer = get_all_answers()
+    for answer in all_answer:
+        if answer['question_id'] == question_id:
+            answers.append(answer)
+    return answers
