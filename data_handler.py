@@ -1,7 +1,7 @@
 import csv
 
-ANSWER_FILE_PATH = 'sample_data/answer.csv'
-QUESTION_FILE_PATH = 'sample_data/question.csv'
+ANSWER_FILE_PATH = '/home/bala/Documents/Codecool/Web/ask-mate-python/sample_data/answer.csv'
+QUESTION_FILE_PATH = '/home/bala/Documents/Codecool/Web/ask-mate-python/sample_data/question.csv'
 ANSWER_DATA_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 QUESTION_DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 

@@ -17,7 +17,7 @@ def add_question():
 
             question.update({titles : request.form[titles]})
         data_handler.add_question(question)
-        return redirect('/'),
+        return redirect('/')
 
     return render_template('add_question.html')
 

@@ -9,30 +9,44 @@
     <br>
     <a href="{{ url_for('add_question') }}">Add new question</a>
     <br>
-    {% for quest in all_questions %}
         <table>
             <tr>
-                <th><h5>ID:</h5></th>
-                <td  width="50"><a href="{{ url_for('show_question', question_id=quest['id']) }}">{{ quest['id'] }}</a></td>
-                <th><h5>Title:</h5></th>
-                <td  width="150">{{ quest['title'] | safe }}</td>
-                <th><h5>Submission time:</h5></th>
-                <td  width="100">{{ quest['submission_time'] }}</td>
-                <th><h5>View:</h5></th>
-                <td  width="50">{{ quest['view_number'] }}</td>
-                <th><h5>Like:</h5></th>
-                <td  width="50">{{ quest['vote_number'] }}</td>
+                <th><h2>ID:</h2></th>
+                <th><h2>Submission time:</h2></th>
+                <th><h2>Title</h2></th>
+                <th><h2>View:</h2></th>
+                <th><h2>Like:</h2></th>
+                <th><h2>Messages:</h2></th>
             </tr>
-        </table>
-        <table>
+            {% for quest in all_questions[-1:0:-1] %}
             <tr>
-                <th rowspan="2"><h5>Message:</h5></th>
-                <td>{{ quest['message'] | safe }}</td>
+
+                <td  width="10"><a href="{{ url_for('show_question', question_id=quest['id']) }}">{{ quest['id'] }}</a></td>
+
+                <td  width="40">{{ quest['submission_time']}}</td>
+
+                <td  width="300">{{ quest['title'] | safe }}</td>
+
+                <td  width="20">{{ quest['view_number'] }}</td>
+
+                <td  width="20">{{ quest['vote_number'] }}</td>
+
+                <td  width="800">{{ quest['message'] }}</td>
             </tr>
-            <tr>
-                <td><img src="{{ quest['image'] }}" alt="" height="100" width="100"></td>
-            </tr>
+                <p></p>
+                <p></p>
+            {% endfor %}
         </table>
-    {% endfor %}
+{#        <table>#}
+{#            <p></p>#}
+{#            <tr>#}
+{#                <th rowspan="2"><h5>Message:</h5></th>#}
+{#                <td>{{ quest['message'] | safe }}</td>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <td><img src="{{ quest['image'] }}" alt="" height="100" width="100"></td>#}
+{#            </tr>#}
+{#        </table>#}
+{#    {% endfor %}#}
 </body>
 </html>
