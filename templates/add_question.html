@@ -2,34 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ comment_name }}</title>
+    <title>Add Question</title>
 </head>
 <body>
-    <h1>{{ comment_name }}</h1>
+    <h1>Add Question</h1>
     <br>
-    <form action="{{ form_url }}" method="post">
-        <input type="hidden" name="id" value="{{ comment['id'] }}">
+    <form action="/add_question" method="post">
+        <input type="hidden" name="id" value='id'>
         <p>
-            <label for="title">{{ comment_title }}</label><br>
-            <input type="text" name="title" id="title" value="{{ comment['title'] }}">
+            <label for="title"></label><br>
+            <input type="text" name="title" id="title" value='title'>
         </p>
         <p>
-            <label for="message">{{ comment_message }}</label><br>
-            <textarea name="message" id="message" cols="40" rows="6" required>{{ comment['message'] }}</textarea>
+            <label for="message">Massage</label><br>
+            <textarea name="message" id="message" cols="40" rows="6" required></textarea>
         </p>
         <p>
             <label for="image">Image:</label>
             <input type="file" name="image" accept="image/*">
         </p>
-        {% if comment is not defined and type == "question" %}
+
             <input type="hidden" name="view_number" value="0">
             <input type="hidden" name="vote_number" value="0">
-            <input type="hidden" name="submission_time" value="{{ time_stamp }}">
-        {% endif %}
-        {% if comment is not defined and type == "answer" %}
+            <input type="hidden" name="submission_time" value="time_stamp">
+
+
             <input type="hidden" name="vote_number" value="0">
-            <input type="hidden" name="submission_time" value="{{ time_stamp }}">
-            <input type="hidden" name="question_id" value="{{ question_id }}">
+            <input type="hidden" name="submission_time" value="time_stamp">
+            <input type="hidden" name="question_id" value="question_id">
+
         <p>
             <button type="submit">Send</button>
         </p>

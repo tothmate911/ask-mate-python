@@ -17,36 +17,22 @@
                 <th><h2>View:</h2></th>
                 <th><h2>Like:</h2></th>
                 <th><h2>Messages:</h2></th>
+                <th><h2>Image:</h2></th>
             </tr>
             {% for quest in all_questions[-1:0:-1] %}
             <tr>
 
                 <td  width="10"><a href="{{ url_for('show_question', question_id=quest['id']) }}">{{ quest['id'] }}</a></td>
-
                 <td  width="40">{{ quest['submission_time']}}</td>
-
                 <td  width="300">{{ quest['title'] | safe }}</td>
-
                 <td  width="20">{{ quest['view_number'] }}</td>
-
                 <td  width="20">{{ quest['vote_number'] }}</td>
-
-                <td  width="800">{{ quest['message'] }}</td>
+                <td  width="1000">{{ quest['message'] }}</td>
+                <td  width="50">{{ quest['image'] }}</td>
             </tr>
                 <p></p>
                 <p></p>
             {% endfor %}
         </table>
-{#        <table>#}
-{#            <p></p>#}
-{#            <tr>#}
-{#                <th rowspan="2"><h5>Message:</h5></th>#}
-{#                <td>{{ quest['message'] | safe }}</td>#}
-{#            </tr>#}
-{#            <tr>#}
-{#                <td><img src="{{ quest['image'] }}" alt="" height="100" width="100"></td>#}
-{#            </tr>#}
-{#        </table>#}
-{#    {% endfor %}#}
 </body>
 </html>
