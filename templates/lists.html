@@ -9,30 +9,27 @@
     <br>
     <a href="{{ url_for('add_question') }}">Add new question</a>
     <br>
-    {% for quest in all_questions %}
-        <table>
+    <table>
             <tr>
-                <th><h5>ID:</h5></th>
-                <td  width="50"><a href="{{ url_for('show_question', question_id=quest['id']) }}">{{ quest['id'] }}</a></td>
-                <th><h5>Title:</h5></th>
-                <td  width="150">{{ quest['title'] | safe }}</td>
-                <th><h5>Submission time:</h5></th>
-                <td  width="100">{{ quest['submission_time'] }}</td>
-                <th><h5>View:</h5></th>
-                <td  width="50">{{ quest['view_number'] }}</td>
-                <th><h5>Like:</h5></th>
-                <td  width="50">{{ quest['vote_number'] }}</td>
+                <th>ID</th>
+                <th>Submission time</th>
+                <th>View number</th>
+                <th>Vote number</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Image</th>
             </tr>
-        </table>
-        <table>
+    {% for question in all_questions[-1:0:-1] %}
             <tr>
-                <th rowspan="2"><h5>Message:</h5></th>
-                <td>{{ quest['message'] | safe }}</td>
+                <td width="10"><a href="{{ url_for('show_question', question_id=question['id']) }}">{{ question['id'] }}</a></td>
+                <td width="100">{{ question['submission_time'] }}</td>
+                <td width="50">{{ question['view_number'] }}</td>
+                <td width="50">{{ question['vote_number'] }}</td>
+                <td width="200">{{ question['title'] | safe }}</td>
+                <td width="800">{{ question['message'] | safe }}</td>
+                <td><img src="{{ question['image'] }}" alt="" height="100" width="100"></td>
             </tr>
-            <tr>
-                <td><img src="{{ quest['image'] }}" alt="" height="100" width="100"></td>
-            </tr>
-        </table>
     {% endfor %}
+    </table>
 </body>
 </html>

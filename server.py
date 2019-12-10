@@ -14,14 +14,13 @@ def add_question():
     if request.method == 'POST':
         question={}
         for titles in data_handler.QUESTION_DATA_HEADER[1:]:
-
             question.update({titles : request.form[titles]})
         data_handler.add_question(question)
-        return redirect('/'),
+        return redirect('/')
 
     return render_template('add_question.html')
 
-@app.route('/show_question/<question_id>', methods=['GET', 'POST'])
+@app.route('/question/<question_id>', methods=['GET', 'POST'])
 def show_question(question_id):
     question = data_handler.get_question_by_id(question_id)
     answers_for_question = data_handler.get_all_answers_for_a_question(question_id)
