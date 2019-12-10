@@ -55,9 +55,15 @@ def add_question(question):
     question['submission_time'] = date_time_in_timestamp()
     write_the_file(QUESTION_FILE_PATH, question, append=True)
 
+def add_answer(answer, question_id):
+    answer['id'] = next_id_generator(ANSWER_FILE_PATH, DATA_HEADER)
+    answer['submission_time'] = date_time_in_timestamp()
+    answer['question_id'] = question_id
+    write_the_file(ANSWER_FILE_PATH, answer, append=True)
+
 def write_the_file(file_name, write_elements, append=True):
     existing_data = get_all_questions()
-    with open(file_name, 'w') as csvfile:
+    with open(file_name, 'w', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=DATA_HEADER)
         writer.writeheader()
 

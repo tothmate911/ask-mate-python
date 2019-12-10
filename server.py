@@ -38,15 +38,19 @@ def route_question(question_id):
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
     if request.method == 'POST':
-        answer = {}
-        for titles in data_handler.DATA_HEADER[1:]:
-            answer.update({titles: request.form.get[titles]})
-        data_handler.add_question(answer)
+        comment = {'title': request.form.get('title'),
+                   'message': request.form.get('message'),
+                   'submission_time': request.form.get('submission_time'),
+                   'vote_number': request.form.get('vote_number'),
+                   'image': request.form.get('image'),
+                   'question_id': request.form.get('question_id')}
+
+        data_handler.add_answer(comment, question_id)
         return redirect('/lists')
 
     return render_template("add_question.html",
                            comment_name='Add new answer',
-                           form_url=url_for('route_new_answer'),
+                           form_url=url_for('route_new_answer', question_id=question_id),
                            comment_message='Answer message',
                            question_id=question_id,
                            timestamp=data_handler.date_time_in_timestamp())
