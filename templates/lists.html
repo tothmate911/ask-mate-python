@@ -17,7 +17,7 @@
                 <td><h5>Title:</h5></td>
                 <td  width="300"><a href="{{ url_for('route_question', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
                 <td><h5>Submission time:</h5></td>
-                <td  width="100">{{ quest['submission_time'] }}</td>
+                <td  width="150">{{ quest['submission_time'] }}</td>
                 <td><h5>View:</h5></td>
                 <td  width="50">{{ quest['view_number'] }}</td>
                 <td><h5>Like:</h5></td>
@@ -26,10 +26,8 @@
         </table>
         <table>
             <tr>
-                <td rowspan="2"><h5>Message:</h5></td>
-                <td>{{ quest['message'] | safe }}</td>
-            </tr>
-            <tr>
+                <td><h5>Message:</h5></td>
+                <td width="1000">{{ quest['message'] | safe }}</td>
                 <td><img src="{{ quest['image'] }}" alt="" height="100" width="100"></td>
             </tr>
         </table>

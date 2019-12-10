@@ -8,10 +8,12 @@
     <h1>{{ comment_name }}</h1>
     <br>
     <form action="{{ form_url }}" method="post">
-        <input type="hidden" name="id" value="{{ comment['id'] }}">
+        <input type="hidden" name="id">
         <p>
+            {% if type == 'question' %}
             <label for="title">{{ comment_title }}</label><br>
             <input type="text" name="title" id="title" value="{{ comment['title'] }}">
+            {% endif %}
         </p>
         <p>
             <label for="message">{{ comment_message }}</label><br>
@@ -25,11 +27,11 @@
             <input type="hidden" name="view_number" value="0">
             <input type="hidden" name="vote_number" value="0">
             <input type="hidden" name="submission_time" value="{{ time_stamp }}">
-        {% endif %}
-        {% if comment is not defined and type == "answer" %}
+        {% elif comment is not defined and type == "answer" %}
             <input type="hidden" name="vote_number" value="0">
             <input type="hidden" name="submission_time" value="{{ time_stamp }}">
             <input type="hidden" name="question_id" value="{{ question_id }}">
+        {% endif %}
         <p>
             <button type="submit">Send</button>
         </p>

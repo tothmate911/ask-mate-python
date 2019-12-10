@@ -5,31 +5,48 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/lists')
 def route_lists():
-    questions = data_handler.get_all_questions()
+    questions = data_handler.get_all_questions(time=True)
     return render_template("lists.html", question=questions)
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        question = {}
-        for titles in data_handler.DATA_HEADER[1:]:
-            question.update({titles: request.form.get[titles]})
-        data_handler.add_question(question)
-        return redirect('/lists'),
+        comment = {'title': request.form.get('title'),
+                   'message': request.form.get('message')}
+        data_handler.add_question(comment)
+        return redirect('/lists')
 
     return render_template("add_question.html",
                            comment_name='Add new question',
-                           form_url=url_for('new_question_add'),
+                           form_url=url_for('route_new_question'),
                            comment_title='Question title',
-                           comment_message='Question message')
+                           comment_message='Question message',
+                           timestamp=data_handler.date_time_in_timestamp())
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
-    question = data_handler.one_question(question_id)
+    question = data_handler.one_question(question_id, time=True)
     answer = data_handler.all_answer_for_one_question(question_id)
     return render_template("answer.html",
                            question=question,
-                           comment=answer)
+                           answer=answer)
+
+@app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
+def route_new_answer(question_id):
+    if request.method == 'POST':
+        answer = {}
+        for titles in data_handler.DATA_HEADER[1:]:
+            answer.update({titles: request.form.get[titles]})
+        data_handler.add_question(answer)
+        return redirect('/lists')
+
+    return render_template("add_question.html",
+                           comment_name='Add new answer',
+                           form_url=url_for('route_new_answer'),
+                           comment_message='Answer message',
+                           question_id=question_id,
+                           timestamp=data_handler.date_time_in_timestamp())
+
 
 if __name__ == "__main__":
     app.run(
