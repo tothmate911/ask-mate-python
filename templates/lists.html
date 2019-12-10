@@ -13,9 +13,9 @@
         <table>
             <tr>
                 <th><h5>ID:</h5></th>
-                <td  width="50">{{ quest['id'] }}</td>
+                <td  width="50"><a href="{{ url_for('route_question_answer', story_title=quest['title']) }}">{{ quest['id'] }}</a></td>
                 <th><h5>Title:</h5></th>
-                <td  width="150"><a href="{{ url_for('route_question_answer', story_title=quest['title']) }}">{{ quest['title'] }}</a></td>
+                <td  width="150">{{ quest['title'] | safe }}</td>
                 <th><h5>Submission time:</h5></th>
                 <td  width="100">{{ quest['submission_time'] }}</td>
                 <th><h5>View:</h5></th>
@@ -27,10 +27,10 @@
         <table>
             <tr>
                 <th rowspan="2"><h5>Message:</h5></th>
-                <td>{{ quest['message'] }}</td>
+                <td>{{ quest['message'] | safe }}</td>
             </tr>
             <tr>
-                <td>No image</td>
+                <td><img src={{ quest['image']['route'] }} alt="{{ quest['image']['name'] }}"></td>
             </tr>
         </table>
     {% endfor %}
