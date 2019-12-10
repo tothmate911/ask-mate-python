@@ -26,7 +26,7 @@
             <td>{{ question['message'] | safe }}</td>
         </tr>
         <tr>
-            <td><img src={{ question['image']['route'] }} alt="{{ question['image']['name'] }}"></td>
+            <td><img src={{ question['image'] }} alt=""></td>
             <td><a href="{{ url_for('new_answer_add') }}">Add new answer</a></td>
         </tr>
     </table>
@@ -55,7 +55,7 @@
             </tr>
             <tr>
                 <th width="100"></th>
-                <td><img src={{ comment['image']['route'] }} alt="{{ comment['image']['name'] }}"></td>
+                <td><img src={{ comment['image'] }} alt=""></td>
             </tr>
         </table>
     {% endfor %}
