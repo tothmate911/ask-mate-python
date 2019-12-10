@@ -5,7 +5,7 @@ app = Flask(__name__)
 @app.route('/')
 def route_index():
 
-    return render_template('index.html')
+    return render_template('lists.html')
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_edit():
@@ -17,7 +17,7 @@ def route_edit():
         data_handler.add_question(question)
         return redirect('/'),
 
-    return render_template('add_question.html.html')
+    return render_template('add_question.html')
 
 @app.route('/lists')
 def show_questions():
