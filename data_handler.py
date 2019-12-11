@@ -112,10 +112,17 @@ def delete_question(id):
 
 def delete_answers_by_question_id(id):
     answers = get_all_answers()
-    answers_indexes=[]
+    answers_to_delete=[]
     for each_answer in answers:
         if id == each_answer['question_id']:
-            answers_indexes.append(each_answer)
-    for answer in answers_indexes:
+            answers_to_delete.append(each_answer)
+    for answer in answers_to_delete:
         answers.remove(answer)
+    write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)
+
+def delete_specific_answer(id):
+    answers = get_all_answers()
+    for each_answer in answers:
+        if id == each_answer['id']:
+            answers.remove(each_answer)
     write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)

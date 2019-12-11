@@ -61,6 +61,12 @@ def delete_question(question_id):
     data_handler.delete_answers_by_question_id(question_id)
     return redirect('/lists')
 
+@app.route('/answer/<answer_id>/delete')
+def delete_answer(answer_id):
+    questionid=data_handler.search_question_id_by_answer(answer_id)
+    data_handler.delete_specific_answer(answer_id)
+    return redirect(f'/question/{questionid})
+
 
 
 

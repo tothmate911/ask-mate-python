@@ -37,13 +37,12 @@
     {% for comment in answer %}
         <table>
             <tr>
-                <td width="100"></td>
-                <td><h5>ID:</h5></td>
                 <td  width="50">{{ comment['id'] }}</td>
                 <td><h5>Submission time:</h5></td>
                 <td  width="150">{{ comment['submission_time'] }}</td>
                 <td><h5>Like:</h5></td>
                 <td  width="50">{{ comment['vote_number'] }}</td>
+                <td><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}">Delete</a></td>
             </tr>
         </table>
         <table>
