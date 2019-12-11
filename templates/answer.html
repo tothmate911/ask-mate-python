@@ -29,7 +29,8 @@
     </table>
     <table>
         <tr>
-            <td><a href="{{ url_for('route_new_answer', question_id=question['id']) }}">Add new answer</a></td>
+            <td width="200"><a href="{{ url_for('route_new_answer', question_id=question['id']) }}">Add new answer</a></td>
+            <td><a href="{{ url_for('delete_question', question_id=question['id']) }}">Delete</a></td>
         </tr>
     </table>
     <br>

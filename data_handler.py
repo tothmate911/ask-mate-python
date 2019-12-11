@@ -61,7 +61,7 @@ def add_answer(answer, question_id):
     answer['question_id'] = question_id
     write_the_file(ANSWER_FILE_PATH, answer, ANSWER_HEADER, append=True)
 
-def write_the_file(file_name, write_elements, header, append=True):
+def write_the_file(file_name, write_elements, header, append=True, delete=False):
     if header == ANSWER_HEADER:
         existing_data = get_all_answers()
     else:
@@ -69,16 +69,19 @@ def write_the_file(file_name, write_elements, header, append=True):
     with open(file_name, 'w', encoding='utf-8') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=header)
         writer.writeheader()
+        if delete==False:
+            for row in existing_data:
+                if not append:
+                    if row['id'] == write_elements['id']:
+                        row = write_elements
 
-        for row in existing_data:
-            if not append:
-                if row['id'] == write_elements['id']:
-                    row = write_elements
+                writer.writerow(row)
 
-            writer.writerow(row)
-
-        if append:
-            writer.writerow(write_elements)
+            if append:
+                writer.writerow(write_elements)
+        else:
+            for element in write_elements:
+                writer.writerow(element)
 
 def one_question(question_id, time=False):
     all_question = get_all_questions(time)
@@ -99,3 +102,20 @@ def date_time_in_timestamp():
 
 def real_date_time(timestamp):
     return datetime.fromtimestamp(timestamp)
+
+def delete_question(id):
+    questions=get_all_questions()
+    for each_question in questions:
+        if id == each_question['id']:
+            questions.remove(each_question)
+    write_the_file(QUESTION_FILE_PATH, questions, DATA_HEADER, append=False, delete=True)
+
+def delete_answers_by_question_id(id):
+    answers = get_all_answers()
+    answers_indexes=[]
+    for each_answer in answers:
+        if id == each_answer['question_id']:
+            answers_indexes.append(each_answer)
+    for answer in answers_indexes:
+        answers.remove(answer)
+    write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)

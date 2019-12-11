@@ -55,6 +55,15 @@ def route_new_answer(question_id):
                            question_id=question_id,
                            timestamp=data_handler.date_time_in_timestamp())
 
+@app.route('/question/<question_id>/delete')
+def delete_question(question_id):
+    data_handler.delete_question(question_id)
+    data_handler.delete_answers_by_question_id(question_id)
+    return redirect('/lists')
+
+
+
+
 
 if __name__ == "__main__":
     app.run(
