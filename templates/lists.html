@@ -7,32 +7,31 @@
 <body>
     <h1>Ask Mate</h1>
     <br>
-    <a href="{{ url_for('add_question') }}">Add new question</a>
+    <a href="{{ url_for('route_new_question') }}">Add new question</a>
     <br>
+    {% for quest in question %}
         <table>
             <tr>
-                <th><h2>ID:</h2></th>
-                <th><h2>Submission time:</h2></th>
-                <th><h2>Title</h2></th>
-                <th><h2>View:</h2></th>
-                <th><h2>Like:</h2></th>
-                <th><h2>Messages:</h2></th>
-                <th><h2>Image:</h2></th>
+                <td><h5>ID:</h5></td>
+                <td  width="50">{{ quest['id'] }}</td>
+                <td><h5>Title:</h5></td>
+                <td  width="300"><a href="{{ url_for('route_question', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
+                <td><h5>Submission time:</h5></td>
+                <td  width="150">{{ quest['submission_time'] }}</td>
+                <td><h5>View:</h5></td>
+                <td  width="50">{{ quest['view_number'] }}</td>
+                <td><h5>Like:</h5></td>
+                <td  width="50">{{ quest['vote_number'] }}</td>
             </tr>
-            {% for quest in all_questions[-1:0:-1] %}
-            <tr>
-
-                <td  width="10"><a href="{{ url_for('show_question', question_id=quest['id']) }}">{{ quest['id'] }}</a></td>
-                <td  width="40">{{ quest['submission_time']}}</td>
-                <td  width="300">{{ quest['title'] | safe }}</td>
-                <td  width="20">{{ quest['view_number'] }}</td>
-                <td  width="20">{{ quest['vote_number'] }}</td>
-                <td  width="1000">{{ quest['message'] }}</td>
-                <td  width="50">{{ quest['image'] }}</td>
-            </tr>
-                <p></p>
-                <p></p>
-            {% endfor %}
         </table>
+        <table>
+            <tr>
+                <td><h5>Message:</h5></td>
+                <td width="1000">{{ quest['message'] | safe }}</td>
+                <td><img src="{{ quest['image'] }}" alt=""></td>
+            </tr>
+        </table>
+        <br>
+    {% endfor %}
 </body>
 </html>
