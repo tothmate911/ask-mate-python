@@ -18,6 +18,9 @@
             <td  width="50">{{ question['view_number'] }}</td>
             <td><h5>Like:</h5></td>
             <td  width="50">{{ question['vote_number'] }}</td>
+            <td width="30"><h5>Vote:</h5></td>
+            <td width="20"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">+</a></td>
+            <td width="20"><a href="{{ url_for('question_vote_down', question_id=question['id']) }}">-</a></td>
         </tr>
     </table>
     <table>
@@ -44,6 +47,9 @@
                 <td  width="150">{{ comment['submission_time'] }}</td>
                 <td><h5>Like:</h5></td>
                 <td  width="50">{{ comment['vote_number'] }}</td>
+                <td width="30"><h5>Vote:</h5></td>
+                <td width="20"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">+</a></td>
+                <td width="20"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">-</a></td>
             </tr>
         </table>
         <table>
