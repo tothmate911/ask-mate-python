@@ -65,11 +65,29 @@ def delete_question(question_id):
 def delete_answer(answer_id):
     questionid=data_handler.search_question_id_by_answer(answer_id)
     data_handler.delete_specific_answer(answer_id)
-    return redirect(f'/question/{questionid})
+    return redirect(f'/question/{questionid}')
 
+@app.route('/question/<question_id>/vote_up')
+def question_vote_up(question_id):
+    data_handler.vote(question_id)
+    return redirect(f'/question/{question_id}')
 
+@app.route('/question/<question_id>/vote_down')
+def question_vote_down(question_id):
+    data_handler.vote(question_id, vote_type='down')
+    return redirect(f'/question/{question_id}')
 
+@app.route('/answer/<answer_id>/vote_up')
+def answer_vote_up(answer_id):
+    data_handler.vote(answer_id, comment_type='answer')
+    question_id = data_handler.search_question_id_by_answer(answer_id)
+    return redirect(f'/question/{question_id}')
 
+@app.route('/answer/<answer_id>/vote_down')
+def answer_vote_down(answer_id):
+    question_id = data_handler.search_question_id_by_answer(answer_id)
+    data_handler.vote(answer_id, comment_type='answer', vote_type='down')
+    return redirect(f'/question/{question_id}')
 
 if __name__ == "__main__":
     app.run(
