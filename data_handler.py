@@ -62,7 +62,10 @@ def add_answer(answer, question_id):
     write_the_file(ANSWER_FILE_PATH, answer, ANSWER_HEADER, append=True)
 
 def write_the_file(file_name, write_elements, header, append=True):
-    existing_data = get_all_answers()
+    if header == ANSWER_HEADER:
+        existing_data = get_all_answers()
+    else:
+        existing_data = get_all_questions()
     with open(file_name, 'w', encoding='utf-8') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=header)
         writer.writeheader()

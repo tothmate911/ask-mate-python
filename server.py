@@ -6,6 +6,7 @@ app = Flask(__name__)
 @app.route('/lists')
 def route_lists():
     questions = data_handler.get_all_questions(time=True)
+    questions.reverse()
     return render_template("lists.html", question=questions)
 
 @app.route('/add_question', methods=['GET', 'POST'])
