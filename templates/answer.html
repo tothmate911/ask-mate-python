@@ -18,6 +18,9 @@
             <td  width="50">{{ question['view_number'] }}</td>
             <td><h5>Like:</h5></td>
             <td  width="50">{{ question['vote_number'] }}</td>
+            <td width="30"><h5>Vote:</h5></td>
+            <td width="20"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">+</a></td>
+            <td width="20"><a href="{{ url_for('question_vote_down', question_id=question['id']) }}">-</a></td>
         </tr>
     </table>
     <table>
@@ -29,20 +32,23 @@
     </table>
     <table>
         <tr>
-            <td><a href="{{ url_for('route_new_answer', question_id=question['id']) }}">Add new answer</a></td>
+            <td width="200"><a href="{{ url_for('route_new_answer', question_id=question['id']) }}">Add new answer</a></td>
+            <td><a href="{{ url_for('delete_question', question_id=question['id']) }}">Delete</a></td>
         </tr>
     </table>
     <br>
     {% for comment in answer %}
         <table>
             <tr>
-                <td width="100"></td>
-                <td><h5>ID:</h5></td>
                 <td  width="50">{{ comment['id'] }}</td>
                 <td><h5>Submission time:</h5></td>
                 <td  width="150">{{ comment['submission_time'] }}</td>
                 <td><h5>Like:</h5></td>
                 <td  width="50">{{ comment['vote_number'] }}</td>
+                <td width="30"><h5>Vote:</h5></td>
+                <td width="20"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">+</a></td>
+                <td width="20"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">-</a></td>
+                <td><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}">Delete</a></td>
             </tr>
         </table>
         <table>
