@@ -120,17 +120,21 @@ def delete_answers_by_question_id(id):
         answers.remove(answer)
     write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)
 
-def vote(vote_id, comment_type='question', vote_type='up'):
-    if comment_type == 'question':
+def vote(vote_id, question_type=True, type_vote_up=True):
+    if question_type:
         all_question = get_all_questions()
     else:
         all_question = get_all_answers()
     for question in all_question:
         if question['id'] == vote_id:
-            if vote_type == 'up':
+            if type_vote_up:
                 question['vote_number'] = str(int(question['vote_number']) + 1)
             else:
                 question['vote_number'] = str(int(question['vote_number']) - 1)
+            if question_type:
+                write_the_file(QUESTION_FILE_PATH, question, DATA_HEADER, append=False)
+            else:
+                write_the_file(ANSWER_FILE_PATH, question, ANSWER_HEADER, append=False)
 
 def search_question_id_by_answer(answer_id):
     all_answer = get_all_answers()

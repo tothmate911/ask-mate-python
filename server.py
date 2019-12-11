@@ -53,11 +53,11 @@ def route_new_answer(question_id):
                    'vote_number': request.form.get('vote_number'),
                    'image': request.form.get('image'),
                    'question_id': request.form.get('question_id')}
-        page_return = f'/question/{question_id}'
         data_handler.add_answer(comment, question_id)
-        return redirect(page_return)
+        return redirect(f'/question/{question_id}')
 
     return render_template("add_question.html",
+                           type='answer',
                            comment_name='Add new answer',
                            form_url=url_for('route_new_answer', question_id=question_id),
                            comment_message='Answer message',
@@ -83,19 +83,19 @@ def question_vote_up(question_id):
 
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
-    data_handler.vote(question_id, vote_type='down')
+    data_handler.vote(question_id, type_vote_up=False)
     return redirect(f'/question/{question_id}')
 
 @app.route('/answer/<answer_id>/vote_up')
 def answer_vote_up(answer_id):
-    data_handler.vote(answer_id, comment_type='answer')
+    data_handler.vote(answer_id, question_type=False)
     question_id = data_handler.search_question_id_by_answer(answer_id)
     return redirect(f'/question/{question_id}')
 
 @app.route('/answer/<answer_id>/vote_down')
 def answer_vote_down(answer_id):
     question_id = data_handler.search_question_id_by_answer(answer_id)
-    data_handler.vote(answer_id, comment_type='answer', vote_type='down')
+    data_handler.vote(answer_id, question_type=False, type_vote_up=False)
     return redirect(f'/question/{question_id}')
 
 if __name__ == "__main__":
