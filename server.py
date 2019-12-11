@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request, url_for
+from urllib.parse import urlparse
 import data_handler
 app = Flask(__name__)
 
@@ -6,8 +7,16 @@ app = Flask(__name__)
 @app.route('/lists')
 def route_lists():
     questions = data_handler.get_all_questions(time=True)
-    questions.reverse()
-    return render_template("lists.html", question=questions)
+    try:
+        order_by = request.args['order_by']
+        order_direction = request.args['order_direction']
+    except:
+        order_by = 'submission_time'
+        order_direction = 'asc'
+
+    sorted_questions = data_handler.sort_data(questions, order_by, order_direction)
+    return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
+
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():

@@ -99,3 +99,14 @@ def date_time_in_timestamp():
 
 def real_date_time(timestamp):
     return datetime.fromtimestamp(timestamp)
+
+def sort_data(list_of_dicts, order_by, order_direction):
+    converted_list = convert_numbers_in_questions_to_int(list_of_dicts)
+    sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by], reverse=True if order_direction == 'desc' else False)
+    return sorted_list_of_dicts
+
+def convert_numbers_in_questions_to_int(all_questions):
+    for i in range(len(all_questions)):
+        all_questions[i]['vote_number'] = int(all_questions[i]['vote_number'])
+        all_questions[i]['view_number'] = int(all_questions[i]['view_number'])
+    return all_questions
