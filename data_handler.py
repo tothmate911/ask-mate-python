@@ -35,11 +35,19 @@ def get_list_of_dictionaries_from_csv(path, header, time=False):
     return all_data
 
 
-def get_question_by_id(id):
-    all_questions = get_all_questions()
-    for question in all_questions:
-        if question['id'] == id:
-            return question
+def get_question_by_id(question_id):
+    return get_data_by_id(get_all_questions, question_id)
+
+
+def get_answer_by_id(answer_id):
+  return get_data_by_id(get_all_answers, answer_id)
+
+
+def get_data_by_id(get_all_data, id):
+    all_data = get_all_data()
+    for data in all_data:
+        if data['id'] == id:
+            return data
 
 
 def next_id_generator(path, header):
@@ -163,11 +171,8 @@ def convert_numbers_in_questions_to_int(all_questions):
     return all_questions
 
 def update_question(edited_question):
-    all_questions = get_all_questions(time=True)
-    for i in range(len(all_questions)):
-        if all_questions[i]['id'] == edited_question['id']:
-            all_questions[i] = edited_question
-
     write_the_file(QUESTION_FILE_PATH, edited_question, DATA_HEADER, append=False)
-    pass
 
+
+def update_answer(edited_answer):
+    write_the_file(ANSWER_FILE_PATH, edited_answer, ANSWER_HEADER, append=False)

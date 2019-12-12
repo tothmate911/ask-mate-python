@@ -114,6 +114,25 @@ def edit_question(question_id):
 
     return render_template('edit_question.html', question=question)
 
+
+@app.route('/answer/<answer_id>/edit', methods = ['GET', 'POST'])
+def edit_answer(answer_id):
+    answer = data_handler.get_answer_by_id(answer_id)
+    if request.method == 'POST':
+        edited_answer = {}
+        datas_from_answer = ['id', 'submission_time', 'vote_number', 'question_id', 'image']
+        for data in datas_from_answer:
+            edited_answer[data] = answer[data]
+        datas_from_edit = ['message']
+        for data in datas_from_edit:
+            edited_answer[data] = request.form[data]
+
+        data_handler.update_answer(edited_answer)
+        return redirect(url_for('route_question', question_id=edited_answer['question_id']))
+
+    return render_template('edit_answer.html', answer=answer)
+
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',

@@ -18,8 +18,8 @@
                 {% endfor %}
             </select>
             <select name="order_direction" id="order_direction">
-                <option name="asc" value="asc">ascending</option>
-                <option name="desc" value="desc">descending</option>
+                <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+                <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
             </select>
             <button type="submit">SORT</button>
         </form>
