@@ -6,7 +6,7 @@ ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
 DATA_HEADER =['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 ANSWER_HEADER =['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
-IMAGE_UPLOAD_PATH = "/home/bala/Documents/Codecool/Web/ask-mate-python/static/images"
+IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
 
 
