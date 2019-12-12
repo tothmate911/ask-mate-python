@@ -23,27 +23,23 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        if request.files:
+        comment = {'title': request.form.get('title'),
+                   'message': request.form.get('message'),
+                   'submission_time': request.form.get('submission_time'),
+                   'view_number': request.form.get('view_number'),
+                   'vote_number': request.form.get('vote_number'),
+                   }
+        if request.files['image'].filename != "":
 
             image=request.files['image']
-            if image.filename == "":
-                return redirect(request.url)
-
             if not data_handler.allowed_image(image.filename):
                 return redirect(request.url)
             else:
                 filename = secure_filename(image.filename)
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
+                comment.update({'image': f" {data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
 
-
-        comment = {'title': request.form.get('title'),
-                   'message': request.form.get('message'),
-                   'submission_time': request.form.get('submission_time'),
-                   'view_number': request.form.get('view_number'),
-                   'vote_number': request.form.get('vote_number'),
-                   'image': f" {data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"
-                   }
         data_handler.add_question(comment)
         return redirect('/lists')
 
