@@ -1,7 +1,9 @@
 from flask import Flask, render_template, redirect, request, url_for
-from urllib.parse import urlparse
 import data_handler
+import os
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
+
 
 @app.route('/')
 @app.route('/lists')
@@ -21,12 +23,27 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
+        if request.files:
+
+            image=request.files['image']
+            if image.filename == "":
+                return redirect(request.url)
+
+            if not data_handler.allowed_image(image.filename):
+                return redirect(request.url)
+            else:
+                filename = secure_filename(image.filename)
+
+                image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
+
+
         comment = {'title': request.form.get('title'),
                    'message': request.form.get('message'),
                    'submission_time': request.form.get('submission_time'),
                    'view_number': request.form.get('view_number'),
                    'vote_number': request.form.get('vote_number'),
-                   'image': request.form.get('image')}
+                   'image': f" {data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"
+                   }
         data_handler.add_question(comment)
         return redirect('/lists')
 
@@ -66,6 +83,7 @@ def route_new_answer(question_id):
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
+    data_handler.delete_image_by_question_id()
     data_handler.delete_question(question_id)
     data_handler.delete_answers_by_question_id(question_id)
     return redirect('/lists')
