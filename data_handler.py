@@ -162,15 +162,19 @@ def delete_specific_answer(id):
     write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)
 
 def sort_data(list_of_dicts, order_by, order_direction):
-    converted_list = convert_numbers_in_questions_to_int(list_of_dicts)
+    converted_list = convert_numbers_in_list_to_int(list_of_dicts)
     sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by], reverse=True if order_direction == 'desc' else False)
     return sorted_list_of_dicts
 
-def convert_numbers_in_questions_to_int(all_questions):
-    for i in range(len(all_questions)):
-        all_questions[i]['vote_number'] = int(all_questions[i]['vote_number'])
-        all_questions[i]['view_number'] = int(all_questions[i]['view_number'])
-    return all_questions
+def convert_numbers_in_list_to_int(all_data):
+    for i in range(len(all_data)):
+        all_data[i]['vote_number'] = int(all_data[i]['vote_number'])
+        try:
+            all_data[i]['view_number'] = int(all_data[i]['view_number'])
+        except KeyError:
+            continue
+    return all_data
+
 
 def update_question(edited_question):
     write_the_file(QUESTION_FILE_PATH, edited_question, DATA_HEADER, append=False)
