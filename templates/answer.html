@@ -39,6 +39,19 @@
         </tr>
     </table>
     <br>
+    <form method="get">
+            <label for="order_by">Order by</label>
+            <select name="order_by" id="order_by">
+                {% for option, option_text in {'submission_time': 'submission time', 'message': 'message', 'vote_number': 'number of votes'}.items() %}
+                    <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
+                {% endfor %}
+            </select>
+                <label for="order_direction"></label><select name="order_direction" id="order_direction">
+                <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+                <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
+            </select>
+            <button type="submit">SORT</button>
+        </form>
     {% for comment in answer %}
         <table>
             <tr>
