@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, request, url_for
-from urllib.parse import urlparse
 import data_handler
 app = Flask(__name__)
 
@@ -97,6 +96,16 @@ def answer_vote_down(answer_id):
     question_id = data_handler.search_question_id_by_answer(answer_id)
     data_handler.vote(answer_id, comment_type='answer', vote_type='down')
     return redirect(f'/question/{question_id}')
+
+@app.route('/question/<question_id>/edit', methods = ['GET', 'POST'])
+def edit_question(question_id):
+    question = data_handler.get_question_by_id(question_id)
+    # if request.method == 'POST':
+    #     datas_from_question = []
+    #     edited_question =
+
+
+    return render_template('edit_question.html', question=question)
 
 if __name__ == "__main__":
     app.run(
