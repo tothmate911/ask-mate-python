@@ -100,10 +100,17 @@ def answer_vote_down(answer_id):
 @app.route('/question/<question_id>/edit', methods = ['GET', 'POST'])
 def edit_question(question_id):
     question = data_handler.get_question_by_id(question_id)
-    # if request.method == 'POST':
-    #     datas_from_question = []
-    #     edited_question =
+    if request.method == 'POST':
+        edited_question = {}
+        datas_from_question = ['id', 'submission_time', 'view_number', 'vote_number', 'image']
+        for data in datas_from_question:
+            edited_question[data] = question[data]
+        datas_from_edit = ['title', 'message']
+        for data in datas_from_edit:
+            edited_question[data] = request.form[data]
 
+        data_handler.update_question(edited_question)
+        return redirect(url_for('route_question', question_id=edited_question['id']))
 
     return render_template('edit_question.html', question=question)
 

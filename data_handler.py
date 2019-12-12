@@ -4,8 +4,8 @@ import time
 
 ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
-DATA_HEADER =['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWER_HEADER =['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 
 
 def get_all_questions(time=False):
@@ -161,3 +161,13 @@ def convert_numbers_in_questions_to_int(all_questions):
         all_questions[i]['vote_number'] = int(all_questions[i]['vote_number'])
         all_questions[i]['view_number'] = int(all_questions[i]['view_number'])
     return all_questions
+
+def update_question(edited_question):
+    all_questions = get_all_questions(time=True)
+    for i in range(len(all_questions)):
+        if all_questions[i]['id'] == edited_question['id']:
+            all_questions[i] = edited_question
+
+    write_the_file(QUESTION_FILE_PATH, edited_question, DATA_HEADER, append=False)
+    pass
+
