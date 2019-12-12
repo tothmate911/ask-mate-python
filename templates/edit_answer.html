@@ -1,0 +1,20 @@
+<!DOCTYPE>
+<html lang="en">
+    <head>
+        <link href="/static/css/basic.css" rel="stylesheet"/>
+        <meta charset="UTF-8">
+        <title>Edit answer | Ask mate</title>
+    </head>
+    <body>
+        <h1>Edit answer</h1>
+        <p>Answer id: {{ answer['id'] }}</p>
+        <form action="{{ '/answer/' + answer['id'] + '/edit' }}" method="post">
+            <p>
+                <label for="message">Message:</label><br>
+                <textarea name="message" id="message" cols="80" rows="10" required>{{ answer['message'] }}</textarea>
+            </p>
+            <button type="submit" value="Edit answer">Edit answer</button>
+
+        </form>
+    </body>
+</html>
