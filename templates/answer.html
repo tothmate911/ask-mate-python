@@ -39,6 +39,19 @@
         </tr>
     </table>
     <br>
+    <form method="get">
+            <label for="order_by">Order answers by</label>
+            <select name="order_by" id="order_by">
+                {% for option, option_text in {'submission_time': 'submission time', 'message': 'message', 'vote_number': 'number of votes'}.items() %}
+                    <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
+                {% endfor %}
+            </select>
+                <label for="order_direction"></label><select name="order_direction" id="order_direction">
+                <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+                <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
+            </select>
+            <button type="submit">SORT</button>
+        </form>
     {% for comment in answer %}
         <table>
             <tr>
@@ -50,7 +63,7 @@
                 <td width="30"><h5>Vote:</h5></td>
                 <td width="20"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">+</a></td>
                 <td width="20"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">-</a></td>
-                <td width="80"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}">Delete</a></td>
+                <td width="120"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}">Delete</a></td>
                 <td><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}">Edit answer</a></td>
             </tr>
         </table>

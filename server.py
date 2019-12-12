@@ -57,10 +57,18 @@ def route_new_question():
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = data_handler.one_question(question_id, time=True)
-    answer = data_handler.all_answer_for_one_question(question_id)
+    answers = data_handler.all_answer_for_one_question(question_id)
+    try:
+        order_by = request.args['order_by']
+        order_direction = request.args['order_direction']
+    except:
+        order_by = 'submission_time'
+        order_direction = 'asc'
+    sorted_answers = data_handler.sort_data(answers, order_by, order_direction)
+
     return render_template("answer.html",
                            question=question,
-                           answer=answer)
+                           answer=sorted_answers, order_by=order_by, order_direction=order_direction)
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
