@@ -195,5 +195,3 @@ def allowed_image(filename):
 def get_image_path_for_question_by_id(question_id):
     question = get_question_by_id(question_id)
     return question['image']
-
-# def delete_image_by_question_id():
