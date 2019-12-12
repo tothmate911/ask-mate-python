@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="/static/css/basic.css" rel="stylesheet"/>
     <meta charset="UTF-8">
-    <title>Ask mate forum</title>
+    <title>Ask Mate Forum</title>
 </head>
 <body>
     <h1>Ask Mate</h1>
     <br>
     <a href="{{ url_for('route_new_question') }}">Add new question</a>
-    <br>
-    <h4>Sort questions</h4>
     <p>
         <form method="get">
             <label for="order_by">Order by</label>

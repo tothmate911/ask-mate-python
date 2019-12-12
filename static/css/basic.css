@@ -1,0 +1,39 @@
+p {
+    letter-spacing: 0.5em;
+    word-spacing: 2em;
+    line-height: 1.5;
+    text-align: center;
+
+
+}
+h1 {
+    font-size: 3em;
+    font-style: normal;
+    margin: 20px;
+    padding: 40px;
+    color : goldenrod;
+}
+
+h5 {
+    font-size: 1em;
+    margin: 15px;
+    padding: 30px;
+    color : goldenrod;
+}
+
+a {
+    color: whitesmoke;
+}
+body {
+    font-family: "JetBrains Mono", "arial", "helvetica", serif;
+        font-size: 14px;
+        font-style: italic;
+    background-color: darkred;
+}
+table {
+        color : goldenrod;
+        table-layout: auto;
+}
+label { color: goldenrod;
+
+}

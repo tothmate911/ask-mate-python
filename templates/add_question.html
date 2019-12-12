@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="/static/css/basic.css" rel="stylesheet"/>
     <meta charset="UTF-8">
     <title>{{ comment_name }}</title>
 </head>
@@ -21,7 +22,7 @@
         </p>
         <p>
             <label for="image">Image:</label>
-            <input type="file" name="image" accept="image/*">
+            <input type="file" name="image" accept=".png, .jpg">
         </p>
         {% if comment is not defined and type == "question" %}
             <input type="hidden" name="view_number" value="0">
