@@ -8,7 +8,7 @@
 <body>
     <h1>{{ comment_name }}</h1>
     <br>
-    <form action="{{ form_url }}" method="post">
+    <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id">
         <p>
             {% if type == 'question' %}

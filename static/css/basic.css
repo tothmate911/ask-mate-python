@@ -11,18 +11,20 @@ h1 {
     font-style: normal;
     margin: 20px;
     padding: 40px;
-    color : goldenrod;
+    color : gold;
 }
 
 h5 {
     font-size: 1em;
     margin: 15px;
     padding: 30px;
-    color : goldenrod;
+    color : gold;
 }
 
 a {
     color: whitesmoke;
+    text-decoration: none;
+    font-size: 1.3em;
 }
 body {
     font-family: "JetBrains Mono", "arial", "helvetica", serif;
@@ -31,9 +33,11 @@ body {
     background-color: darkred;
 }
 table {
-        color : goldenrod;
+        color : gold;
         table-layout: auto;
+        font-size: 20px;
 }
-label { color: goldenrod;
+label { color: gold;
+    font-size: 1.3em;
 
 }

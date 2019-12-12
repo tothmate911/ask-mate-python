@@ -4,8 +4,10 @@ import time
 
 ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
-DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+DATA_HEADER =['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER_HEADER =['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+IMAGE_UPLOAD_PATH = "/home/bala/Documents/Codecool/Web/ask-mate-python/static/images"
+ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
 
 
 def get_all_questions(time=False):
@@ -176,3 +178,14 @@ def update_question(edited_question):
 
 def update_answer(edited_answer):
     write_the_file(ANSWER_FILE_PATH, edited_answer, ANSWER_HEADER, append=False)
+
+def allowed_image(filename):
+    if not "." in filename:
+        return False
+    ext = filename.rsplit(".",1)[1]
+    if ext.upper() in ALLOWED_IMAGE_TYPE:
+        return True
+    else:
+        return False
+
+def delete_image_by_question_id():
