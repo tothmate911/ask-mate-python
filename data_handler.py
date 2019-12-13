@@ -216,6 +216,9 @@ def get_image_path_for_question_by_id(question_id):
 
 
 def delete_image_by_question_id(question_id):
-    path=get_image_path_for_question_by_id(question_id)
-    print(path)
-    os.remove(path)
+    try:
+        path=get_image_path_for_question_by_id(question_id)
+        print(path)
+        os.remove(path)
+    except:
+        pass
