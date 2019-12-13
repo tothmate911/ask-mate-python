@@ -9,7 +9,7 @@ DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', '
 ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
-ROOT_PATH='/home/bala/Documents/Codecool/Web/ask-mate-python'
+ROOT_PATH='static/images'
 
 
 def get_all_questions(time=False):
@@ -98,11 +98,13 @@ def write_the_file(file_name, write_elements, header, append=True, delete=False)
             for element in write_elements:
                 writer.writerow(element)
 
+
 def one_question(question_id, time=False):
     all_question = get_all_questions(time)
     for question in all_question:
         if question['id'] == question_id:
             return question
+
 
 def all_answer_for_one_question(question_id):
     answers = []
@@ -214,6 +216,6 @@ def get_image_path_for_question_by_id(question_id):
 
 
 def delete_image_by_question_id(question_id):
-    path=ROOT_PATH + '/' + get_image_path_for_question_by_id(question_id)
+    path=get_image_path_for_question_by_id(question_id)
     print(path)
     os.remove(path)

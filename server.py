@@ -38,7 +38,7 @@ def route_new_question():
                 filename = secure_filename(image.filename)
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
-                comment.update({'image': f" {data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+                comment.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
 
         data_handler.add_question(comment)
         return redirect('/lists')
