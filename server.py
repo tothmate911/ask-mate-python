@@ -53,6 +53,7 @@ def route_new_question():
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = data_handler.one_question(question_id, time=True)
+    print(question['image'])
     answers = data_handler.all_answer_for_one_question(question_id)
     try:
         order_by = request.args['order_by']

@@ -28,7 +28,7 @@
         <tr>
             <td><h5>Message:</h5></td>
             <td width="1000" colspan="11">{{ question['message'] | safe }}</td>
-            <td><img src="{{ question['image'] }}" alt="" height="300" width="260"></td>
+            <td><img src="/{{ question['image'] }}" alt="" height="300" width="260"></td>
         </tr>
     </table>
     <table>
@@ -72,7 +72,7 @@
                 <td width="100"></td>
                 <td><h5>Message:</h5></td>
                 <td width="900" colspan="11">{{ comment['message'] | safe }}</td>
-                <td rowspan="2"><img src={{ comment['image'] }} alt=""></td>
+                <td rowspan="2"><img src={{ comment['image'] }} alt="image"></td>
             </tr>
         </table>
     {% endfor %}
