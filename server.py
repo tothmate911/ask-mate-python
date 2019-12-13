@@ -87,7 +87,7 @@ def route_new_answer(question_id):
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
-    data_handler.delete_image_by_question_id()
+    data_handler.delete_image_by_question_id(question_id)
     data_handler.delete_question(question_id)
     data_handler.delete_answers_by_question_id(question_id)
     return redirect('/lists')

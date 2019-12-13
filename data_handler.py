@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 import time
+import os
 
 ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
@@ -8,6 +9,7 @@ DATA_HEADER =['id', 'submission_time', 'view_number', 'vote_number', 'title', 'm
 ANSWER_HEADER =['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
+ROOT_PATH='/home/bala/Documents/Codecool/Web/ask-mate-python'
 
 
 def get_all_questions(time=False):
@@ -163,7 +165,7 @@ def delete_specific_answer(id):
 
 def sort_data(list_of_dicts, order_by, order_direction):
     converted_list = convert_numbers_in_list_to_int(list_of_dicts)
-    sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by], reverse=True if order_direction == 'desc' else False)
+    sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by] , reverse=True if order_direction == 'desc' else False)
     return sorted_list_of_dicts
 
 def convert_numbers_in_list_to_int(all_data):
@@ -195,3 +197,8 @@ def allowed_image(filename):
 def get_image_path_for_question_by_id(question_id):
     question = get_question_by_id(question_id)
     return question['image']
+
+def delete_image_by_question_id(question_id):
+    path=ROOT_PATH + '/' + get_image_path_for_question_by_id(question_id)
+    print(path)
+    os.remove(path)
