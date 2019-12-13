@@ -5,8 +5,8 @@ import os
 
 ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
-DATA_HEADER =['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-ANSWER_HEADER =['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
 ROOT_PATH='/home/bala/Documents/Codecool/Web/ask-mate-python'
@@ -44,7 +44,7 @@ def get_question_by_id(question_id):
 
 
 def get_answer_by_id(answer_id):
-  return get_data_by_id(get_all_answers, answer_id)
+    return get_data_by_id(get_all_answers, answer_id)
 
 
 def get_data_by_id(get_all_data, id):
@@ -62,16 +62,19 @@ def next_id_generator(path, header):
         next_id = 0
     return next_id
 
+
 def add_question(question):
     question['id'] = next_id_generator(QUESTION_FILE_PATH, DATA_HEADER)
     question['submission_time'] = date_time_in_timestamp()
     write_the_file(QUESTION_FILE_PATH, question, DATA_HEADER, append=True)
+
 
 def add_answer(answer, question_id):
     answer['id'] = next_id_generator(ANSWER_FILE_PATH, DATA_HEADER)
     answer['submission_time'] = date_time_in_timestamp()
     answer['question_id'] = question_id
     write_the_file(ANSWER_FILE_PATH, answer, ANSWER_HEADER, append=True)
+
 
 def write_the_file(file_name, write_elements, header, append=True, delete=False):
     if header == ANSWER_HEADER:
@@ -81,7 +84,7 @@ def write_the_file(file_name, write_elements, header, append=True, delete=False)
     with open(file_name, 'w', encoding='utf-8') as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=header)
         writer.writeheader()
-        if delete==False:
+        if delete is False:
             for row in existing_data:
                 if not append:
                     if row['id'] == write_elements['id']:
@@ -109,11 +112,14 @@ def all_answer_for_one_question(question_id):
             answers.append(answer)
     return answers
 
+
 def date_time_in_timestamp():
     return int(time.time())
 
+
 def real_date_time(timestamp):
     return datetime.fromtimestamp(timestamp)
+
 
 def delete_question(id):
     questions=get_all_questions()
@@ -121,6 +127,7 @@ def delete_question(id):
         if id == each_question['id']:
             questions.remove(each_question)
     write_the_file(QUESTION_FILE_PATH, questions, DATA_HEADER, append=False, delete=True)
+
 
 def delete_answers_by_question_id(id):
     answers = get_all_answers()
@@ -131,6 +138,7 @@ def delete_answers_by_question_id(id):
     for answer in answers_to_delete:
         answers.remove(answer)
     write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)
+
 
 def vote(vote_id, question_type=True, type_vote_up=True):
     if question_type:
@@ -148,6 +156,7 @@ def vote(vote_id, question_type=True, type_vote_up=True):
             else:
                 write_the_file(ANSWER_FILE_PATH, question, ANSWER_HEADER, append=False)
 
+
 def search_question_id_by_answer(answer_id):
     all_answer = get_all_answers()
     question_id = 0
@@ -156,6 +165,7 @@ def search_question_id_by_answer(answer_id):
             question_id = answer['question_id']
     return question_id
 
+
 def delete_specific_answer(id):
     answers = get_all_answers()
     for each_answer in answers:
@@ -163,10 +173,12 @@ def delete_specific_answer(id):
             answers.remove(each_answer)
     write_the_file(ANSWER_FILE_PATH, answers, ANSWER_HEADER, append=False, delete=True)
 
+
 def sort_data(list_of_dicts, order_by, order_direction):
     converted_list = convert_numbers_in_list_to_int(list_of_dicts)
     sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by] , reverse=True if order_direction == 'desc' else False)
     return sorted_list_of_dicts
+
 
 def convert_numbers_in_list_to_int(all_data):
     for i in range(len(all_data)):
@@ -185,18 +197,21 @@ def update_question(edited_question):
 def update_answer(edited_answer):
     write_the_file(ANSWER_FILE_PATH, edited_answer, ANSWER_HEADER, append=False)
 
+
 def allowed_image(filename):
     if not "." in filename:
         return False
-    ext = filename.rsplit(".",1)[1]
+    ext = filename.rsplit(".", 1)[1]
     if ext.upper() in ALLOWED_IMAGE_TYPE:
         return True
     else:
         return False
 
+
 def get_image_path_for_question_by_id(question_id):
     question = get_question_by_id(question_id)
     return question['image']
+
 
 def delete_image_by_question_id(question_id):
     path=ROOT_PATH + '/' + get_image_path_for_question_by_id(question_id)
