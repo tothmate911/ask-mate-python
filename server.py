@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, request, url_for
 import data_handler
+import database_manager
 import os
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
@@ -8,7 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/lists')
 def route_lists():
-    questions = data_handler.get_all_questions(time=True)
+    questions = data_handler.get_all_questions()
     try:
         order_by = request.args['order_by']
         order_direction = request.args['order_direction']
@@ -31,7 +32,7 @@ def route_new_question():
                    }
         if request.files['image'].filename != "":
 
-            image=request.files['image']
+            image = request.files['image']
             if not data_handler.allowed_image(image.filename):
                 return redirect(request.url)
             else:
@@ -50,6 +51,7 @@ def route_new_question():
                            comment_message='Question message',
                            type='question')
 
+
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = data_handler.one_question(question_id, time=True)
@@ -66,6 +68,7 @@ def route_question(question_id):
     return render_template("answer.html",
                            question=question,
                            answer=sorted_answers, order_by=order_by, order_direction=order_direction)
+
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
@@ -95,19 +98,22 @@ def delete_question(question_id):
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
-    questionid=data_handler.search_question_id_by_answer(answer_id)
+    questionid = data_handler.search_question_id_by_answer(answer_id)
     data_handler.delete_specific_answer(answer_id)
     return redirect(f'/question/{questionid}')
+
 
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
     data_handler.vote(question_id)
     return redirect(f'/question/{question_id}')
 
+
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
     data_handler.vote(question_id, type_vote_up=False)
     return redirect(f'/question/{question_id}')
+
 
 @app.route('/answer/<answer_id>/vote_up')
 def answer_vote_up(answer_id):
@@ -115,13 +121,15 @@ def answer_vote_up(answer_id):
     question_id = data_handler.search_question_id_by_answer(answer_id)
     return redirect(f'/question/{question_id}')
 
+
 @app.route('/answer/<answer_id>/vote_down')
 def answer_vote_down(answer_id):
     question_id = data_handler.search_question_id_by_answer(answer_id)
     data_handler.vote(answer_id, question_type=False, type_vote_up=False)
     return redirect(f'/question/{question_id}')
 
-@app.route('/question/<question_id>/edit', methods = ['GET', 'POST'])
+
+@app.route('/question/<question_id>/edit',methods = ['GET', 'POST'])
 def edit_question(question_id):
     question = data_handler.get_question_by_id(question_id)
     if request.method == 'POST':
@@ -139,7 +147,7 @@ def edit_question(question_id):
     return render_template('edit_question.html', question=question)
 
 
-@app.route('/answer/<answer_id>/edit', methods = ['GET', 'POST'])
+@app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
     answer = data_handler.get_answer_by_id(answer_id)
     if request.method == 'POST':
