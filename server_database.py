@@ -9,26 +9,24 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/lists')
 def route_lists():
-    questions = database_manager.get_all_questions()
     try:
         order_by = request.args['order_by']
         order_direction = request.args['order_direction']
-    except:
+    except KeyError:
         order_by = 'submission_time'
         order_direction = 'asc'
 
-    sorted_questions = data_handler.sort_data(questions, order_by, order_direction)
+    sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
     return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
 
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        comment = {'title': request.form.get('title'),
-                   'message': request.form.get('message'),
-                   'submission_time': request.form.get('submission_time'),
-                   'view_number': request.form.get('view_number'),
-                   'vote_number': request.form.get('vote_number'),
+        new_question = {'title': request.form.get('title'),
+                        'message': request.form.get('message'),
+                        'view_number': request.form.get('view_number'),
+                        'vote_number': request.form.get('vote_number'),
                    }
         if request.files['image'].filename != "":
 
@@ -39,9 +37,9 @@ def route_new_question():
                 filename = secure_filename(image.filename)
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
-                comment.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+                new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
 
-        data_handler.add_question(comment)
+        database_manager.add_question(new_question)
         return redirect('/lists')
 
     return render_template("add_question.html",
@@ -73,12 +71,12 @@ def route_question(question_id):
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
     if request.method == 'POST':
-        comment = {'message': request.form.get('message'),
+        new_answer = {'message': request.form.get('message'),
                    'submission_time': request.form.get('submission_time'),
                    'vote_number': request.form.get('vote_number'),
                    'image': request.form.get('image'),
                    'question_id': request.form.get('question_id')}
-        data_handler.add_answer(comment, question_id)
+        data_handler.add_answer(new_answer, question_id)
         return redirect(f'/question/{question_id}')
 
     return render_template("add_question.html",
@@ -89,12 +87,14 @@ def route_new_answer(question_id):
                            question_id=question_id,
                            timestamp=data_handler.date_time_in_timestamp())
 
+
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
     data_handler.delete_image_by_question_id(question_id)
     data_handler.delete_question(question_id)
     data_handler.delete_answers_by_question_id(question_id)
     return redirect('/lists')
+
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
