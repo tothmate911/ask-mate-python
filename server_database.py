@@ -3,6 +3,7 @@ import data_handler
 import database_manager
 import os
 from werkzeug.utils import secure_filename
+from datetime import datetime
 app = Flask(__name__)
 
 
@@ -165,19 +166,18 @@ def edit_answer(answer_id):
     return render_template('edit_answer.html', answer=answer)
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
-def add_new_comment_to_question():
+def add_new_comment_to_question(question_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
-        database_manager.write_new_comment(cursor,new_comment)
+        new_comment['submission_time'] = datetime.now()
+        database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
 
-    return render_template("add_question.html",
-                               type='answer',
+    return render_template("new_comment.html",
                                comment_name='Add Comment',
-                               form_url=url_for('route_new_answer', question_id=question_id),
-                               comment_message='Answer message',
-                               question_id=question_id,
-                               timestamp=data_handler.date_time_in_timestamp())
+                               form_url=url_for('add_new_comment_to_question', question_id=question_id),
+                               comment_message='Add Comment',
+                               question_id=question_id,)
 
 
 

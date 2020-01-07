@@ -1,4 +1,6 @@
 import database_common
+from psycopg2.extensions import AsIs
+
 
 @database_common.connection_handler
 def get_all_questions(cursor):
@@ -10,7 +12,9 @@ def get_all_questions(cursor):
 
 @database_common.connection_handler
 def write_new_comment(cursor,to_write_dict):
-    placeholders = ', '.join(['%s'] * len(to_write_dict))
-    columns = ', '.join(to_write_dict.keys())
-    sql = "INSERT INTO %s ( %s ) VALUES ( %s )" % ('comment', columns, placeholders)
-    cursor.execute(sql, to_write_dict.values())
+    columns = to_write_dict.keys()
+    values = [to_write_dict[column] for column in columns]
+
+    insert_statement = 'insert into comment (%s) values %s'
+
+    cursor.execute(insert_statement, (AsIs(','.join(columns)), tuple(values)))
