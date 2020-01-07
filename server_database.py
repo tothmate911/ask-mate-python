@@ -164,6 +164,15 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html', answer=answer)
 
+@app.route('/search')
+def route_search():
+    search_phrase = request.args.get('search')
+    questions = database_manager.search_in_questions(search_phrase)
+    answers = database_manager.search_in_answers(search_phrase)
+    return render_template('Search.html',
+                           question=questions,
+                           answer=answers)
+
 
 if __name__ == "__main__":
     app.run(
