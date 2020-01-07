@@ -3,6 +3,7 @@ import data_handler
 import database_manager
 import os
 from werkzeug.utils import secure_filename
+from datetime import datetime
 app = Flask(__name__)
 
 
@@ -23,7 +24,8 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        new_question = {'title': request.form.get('title'),
+        new_question = {'submiossion_time': datetime.now(),
+                        'title': request.form.get('title'),
                         'message': request.form.get('message'),
                         'view_number': request.form.get('view_number'),
                         'vote_number': request.form.get('vote_number'),
@@ -52,8 +54,7 @@ def route_new_question():
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
-    question = data_handler.one_question(question_id, time=True)
-    print(question['image'])
+    question = database_manager.get_question_by_id(question_id)
     answers = data_handler.all_answer_for_one_question(question_id)
     try:
         order_by = request.args['order_by']
@@ -64,7 +65,7 @@ def route_question(question_id):
     sorted_answers = data_handler.sort_data(answers, order_by, order_direction)
 
     return render_template("answer.html",
-                           question=question,
+                           question=question[0],
                            answer=sorted_answers, order_by=order_by, order_direction=order_direction)
 
 
