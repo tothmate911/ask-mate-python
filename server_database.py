@@ -9,7 +9,6 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/lists')
 def route_lists():
-    questions = database_manager.get_all_questions()
     try:
         order_by = request.args['order_by']
         order_direction = request.args['order_direction']
@@ -17,7 +16,7 @@ def route_lists():
         order_by = 'submission_time'
         order_direction = 'asc'
 
-    sorted_questions = data_handler.sort_data(questions, order_by, order_direction)
+    sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
     return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
 
 
