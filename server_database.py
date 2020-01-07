@@ -164,6 +164,22 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html', answer=answer)
 
+@app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
+def add_new_comment_to_question():
+    if request.method == 'POST':
+        new_comment = request.form.to_dict()
+        database_manager.write_new_comment(cursor,new_comment)
+        return redirect(f'/question/{question_id}')
+
+    return render_template("add_question.html",
+                               type='answer',
+                               comment_name='Add Comment',
+                               form_url=url_for('route_new_answer', question_id=question_id),
+                               comment_message='Answer message',
+                               question_id=question_id,
+                               timestamp=data_handler.date_time_in_timestamp())
+
+
 
 if __name__ == "__main__":
     app.run(
