@@ -9,19 +9,31 @@
     <h1>Ask Mate</h1>
     <a href="{{ url_for('route_new_question') }}">Add new question</a>
     <p>
-        <form method="get">
-            <label for="order_by">Order by</label>
-            <select name="order_by" id="order_by">
-                {% for option, option_text in {'title': 'title', 'submission_time': 'submission time', 'message': 'message', 'view_number': 'number of views', 'vote_number': 'number of votes'}.items() %}
-                    <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
-                {% endfor %}
-            </select>
-                <label for="order_direction"></label><select name="order_direction" id="order_direction">
-                <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
-                <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
-            </select>
-            <button type="submit">SORT</button>
-        </form>
+        <table>
+            <tr>
+                <td width="1050">
+                    <form method="get">
+                        <label for="order_by">Order by</label>
+                        <select name="order_by" id="order_by">
+                            {% for option, option_text in {'title': 'title', 'submission_time': 'submission time', 'message': 'message', 'view_number': 'number of views', 'vote_number': 'number of votes'}.items() %}
+                                <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
+                            {% endfor %}
+                        </select>
+                            <label for="order_direction"></label><select name="order_direction" id="order_direction">
+                            <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+                            <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
+                        </select>
+                        <button type="submit">SORT</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('route_search') }}" method="get">
+                        <input type="search" placeholder="Search" name="search" id="search">
+                        <button type="submit">Search</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
     </p>
 {% for quest in question %}
         <table>

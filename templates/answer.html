@@ -22,6 +22,7 @@
             <td width="30"><h5>Vote:</h5></td>
             <td width="20"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">+</a></td>
             <td width="20"><a href="{{ url_for('question_vote_down', question_id=question['id']) }}">-</a></td>
+            <td width="30"><a href="{{ url_for('add_new_comment_to_question',question_id=question['id'])}}">comment</a></td>
         </tr>
     </table>
     <table>

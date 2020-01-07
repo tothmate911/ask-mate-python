@@ -165,6 +165,30 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html', answer=answer)
 
+@app.route('/search')
+def route_search():
+    search_phrase = request.args.get('search')
+    questions = database_manager.search_in_questions(search_phrase)
+    answers = database_manager.search_in_answers(search_phrase)
+    return render_template('Search.html',
+                           question=questions,
+                           answer=answers)
+
+@app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
+def add_new_comment_to_question(question_id):
+    if request.method == 'POST':
+        new_comment = request.form.to_dict()
+        new_comment['submission_time'] = datetime.now()
+        database_manager.write_new_comment(new_comment)
+        return redirect(f'/question/{question_id}')
+
+    return render_template("new_comment.html",
+                               comment_name='Add Comment',
+                               form_url=url_for('add_new_comment_to_question', question_id=question_id),
+                               comment_message='Add Comment',
+                               question_id=question_id,)
+
+
 
 if __name__ == "__main__":
     app.run(

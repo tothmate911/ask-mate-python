@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/static/css/basic.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>Search</title>
+</head>
+<body>
+{% for quest in question %}
+        <table>
+            <tr>
+                <td><h5>ID:</h5></td>
+                <td  width="50">{{ quest['id'] }}</td>
+                <td><h5>Title:</h5></td>
+                <td  width="300">{{ quest['title'] | safe }}</td>
+                <td><h5>Submission time:</h5></td>
+                <td  width="150">{{ quest['submission_time'] }}</td>
+                <td><h5>View:</h5></td>
+                <td  width="50">{{ quest['view_number'] }}</td>
+                <td><h5>Like:</h5></td>
+                <td  width="20">{{ quest['vote_number'] }}</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><h5>Message:</h5></td>
+                <td width="1000">{{ quest['message'] | safe }}</td>
+                <td>{{ quest['image'] }}</td>
+                <td><img src="{{ quest['image'] }}" alt="" height="300" width="260"></td>
+            </tr>
+        </table><br>
+    {% for comment in answer %}
+        {% if quest['id'] == comment['id'] %}
+            <table>
+                <tr>
+                    <td  width="50">{{ comment['id'] }}</td>
+                    <td><h5>Submission time:</h5></td>
+                    <td  width="150">{{ comment['submission_time'] }}</td>
+                    <td><h5>Like:</h5></td>
+                    <td  width="50">{{ comment['vote_number'] }}</td>
+                    <td width="30"><h5>Vote:</h5></td>
+                    <td width="20"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">+</a></td>
+                    <td width="20"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">-</a></td>
+                    <td width="120"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}">Delete</a></td>
+                    <td><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}">Edit answer</a></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td width="100"></td>
+                    <td><h5>Message:</h5></td>
+                    <td width="900">{{ comment['message'] | safe }}</td>
+                    <td><img src="{{ comment['image'] }}" alt="" height="300" width="260"></td>
+                </tr>
+            </table>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+ <p>
+        <a href="{{ url_for('route_lists', question_id=question_id) }}">Back</a>
+ </p>
+</body>
+</html>

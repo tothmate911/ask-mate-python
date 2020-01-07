@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="/static/css/basic.css" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <title>{{ comment_name }}</title>
+</head>
+<body>
+    <h1>{{ comment_name }}</h1>
+    <br>
+    <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="question_id" value="{{ question_id }}">
+        <input type="hidden" name="edited_count" value=0>
+        <p>
+            <label for="message">{{ comment_message }}</label><br>
+            <textarea name="message" id="message" cols="40" rows="6" required></textarea>
+        </p>
+            <button type="submit">Send</button>
+        </p>
+    </form>
+</body>
+</html>
