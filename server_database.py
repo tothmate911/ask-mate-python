@@ -3,8 +3,8 @@ import data_handler
 import database_manager
 import os
 from werkzeug.utils import secure_filename
-from datetime import datetime
 app = Flask(__name__)
+from datetime import datetime
 
 
 @app.route('/')
@@ -24,14 +24,15 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        new_question = {'submiossion_time': datetime.now(),
-                        'title': request.form.get('title'),
+        new_question = {'title': request.form.get('title'),
                         'message': request.form.get('message'),
                         'view_number': request.form.get('view_number'),
-                        'vote_number': request.form.get('vote_number'),
-                   }
-        if request.files['image'].filename != "":
+                        'vote_number': request.form.get('vote_number'),}
+        new_question['submission_time'] = datetime.now()
 
+        if request.files['image'].filename == "":
+            new_question['image'] = " "
+        else:
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
                 return redirect(request.url)
@@ -73,10 +74,10 @@ def route_question(question_id):
 def route_new_answer(question_id):
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
-                   'submission_time': request.form.get('submission_time'),
-                   'vote_number': request.form.get('vote_number'),
-                   'image': request.form.get('image'),
-                   'question_id': request.form.get('question_id')}
+                      'submission_time': request.form.get('submission_time'),
+                      'vote_number': request.form.get('vote_number'),
+                      'image': request.form.get('image'),
+                      'question_id': request.form.get('question_id')}
         data_handler.add_answer(new_answer, question_id)
         return redirect(f'/question/{question_id}')
 
