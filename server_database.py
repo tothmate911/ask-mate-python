@@ -8,14 +8,18 @@ app = Flask(__name__)
 
 
 @app.route('/')
+def main_page():
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
+
+    first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
+    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by, order_direction=order_direction)
+
+
 @app.route('/lists')
 def route_lists():
-    try:
-        order_by = request.args['order_by']
-        order_direction = request.args['order_direction']
-    except KeyError:
-        order_by = 'submission_time'
-        order_direction = 'asc'
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
 
     sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
     return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
@@ -55,16 +59,12 @@ def route_new_question():
 @app.route('/question/<question_id>')
 def route_question(question_id,answer_id):
     question = database_manager.get_question_by_id(question_id)
-    answers = database_manager.get_all_answer_by_question_id(question_id)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(answer_id)
-    try:
-        order_by = request.args['order_by']
-        order_direction = request.args['order_direction']
-    except:
-        order_by = 'submission_time'
-        order_direction = 'asc'
-    sorted_answers = data_handler.sort_data(answers, order_by, order_direction)
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
+    sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
+
 
     return render_template("answer.html",
                            question=question[0],
@@ -82,7 +82,8 @@ def route_new_answer(question_id):
         new_answer = {'message': request.form.get('message'),
                       'vote_number': request.form.get('vote_number'),
                       'image': request.form.get('image'),
-                      'question_id': request.form.get('question_id')}
+                      'question_id': request.form.get('question_id'),
+                      'submission_time': datetime.now()}
         if request.files['image'].filename != "":
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
@@ -122,13 +123,13 @@ def delete_answer(answer_id):
 
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
-    database_manager.vote(question_id, type='question', positive=True)
+    database_manager.vote(question_id, type='question', vote='+')
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
-    database_manager.vote(question_id, type='question', positive=False)
+    database_manager.vote(question_id, type='question', vote='-')
     return redirect(f'/question/{question_id}')
 
 
@@ -136,7 +137,7 @@ def question_vote_down(question_id):
 def answer_vote_up(answer_id):
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
-    database_manager.vote(answer_id, type='answer', positive=True)
+    database_manager.vote(answer_id, type='answer', vote='+')
     return redirect(f'/question/{question_id}')
 
 
@@ -144,7 +145,7 @@ def answer_vote_up(answer_id):
 def answer_vote_down(answer_id):
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
-    database_manager.vote(answer_id, type='answer', positive=False)
+    database_manager.vote(answer_id, type='answer', vote='-')
     return redirect(f'/question/{question_id}')
 
 
