@@ -46,7 +46,7 @@ def route_new_question():
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
-
+        new_question = data_handler.apostroph_change(new_question)
         database_manager.add_question(new_question)
         return redirect('/lists')
 
@@ -74,15 +74,13 @@ def route_question(question_id):
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
-
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
                            question_comment=question_comment,
                            answer_comment=answer_comment,
                            order_by=order_by,
-                           order_direction=order_direction,
-                           positive=data_handler.POSITIVE)
+                           order_direction=order_direction)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -102,6 +100,7 @@ def route_new_answer(question_id):
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+        new_answer = data_handler.apostroph_change(new_answer)
         database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
@@ -110,8 +109,7 @@ def route_new_answer(question_id):
                            comment_name='Add new answer',
                            form_url=url_for('route_new_answer', question_id=question_id),
                            comment_message='Answer message',
-                           question_id=question_id,
-                           timestamp=data_handler.date_time_in_timestamp())
+                           question_id=question_id)
 
 
 @app.route('/question/<question_id>/delete')
@@ -165,6 +163,7 @@ def edit_question(question_id):
         for data in datas_from_edit:
             question[data] = request.form[data]
         question['submission_time'] = datetime.now()
+        question = data_handler.apostroph_change(question)
         database_manager.update_question(question, question_id)
         return redirect(url_for('route_question', question_id=question_id))
 
@@ -181,6 +180,7 @@ def edit_answer(answer_id):
         for data in datas_from_edit:
             answer[data] = request.form[data]
         answer['submission_time'] = datetime.now()
+        answer = data_handler.apostroph_change(answer)
         database_manager.update_answer(answer, answer_id)
         return redirect(url_for('route_question', question_id=answer['question_id']))
 
@@ -193,7 +193,9 @@ def edit_answer(answer_id):
 def route_search():
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
+    questions = data_handler.search_highlight(questions, search_phrase)
     answers = database_manager.search_in_answers(search_phrase)
+    answers = data_handler.search_highlight(answers, search_phrase)
     return render_template('Search.html',
                            question=questions,
                            answer=answers)
@@ -204,6 +206,7 @@ def add_new_comment_to_question(question_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
 
@@ -220,6 +223,7 @@ def add_new_comment_to_answer(answer_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
 
@@ -239,6 +243,7 @@ def edit_comment(comment_id):
             for data in datas_from_edit:
                 comment[data] = request.form[data]
             comment['submission_time']=datetime.now()
+            comment = data_handler.apostroph_change(comment)
             database_manager.update_comment(comment, comment_id)
             return redirect(url_for('route_question', question_id=comment['question_id']))
 

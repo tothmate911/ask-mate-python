@@ -87,3 +87,8 @@ select, button {
 input {
     font-size: 1.2em;
 }
+
+b {
+    color: green;
+    background-color: aqua;
+}

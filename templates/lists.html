@@ -48,7 +48,9 @@
             <tr>
                 <td><h5>Message:</h5></td>
                 <td width="1000">{{ quest['message'] | safe }}</td>
-                <td><img src="{{ quest['image'] }}" alt="image" height="300" width="260"></td>
+                {% if quest['image'] is not none %}
+                    <td><img src="{{ quest['image'] }}" alt="image" height="300" width="260"></td>
+                {% endif %}
             </tr>
         </table><br>
     </div>

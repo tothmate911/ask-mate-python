@@ -23,7 +23,9 @@
         <tr>
             <td><h5>Message:</h5></td>
             <td width="1000" colspan="11">{{ question['message'] | safe }}</td>
-            <td><img src="/{{ question['image'] }}" alt="" height="300" width="260"></td>
+            {% if question['image'] is not none %}
+                <td><img src="/{{ question['image'] }}" alt="" height="300" width="260"></td>
+            {% endif %}
         </tr>
     </table>
     <table>
@@ -83,7 +85,9 @@
                 <td width="100"></td>
                 <td><h5>Message:</h5></td>
                 <td width="900" colspan="11">{{ comment['message'] | safe }}</td>
-                <td><img src="/{{ comment['image'] }}" alt="" height="300" width="260"></td>
+                {% if comment['image'] is not none %}
+                    <td><img src="/{{ comment['image'] }}" alt="" height="300" width="260"></td>
+                {% endif %}
                 <td width="30"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id'])}}">comment</a></td>
             </tr>
         </table>
