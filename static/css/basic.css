@@ -59,6 +59,7 @@ ul {
 li {
     display: inline;
     padding: 0 40px;
+    text-transform: uppercase;
 }
 
 li a {
@@ -68,4 +69,9 @@ li a {
 
 li a:hover {
     color: red;
+}
+
+#question_listed {
+    background-color: gold;
+    margin: 1em;
 }

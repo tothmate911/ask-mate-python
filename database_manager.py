@@ -17,7 +17,7 @@ def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_d
                     SELECT * FROM
                     (
                         SELECT * FROM question
-                        ORDER BY submission_time ASC
+                        ORDER BY submission_time DESC
                         LIMIT 5
                     ) AS T1 ORDER BY {order_by} {order_direction};
                     """)
@@ -82,6 +82,15 @@ def get_answer_by_id(cursor, answer_id):
     return answer
 
 @database_common.connection_handler
+def get_comment_by_id(cursor, comment_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE id = {comment_id};
+                    """)
+    answer = cursor.fetchall()
+    return comment
+
+@database_common.connection_handler
 def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
@@ -106,6 +115,11 @@ def delete_answer(cursor, answer_id):
                     DELETE FROM answer
                     WHERE id = {answer_id}""")
 
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    cursor.execute(f"""
+                    DELETE FROM comment
+                    WHERE id = {comment_id}""")
 
 @database_common.connection_handler
 def search_in_questions(cursor, search_phrase):
@@ -167,3 +181,10 @@ def update_answer(cursor, answer, id):
                     UPDATE answer
                     SET message = '{answer['message']}'
                     WHERE id = {id}""")
+
+@database_common.connection_handler
+def update_comment(cursor, comment, id):
+    cursor.execute(f"""
+                        UPDATE comment
+                        SET message = '{comment['message']}'
+                        WHERE id = {id}""")
