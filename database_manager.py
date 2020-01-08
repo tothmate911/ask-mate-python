@@ -12,7 +12,7 @@ def get_all_questions_sorted(cursor, order_by='submission_time', order_direction
 
 
 @database_common.connection_handler
-def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='DESC'):
     cursor.execute(f"""
                     SELECT * FROM
                     (

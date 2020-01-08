@@ -8,23 +8,28 @@ body {
 
 #content {
     background-color: white;
-    margin: 10px 180px;
-    padding: 10px;
+    margin: 5% 10%;
+    padding: 2%;
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 4em;
     font-style: normal;
-    margin: 20px;
-    padding: 40px;
+    margin: 2%;
+    padding: 1% 9%;
     color : gold;
+}
+strong {
+    color: darkred;
+    font-style: italic;
 }
 
 h5 {
     font-size: 1em;
-    margin: 15px;
-    padding: 30px;
+    margin: 1%;
+    padding: 20%;
     color: black;
+    display: inline-block;
 }
 
 p {
@@ -43,7 +48,7 @@ a {
 table {
         color : darkred;
         table-layout: auto;
-        font-size: 20px;
+        font-size: 1.4em;
 }
 
 label {
@@ -53,18 +58,18 @@ label {
 
 ul {
     background-color: black;
-    padding: 20px 80px;
+    padding: 1.6% 6%;
 }
 
 li {
     display: inline;
-    padding: 0 40px;
+    padding: 0 4%;
     text-transform: uppercase;
 }
 
 li a {
     color: gold;
-    font: normal 30px arial;
+    font: normal 2em arial;
 }
 
 li a:hover {
@@ -74,4 +79,11 @@ li a:hover {
 #question_listed {
     background-color: gold;
     margin: 1em;
+}
+
+select, button {
+    font-size: 1.2em;
+}
+input {
+    font-size: 1.2em;
 }
