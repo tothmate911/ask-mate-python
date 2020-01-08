@@ -237,12 +237,22 @@ def edit_comment(comment_id):
             for data in datas_from_edit:
                 comment[data] = request.form[data]
             database_manager.update_comment(comment, comment_id)
-            return redirect(url_for('route_question', question_id=answer['question_id']))
+            return redirect(url_for('route_question', question_id=comment['question_id']))
 
         return render_template('edit_answer.html',
                                comment=comment,
                                type='comment',
                                from_url=url_for('edit_answer', comment_id=comment_id))
+
+@app.route('/comment/<comment_id>/delete')
+def delete_comment(comment_id):
+    comment = database_manager.get_comment_by_id(comment_id)[0]
+    comment_id = database_manager.get_comment_by_id(comment_id)[0]['comment_id']
+    database_manager.delete_comment(comment_id)
+    return redirect(url_for('route_question', question_id=comment['question_id']))
+
+
+
 
 if __name__ == "__main__":
     app.run(

@@ -115,6 +115,11 @@ def delete_answer(cursor, answer_id):
                     DELETE FROM answer
                     WHERE id = {answer_id}""")
 
+@database_common.connection_handler
+def delete_comment(cursor, comment_id):
+    cursor.execute(f"""
+                    DELETE FROM comment
+                    WHERE id = {comment_id}""")
 
 @database_common.connection_handler
 def search_in_questions(cursor, search_phrase):
