@@ -1,16 +1,16 @@
 import database_common
 from psycopg2.extensions import AsIs
-from datetime import datetime
+
 
 @database_common.connection_handler
-def get_all_questions_sorted(cursor, order_by, order_direction):
-    cursor.execute("""
+def get_all_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+    cursor.execute(f"""
                     SELECT * FROM question
-                    ORDER BY %s %s;
-                   """ %
-                ("".join(order_by), "".join(order_direction)))
+                    ORDER BY {order_by} {order_direction};
+                    """)
     all_questions_sorted = cursor.fetchall()
     return all_questions_sorted
+
 
 @database_common.connection_handler
 def add_question(cursor, new_question):
@@ -26,12 +26,14 @@ def add_question(cursor, new_question):
                     new_question['image']))
     pass
 
+
 @database_common.connection_handler
 def add_answer(cursor, new_answer):
     cursor.execute(f"""
                 INSERT INTO answer (submission_time, vote_number, question_id, message, image)
                 VALUES ('{new_answer['submission_time']}', {new_answer['vote_number']}, {new_answer['question_id']}, '{new_answer['message']}', '{new_answer['image']}');     
     """)
+
 
 @database_common.connection_handler
 def get_question_by_id(cursor, question_id):
@@ -42,6 +44,7 @@ def get_question_by_id(cursor, question_id):
     question = cursor.fetchall()
     return question
 
+
 @database_common.connection_handler
 def get_answer_by_id(cursor, answer_id):
     cursor.execute(f"""
@@ -51,14 +54,17 @@ def get_answer_by_id(cursor, answer_id):
     answer = cursor.fetchall()
     return answer
 
+
 @database_common.connection_handler
-def get_all_answer_by_question_id(cursor, question_id):
+def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
                     WHERE question_id={question_id}
+                    ORDER BY {order_by} {order_direction}
                     """)
     answers = cursor.fetchall()
     return answers
+
 
 @database_common.connection_handler
 def delete_question(cursor, question_id):
@@ -68,6 +74,7 @@ def delete_question(cursor, question_id):
                     DELETE FROM answer
                     WHERE question_id = {question_id}
 """)
+
 
 @database_common.connection_handler
 def delete_answer(cursor, answer_id):
@@ -90,6 +97,7 @@ def search_in_questions(cursor, search_phrase):
     searched_question = cursor.fetchall()
     return searched_question
 
+
 @database_common.connection_handler
 def search_in_answers(cursor, search_phrase):
     cursor.execute(F"""
@@ -100,6 +108,7 @@ def search_in_answers(cursor, search_phrase):
     searched_answer = cursor.fetchall()
     return searched_answer
 
+
 @database_common.connection_handler
 def write_new_comment(cursor, to_write_dict):
     columns = to_write_dict.keys()
@@ -108,6 +117,7 @@ def write_new_comment(cursor, to_write_dict):
     insert_statement = 'insert into comment (%s) values %s'
 
     cursor.execute(insert_statement, (AsIs(','.join(columns)), tuple(values)))
+
 
 @database_common.connection_handler
 def vote(cursor,id, type, positive):
@@ -121,6 +131,7 @@ def vote(cursor,id, type, positive):
                     WHERE id = {id}
                     """)
 
+
 @database_common.connection_handler
 def update_question(cursor, question, id):
     cursor.execute(f"""
@@ -128,6 +139,7 @@ def update_question(cursor, question, id):
                     SET title = '{question['title']}', message = '{question['message']}'
                     WHERE id = {id}
 """)
+
 
 @database_common.connection_handler
 def update_answer(cursor, answer, id):

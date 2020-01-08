@@ -8,14 +8,18 @@ app = Flask(__name__)
 
 
 @app.route('/')
+def main_page():
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
+
+    sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
+    return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
+
+
 @app.route('/lists')
 def route_lists():
-    try:
-        order_by = request.args['order_by']
-        order_direction = request.args['order_direction']
-    except KeyError:
-        order_by = 'submission_time'
-        order_direction = 'asc'
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
 
     sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
     return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
@@ -55,14 +59,10 @@ def route_new_question():
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = database_manager.get_question_by_id(question_id)
-    answers = database_manager.get_all_answer_by_question_id(question_id)
-    try:
-        order_by = request.args['order_by']
-        order_direction = request.args['order_direction']
-    except:
-        order_by = 'submission_time'
-        order_direction = 'asc'
-    sorted_answers = data_handler.sort_data(answers, order_by, order_direction)
+
+    order_by = request.args.get('order_by', 'submission_time')
+    order_direction = request.args.get('order_direction', 'asc')
+    sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
 
     return render_template("answer.html",
                            question=question[0],
@@ -174,6 +174,7 @@ def edit_answer(answer_id):
                            answer=answer,
                            from_url=url_for('edit_answer', answer_id=answer_id))
 
+
 @app.route('/search')
 def route_search():
     search_phrase = request.args.get('search')
@@ -182,6 +183,7 @@ def route_search():
     return render_template('Search.html',
                            question=questions,
                            answer=answers)
+
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
@@ -196,7 +198,6 @@ def add_new_comment_to_question(question_id):
                                form_url=url_for('add_new_comment_to_question', question_id=question_id),
                                comment_message='Add Comment',
                                question_id=question_id,)
-
 
 
 if __name__ == "__main__":
