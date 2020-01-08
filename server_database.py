@@ -78,7 +78,8 @@ def route_new_answer(question_id):
         new_answer = {'message': request.form.get('message'),
                       'vote_number': request.form.get('vote_number'),
                       'image': request.form.get('image'),
-                      'question_id': request.form.get('question_id')}
+                      'question_id': request.form.get('question_id'),
+                      'submission_time': datetime.now()}
         if request.files['image'].filename != "":
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
@@ -88,7 +89,7 @@ def route_new_answer(question_id):
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
-        new_answer['submission_time'] = datetime.now()
+        print(new_answer)
         database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
