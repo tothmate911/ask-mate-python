@@ -119,13 +119,13 @@ def delete_answer(answer_id):
 
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
-    database_manager.vote(question_id, type='question', positive=True)
+    database_manager.vote(question_id, type='question', vote='+')
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
-    database_manager.vote(question_id, type='question', positive=False)
+    database_manager.vote(question_id, type='question', vote='-')
     return redirect(f'/question/{question_id}')
 
 
@@ -133,7 +133,7 @@ def question_vote_down(question_id):
 def answer_vote_up(answer_id):
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
-    database_manager.vote(answer_id, type='answer', positive=True)
+    database_manager.vote(answer_id, type='answer', vote='+')
     return redirect(f'/question/{question_id}')
 
 
@@ -141,7 +141,7 @@ def answer_vote_up(answer_id):
 def answer_vote_down(answer_id):
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
-    database_manager.vote(answer_id, type='answer', positive=False)
+    database_manager.vote(answer_id, type='answer', vote='-')
     return redirect(f'/question/{question_id}')
 
 

@@ -69,10 +69,12 @@ def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submissi
 @database_common.connection_handler
 def delete_question(cursor, question_id):
     cursor.execute(f"""
+                    DELETE FROM answer
+                    WHERE question_id = {question_id};
+""")
+    cursor.execute(f"""
                     DELETE FROM question
                     WHERE id = {question_id};
-                    DELETE FROM answer
-                    WHERE question_id = {question_id}
 """)
 
 
@@ -120,14 +122,10 @@ def write_new_comment(cursor, to_write_dict):
 
 
 @database_common.connection_handler
-def vote(cursor,id, type, positive):
-    if positive:
-        vote = 1
-    else:
-        vote = -1
+def vote(cursor,id, type, vote):
     cursor.execute(f"""
                     UPDATE {type}
-                    SET vote_number = vote_number + {vote}
+                    SET vote_number = vote_number {vote} 1
                     WHERE id = {id}
                     """)
 
