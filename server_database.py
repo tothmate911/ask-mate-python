@@ -53,9 +53,11 @@ def route_new_question():
 
 
 @app.route('/question/<question_id>')
-def route_question(question_id):
+def route_question(question_id,answer_id):
     question = database_manager.get_question_by_id(question_id)
     answers = database_manager.get_all_answer_by_question_id(question_id)
+    question_comment = database_manager.get_all_comment_from_question_id(question_id)
+    answer_comment = database_manager.get_all_comment_from_answer_id(answer_id)
     try:
         order_by = request.args['order_by']
         order_direction = request.args['order_direction']
@@ -67,6 +69,8 @@ def route_question(question_id):
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
+                           question_comment=question_comment[0],
+                           answer_comment=answer_comment[0],
                            order_by=order_by,
                            order_direction=order_direction,
                            positive=data_handler.POSITIVE)
@@ -199,7 +203,7 @@ def add_new_comment_to_question(question_id):
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
     if request.method == 'POST':
-
+        question_id=database_manager.get_answer_by_id(answer_id)[0]['question_id']
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
         database_manager.write_new_comment(new_comment)

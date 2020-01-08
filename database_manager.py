@@ -41,6 +41,21 @@ def get_question_by_id(cursor, question_id):
                     """)
     question = cursor.fetchall()
     return question
+@database_common.connection_handler
+def get_all_comment_from_question_id(cursor,question_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE question_id={question_id};""")
+    question_comment= cursor.fetchall()
+    return question_comment
+
+@database_common.connection_handler
+def get_all_comment_from_answer_id(cursor,answer_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE answer_id={answer_id};""")
+    answer_comment= cursor.fetchall()
+    return answer_comment
 
 @database_common.connection_handler
 def get_answer_by_id(cursor, answer_id):
