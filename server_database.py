@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
     order_by = request.args.get('order_by', 'submission_time')
-    order_direction = request.args.get('order_direction', 'asc')
+    order_direction = request.args.get('order_direction', 'desc')
 
     first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
     return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by,
