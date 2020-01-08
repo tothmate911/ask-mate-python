@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href="/static/css/basic.css" rel="stylesheet"/>
-    <meta charset="UTF-8">
-    <title>Answer</title>
-</head>
-<body>
-    <h1>Ask Mate</h1><br>
+{% extends 'layout.html' %}
+
+{% block content %}
     <table>
         <tr>
             <td><h5>ID:</h5></td>
@@ -82,5 +76,4 @@
     <p>
         <a href="{{ url_for('route_lists', question_id=question_id) }}">Back</a>
     </p>
-</body>
-</html>
+{% endblock %}
