@@ -7,7 +7,10 @@
 </head>
 <body>
     <h1>Ask Mate</h1>
-    <a href="{{ url_for('route_new_question') }}">Add new question</a>
+    <ul>
+        <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
+        <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
+    </ul>
     <p>
         <table>
             <tr>

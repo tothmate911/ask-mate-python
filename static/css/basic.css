@@ -3,9 +3,8 @@ p {
     word-spacing: 2em;
     line-height: 1.5;
     text-align: center;
-
-
 }
+
 h1 {
     font-size: 3em;
     font-style: normal;
@@ -26,18 +25,28 @@ a {
     text-decoration: none;
     font-size: 1.3em;
 }
+
 body {
     font-family: "JetBrains Mono", "arial", "helvetica", serif;
         font-size: 14px;
         font-style: italic;
     background-color: darkred;
 }
+
 table {
         color : gold;
         table-layout: auto;
         font-size: 20px;
 }
+
 label { color: gold;
     font-size: 1.3em;
+}
 
+ul {
+    background-color: black;
+}
+
+li {
+    display: inline;
 }
