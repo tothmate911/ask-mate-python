@@ -2,14 +2,28 @@ import database_common
 from psycopg2.extensions import AsIs
 
 @database_common.connection_handler
-def get_all_questions_sorted(cursor, order_by, order_direction):
-    cursor.execute("""
+def get_all_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+    cursor.execute(f"""
                     SELECT * FROM question
-                    ORDER BY %s %s;
-                   """ %
-                ("".join(order_by), "".join(order_direction)))
+                    ORDER BY {order_by} {order_direction};
+                    """)
     all_questions_sorted = cursor.fetchall()
     return all_questions_sorted
+
+
+@database_common.connection_handler
+def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+    cursor.execute(f"""
+                    SELECT * FROM
+                    (
+                        SELECT * FROM question
+                        ORDER BY submission_time ASC
+                        LIMIT 5
+                    ) AS T1 ORDER BY {order_by} {order_direction};
+                    """)
+    five_latest_questions_sorted = cursor.fetchall()
+    return five_latest_questions_sorted
+
 
 @database_common.connection_handler
 def add_question(cursor, new_question):
@@ -42,6 +56,23 @@ def get_question_by_id(cursor, question_id):
     return question
 
 @database_common.connection_handler
+def get_all_comment_from_question_id(cursor,question_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE question_id={question_id};""")
+    question_comment= cursor.fetchall()
+    return question_comment
+
+@database_common.connection_handler
+def get_all_comment_from_answer_id(cursor,answer_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE answer_id={answer_id};""")
+    answer_comment= cursor.fetchall()
+    return answer_comment
+
+
+@database_common.connection_handler
 def get_answer_by_id(cursor, answer_id):
     cursor.execute(f"""
                     SELECT * FROM answer
@@ -51,10 +82,11 @@ def get_answer_by_id(cursor, answer_id):
     return answer
 
 @database_common.connection_handler
-def get_all_answer_by_question_id(cursor, question_id):
+def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
                     WHERE question_id={question_id}
+                    ORDER BY {order_by} {order_direction}
                     """)
     answers = cursor.fetchall()
     return answers
