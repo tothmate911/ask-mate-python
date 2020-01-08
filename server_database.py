@@ -4,6 +4,7 @@ import database_manager
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
+
 app = Flask(__name__)
 
 
@@ -13,7 +14,8 @@ def main_page():
     order_direction = request.args.get('order_direction', 'asc')
 
     first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
-    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by, order_direction=order_direction)
+    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by,
+                           order_direction=order_direction)
 
 
 @app.route('/lists')
@@ -55,30 +57,29 @@ def route_new_question():
                            comment_message='Question message',
                            type='question')
 
+
 @app.route('/view_up/<question_id>')
 def view_up(question_id):
     question = database_manager.get_question_by_id(question_id)[0]
     question['view_number'] = question['view_number'] + 1
-    database_manager.update_question(question, question['id'])
+    database_manager.view_up(question['id'])
     return redirect(f'/question/{question_id}')
+
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
-
     question = database_manager.get_question_by_id(question_id)
-    question_comment = database_manager.get_all_comment_from_question_id(question_id)
-    answer_comment = database_manager.get_all_comment_from_answer_id(answer_id)
-
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
-
+    question_comment = database_manager.get_all_comment_from_question_id(question_id)
+    answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
 
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
-                           question_comment=question_comment[0],
-                           answer_comment=answer_comment[0],
+                           question_comment=question_comment,
+                           answer_comment=answer_comment,
                            order_by=order_by,
                            order_direction=order_direction,
                            positive=data_handler.POSITIVE)
@@ -185,6 +186,7 @@ def edit_answer(answer_id):
                            answer=answer,
                            from_url=url_for('edit_answer', answer_id=answer_id))
 
+
 @app.route('/search')
 def route_search():
     search_phrase = request.args.get('search')
@@ -193,6 +195,7 @@ def route_search():
     return render_template('Search.html',
                            question=questions,
                            answer=answers)
+
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
@@ -203,26 +206,28 @@ def add_new_comment_to_question(question_id):
         return redirect(f'/question/{question_id}')
 
     return render_template("new_comment.html",
-                               comment_name='Add Comment',
-                               form_url=url_for('add_new_comment_to_question', question_id=question_id),
-                               comment_message='Add Comment',
-                               question_id=question_id,)
+                           comment_name='Add Comment',
+                           form_url=url_for('add_new_comment_to_question', question_id=question_id),
+                           comment_message='Add Comment',
+                           question_id=question_id, )
+
 
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
+    question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
-        question_id=database_manager.get_answer_by_id(answer_id)[0]['question_id']
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
 
     return render_template("new_comment.html",
-                               comment_name='Add Comment',
-                                type='answer',
-                               form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
-                               comment_message='Add Comment',
-                               answer_id=answer_id,)
+                           comment_name='Add Comment',
+                           type='answer',
+                           form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
+                           comment_message='Add Comment',
+                           answer_id=answer_id,
+                           question_id=question_id)
 
 
 if __name__ == "__main__":
@@ -230,4 +235,4 @@ if __name__ == "__main__":
         host='0.0.0.0',
         port=8000,
         debug=True,
-        )
+    )

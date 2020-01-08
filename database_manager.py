@@ -95,19 +95,16 @@ def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submissi
 def delete_question(cursor, question_id):
     cursor.execute(f"""
                     DELETE FROM answer
-                    WHERE question_id = {question_id};
-""")
+                    WHERE question_id = {question_id};""")
     cursor.execute(f"""
                     DELETE FROM question
-                    WHERE id = {question_id};
-""")
+                    WHERE id = {question_id};""")
 
 @database_common.connection_handler
 def delete_answer(cursor, answer_id):
     cursor.execute(f"""
                     DELETE FROM answer
-                    WHERE id = {answer_id}
-""")
+                    WHERE id = {answer_id}""")
 
 
 @database_common.connection_handler
@@ -154,14 +151,19 @@ def vote(cursor,id, type, vote):
 def update_question(cursor, question, id):
     cursor.execute(f"""
                     UPDATE question
-                    SET title = '{question['title']}', message = '{question['message']}', view_number = {question['view_number']}
-                    WHERE id = {id}
-""")
+                    SET title = {question['title']}, message = {question['message']}
+                    WHERE id = {id}""")
+
+@database_common.connection_handler
+def view_up(cursor, id):
+    cursor.execute(f"""
+                    UPDATE question
+                    SET view_number = view_number + 1
+                    WHERE id = {id}""")
 
 @database_common.connection_handler
 def update_answer(cursor, answer, id):
     cursor.execute(f"""
                     UPDATE answer
                     SET message = '{answer['message']}'
-                    WHERE id = {id}
-""")
+                    WHERE id = {id}""")
