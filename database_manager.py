@@ -64,10 +64,10 @@ def get_all_comment_from_question_id(cursor,question_id):
     return question_comment
 
 @database_common.connection_handler
-def get_all_comment_from_answer_id(cursor,answer_id):
+def get_all_comment_from_answer_id(cursor,question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
-                    WHERE answer_id={answer_id};""")
+                    WHERE question_id={question_id} and answer_id is not null;""")
     answer_comment= cursor.fetchall()
     return answer_comment
 
@@ -87,7 +87,7 @@ def get_comment_by_id(cursor, comment_id):
                     SELECT * FROM comment
                     WHERE id = {comment_id};
                     """)
-    answer = cursor.fetchall()
+    comment = cursor.fetchall()
     return comment
 
 @database_common.connection_handler
@@ -192,5 +192,5 @@ def update_answer(cursor, answer, id):
 def update_comment(cursor, comment, id):
     cursor.execute(f"""
                         UPDATE comment
-                        SET message = '{comment['message']}'
+                        SET message = '{comment['message']}', edited_count=edited_count+1, submission_time='{comment['submission_time']}'
                         WHERE id = {id}""")

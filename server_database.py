@@ -164,6 +164,7 @@ def edit_question(question_id):
         datas_from_edit = ['title', 'message']
         for data in datas_from_edit:
             question[data] = request.form[data]
+        question['submission_time'] = datetime.now()
         database_manager.update_question(question, question_id)
         return redirect(url_for('route_question', question_id=question_id))
 
@@ -179,6 +180,7 @@ def edit_answer(answer_id):
         datas_from_edit = ['message']
         for data in datas_from_edit:
             answer[data] = request.form[data]
+        answer['submission_time'] = datetime.now()
         database_manager.update_answer(answer, answer_id)
         return redirect(url_for('route_question', question_id=answer['question_id']))
 
@@ -236,18 +238,18 @@ def edit_comment(comment_id):
             datas_from_edit = ['message']
             for data in datas_from_edit:
                 comment[data] = request.form[data]
+            comment['submission_time']=datetime.now()
             database_manager.update_comment(comment, comment_id)
             return redirect(url_for('route_question', question_id=comment['question_id']))
 
         return render_template('edit_answer.html',
                                comment=comment,
                                type='comment',
-                               from_url=url_for('edit_answer', comment_id=comment_id))
+                               from_url=url_for('edit_comment', comment_id=comment_id))
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
     comment = database_manager.get_comment_by_id(comment_id)[0]
-    comment_id = database_manager.get_comment_by_id(comment_id)[0]['comment_id']
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
 

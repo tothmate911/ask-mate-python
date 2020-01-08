@@ -6,7 +6,7 @@
         <title>Edit answer | Ask mate</title>
     </head>
     <body>
-    {% if type="comment"%}
+    {% if type=="comment"%}
         <h1>Edit comment</h1>
         <p>Comment id: {{ comment['id'] }}</p>
         <form action="{{ form_url }}" method="post">
@@ -14,7 +14,7 @@
                 <label for="message">Message:</label><br>
                 <textarea name="message" id="message" cols="80" rows="10" required>{{ comment['message'] }}</textarea>
             </p>
-            <button type="submit" value="Edit answer">Edit answer</button>
+            <button type="submit" value="Edit comment">Edit comment</button>
         </form>
     {%else%}
         <h1>Edit answer</h1>
