@@ -29,6 +29,7 @@
         </table>
     </p>
 {% for quest in question %}
+    <div id="question_listed">
         <table>
             <tr>
                 <td><h5>ID:</h5></td>
@@ -50,5 +51,6 @@
                 <td><img src="{{ quest['image'] }}" alt="image" height="300" width="260"></td>
             </tr>
         </table><br>
+    </div>
     {% endfor %}
 {% endblock %}

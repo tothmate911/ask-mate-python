@@ -70,3 +70,8 @@ li a {
 li a:hover {
     color: red;
 }
+
+#question_listed {
+    background-color: gold;
+    margin: 1em;
+}
