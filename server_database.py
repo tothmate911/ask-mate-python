@@ -99,7 +99,6 @@ def route_new_answer(question_id):
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
-        print(new_answer)
         database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
