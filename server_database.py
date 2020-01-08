@@ -189,6 +189,21 @@ def add_new_comment_to_question(question_id):
                                comment_message='Add Comment',
                                question_id=question_id,)
 
+@app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
+def add_new_comment_to_answer(answer_id):
+    if request.method == 'POST':
+
+        new_comment = request.form.to_dict()
+        new_comment['submission_time'] = datetime.now()
+        database_manager.write_new_comment(new_comment)
+        return redirect(f'/question/{question_id}')
+
+    return render_template("new_comment.html",
+                               comment_name='Add Comment',
+                                type='answer',
+                               form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
+                               comment_message='Add Comment',
+                               answer_id=answer_id,)
 
 
 if __name__ == "__main__":
