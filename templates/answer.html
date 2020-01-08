@@ -75,7 +75,7 @@
                 <td><h5>Message:</h5></td>
                 <td width="900" colspan="11">{{ comment['message'] | safe }}</td>
                 <td width="30"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id'])}}">comment</a></td>
-                <td rowspan="2"><img src={{ comment['image'] }} alt="image"></td>
+                <td rowspan="2"><img src="/{{ comment['image'] }}" alt="" height="300" width="260"></td>
             </tr>
         </table>
     {% endfor %}
