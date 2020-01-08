@@ -17,7 +17,7 @@ def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_d
                     SELECT * FROM
                     (
                         SELECT * FROM question
-                        ORDER BY submission_time ASC
+                        ORDER BY submission_time DESC
                         LIMIT 5
                     ) AS T1 ORDER BY {order_by} {order_direction};
                     """)
