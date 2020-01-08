@@ -16,14 +16,15 @@ def get_all_questions_sorted(cursor, order_by, order_direction):
 def add_question(cursor, new_question):
     cursor.execute("""
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                    VALUES (%(s_t)s, %(vi_n)s, %(vo_n)s, %(t)s, %(m)s, %(i)s);
+                    VALUES (%s, %s, %s, %s, %s, %s);
                     """,
-                   {'s_t': new_question['submission_time'],
-                    'vi_n': new_question['view_number'],
-                    'vo_n': new_question['vote_number'],
-                    't': new_question['title'],
-                    'm': new_question['message'],
-                    'i': new_question['image']})
+                   (new_question['submission_time'],
+                    new_question['view_number'],
+                    new_question['vote_number'],
+                    new_question['title'],
+                    new_question['message'],
+                    new_question['image']))
+    pass
 
 @database_common.connection_handler
 def add_answer(cursor, new_answer):
@@ -100,11 +101,11 @@ def search_in_answers(cursor, search_phrase):
     return searched_answer
 
 @database_common.connection_handler
-def write_new_comment(cursor,to_write_dict):
+def write_new_comment(cursor, to_write_dict):
     columns = to_write_dict.keys()
     values = [to_write_dict[column] for column in columns]
 
-    insert_statement = '''insert into comment (%s) values (%s)'''
+    insert_statement = 'insert into comment (%s) values %s'
 
     cursor.execute(insert_statement, (AsIs(','.join(columns)), tuple(values)))
 
