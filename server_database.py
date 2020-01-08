@@ -51,10 +51,16 @@ def route_new_question():
                            comment_message='Question message',
                            type='question')
 
+@app.route('/view_up/<question_id>')
+def view_up(question_id):
+    question = database_manager.get_question_by_id(question_id)[0]
+    question['view_number'] = question['view_number'] + 1
+    database_manager.update_question(question, question['id'])
+    return redirect(f'/question/{question_id}')
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
-    question = database_manager.get_question_by_id(question_id)
+    question = database_manager.get_question_by_id(question_id)[0]
     answers = database_manager.get_all_answer_by_question_id(question_id)
     try:
         order_by = request.args['order_by']
@@ -65,7 +71,7 @@ def route_question(question_id):
     sorted_answers = data_handler.sort_data(answers, order_by, order_direction)
 
     return render_template("answer.html",
-                           question=question[0],
+                           question=question,
                            answer=sorted_answers,
                            order_by=order_by,
                            order_direction=order_direction,

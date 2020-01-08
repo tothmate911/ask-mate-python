@@ -1,6 +1,5 @@
 import database_common
 from psycopg2.extensions import AsIs
-from datetime import datetime
 
 @database_common.connection_handler
 def get_all_questions_sorted(cursor, order_by, order_direction):
@@ -123,7 +122,7 @@ def vote(cursor,id, type, vote):
 def update_question(cursor, question, id):
     cursor.execute(f"""
                     UPDATE question
-                    SET title = '{question['title']}', message = '{question['message']}'
+                    SET title = '{question['title']}', message = '{question['message']}', view_number = {question['view_number']}
                     WHERE id = {id}
 """)
 
