@@ -1,11 +1,6 @@
-<!DOCTYPE>
-<html lang="en">
-    <head>
-        <link href="/static/css/basic.css" rel="stylesheet"/>
-        <meta charset="UTF-8">
-        <title>Edit question | Ask mate</title>
-    </head>
-    <body>
+{% extends 'layout.html' %}
+
+{% block content %}
         <h1>Edit question</h1>
         <p>Question id: {{ question['id'] }}</p>
         <form action="{{ from_url }}" method="post">
@@ -20,5 +15,4 @@
             <button type="submit" value="Edit question">Edit question</button>
 
         </form>
-    </body>
-</html>
+{% endblock %}
