@@ -12,7 +12,7 @@ def get_all_questions_sorted(cursor, order_by='submission_time', order_direction
 
 
 @database_common.connection_handler
-def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='DESC'):
     cursor.execute(f"""
                     SELECT * FROM
                     (
@@ -59,7 +59,7 @@ def get_question_by_id(cursor, question_id):
 def get_all_comment_from_question_id(cursor,question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
-                    WHERE question_id={question_id};""")
+                    WHERE question_id={question_id} AND answer_id is null;""")
     question_comment= cursor.fetchall()
     return question_comment
 
