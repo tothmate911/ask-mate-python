@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href="/static/css/basic.css" rel="stylesheet"/>
-    <meta charset="UTF-8">
-    <title>Ask Mate Forum</title>
-</head>
-<body>
-    <h1>Ask Mate</h1>
-    <ul>
-        <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
-        <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
-    </ul>
+{% extends 'layout.html' %}
+
+{% block content %}
     <p>
         <table>
             <tr>
@@ -61,4 +51,4 @@
             </tr>
         </table><br>
     {% endfor %}
-</body>
+{% endblock %}
