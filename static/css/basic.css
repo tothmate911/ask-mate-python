@@ -1,8 +1,15 @@
-p {
-    letter-spacing: 0.5em;
-    word-spacing: 2em;
-    line-height: 1.5;
-    text-align: center;
+body {
+    font-family: "JetBrains Mono", "arial", "helvetica", serif;
+        font-size: 14px;
+        font-style: italic;
+    /*background-image: url("static/images/romans.jpg");*/
+    background-color: darkred;
+}
+
+#content {
+    background-color: white;
+    margin: 10px 180px;
+    padding: 10px;
 }
 
 h1 {
@@ -17,36 +24,48 @@ h5 {
     font-size: 1em;
     margin: 15px;
     padding: 30px;
-    color: gold;
+    color: black;
+}
+
+p {
+    letter-spacing: 0.5em;
+    word-spacing: 2em;
+    line-height: 1.5;
+    text-align: center;
 }
 
 a {
-    color: whitesmoke;
+    color: darkred;
     text-decoration: none;
     font-size: 1.3em;
 }
 
-body {
-    font-family: "JetBrains Mono", "arial", "helvetica", serif;
-        font-size: 14px;
-        font-style: italic;
-    background-color: darkred;
-}
-
 table {
-        color : gold;
+        color : darkred;
         table-layout: auto;
         font-size: 20px;
 }
 
-label { color: gold;
+label {
+    color: black;
     font-size: 1.3em;
 }
 
 ul {
     background-color: black;
+    padding: 20px 80px;
 }
 
 li {
     display: inline;
+    padding: 0 40px;
+}
+
+li a {
+    color: gold;
+    font: normal 30px arial;
+}
+
+li a:hover {
+    color: red;
 }

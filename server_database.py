@@ -63,10 +63,12 @@ def view_up(question_id):
     return redirect(f'/question/{question_id}')
 
 @app.route('/question/<question_id>')
-def route_question(question_id,answer_id):
+def route_question(question_id):
+
     question = database_manager.get_question_by_id(question_id)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(answer_id)
+
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)

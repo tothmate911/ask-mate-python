@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ask Mate Forum</title>
+    <link href="/static/css/basic.css" rel="stylesheet"/>
+</head>
+<body>
+    <h1>Ask <strong>Mate</strong></h1>
+    <ul>
+        <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
+        <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
+    </ul>
+    <div id="content">
+        {% block content %} {% endblock %}
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>
