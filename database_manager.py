@@ -103,6 +103,9 @@ def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submissi
 @database_common.connection_handler
 def delete_question(cursor, question_id):
     cursor.execute(f"""
+                    DELETE FROM comment
+                    WHERE question_id = {question_id}""")
+    cursor.execute(f"""
                     DELETE FROM answer
                     WHERE question_id = {question_id};""")
     cursor.execute(f"""
@@ -111,6 +114,9 @@ def delete_question(cursor, question_id):
 
 @database_common.connection_handler
 def delete_answer(cursor, answer_id):
+    cursor.execute(f"""
+                    DELETE FROM comment
+                    WHERE answer_id = {answer_id}""")
     cursor.execute(f"""
                     DELETE FROM answer
                     WHERE id = {answer_id}""")
