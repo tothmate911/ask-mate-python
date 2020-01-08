@@ -69,14 +69,14 @@ def route_question(question_id):
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
-    answer_comment = database_manager.get_all_comment_from_answer_id(answer_id)
+    answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
 
 
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
                            question_comment=question_comment[0],
-                           answer_comment=answer_comment[0],
+                           answer_comment=answer_comment,
                            order_by=order_by,
                            order_direction=order_direction,
                            positive=data_handler.POSITIVE)
@@ -208,8 +208,8 @@ def add_new_comment_to_question(question_id):
 
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
+    question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
-        question_id=database_manager.get_answer_by_id(answer_id)[0]['question_id']
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
         database_manager.write_new_comment(new_comment)
@@ -220,7 +220,8 @@ def add_new_comment_to_answer(answer_id):
                                 type='answer',
                                form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
                                comment_message='Add Comment',
-                               answer_id=answer_id,)
+                               answer_id=answer_id,
+                           question_id=question_id)
 
 
 if __name__ == "__main__":
