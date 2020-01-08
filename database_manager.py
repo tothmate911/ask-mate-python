@@ -82,6 +82,15 @@ def get_answer_by_id(cursor, answer_id):
     return answer
 
 @database_common.connection_handler
+def get_comment_by_id(cursor, comment_id):
+    cursor.execute(f"""
+                    SELECT * FROM comment
+                    WHERE id = {comment_id};
+                    """)
+    answer = cursor.fetchall()
+    return comment
+
+@database_common.connection_handler
 def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
@@ -167,3 +176,10 @@ def update_answer(cursor, answer, id):
                     UPDATE answer
                     SET message = '{answer['message']}'
                     WHERE id = {id}""")
+
+@database_common.connection_handler
+def update_comment(cursor, comment, id):
+    cursor.execute(f"""
+                        UPDATE comment
+                        SET message = '{comment['message']}'
+                        WHERE id = {id}""")

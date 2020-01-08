@@ -229,6 +229,20 @@ def add_new_comment_to_answer(answer_id):
                            answer_id=answer_id,
                            question_id=question_id)
 
+@app.route('/comment/<comment_id>/edit' , methods=['GET','POST'])
+def edit_comment(comment_id):
+        comment = database_manager.get_comment_by_id(comment_id)[0]
+        if request.method == 'POST':
+            datas_from_edit = ['message']
+            for data in datas_from_edit:
+                comment[data] = request.form[data]
+            database_manager.update_comment(comment, comment_id)
+            return redirect(url_for('route_question', question_id=answer['question_id']))
+
+        return render_template('edit_answer.html',
+                               comment=comment,
+                               type='comment',
+                               from_url=url_for('edit_answer', comment_id=comment_id))
 
 if __name__ == "__main__":
     app.run(
