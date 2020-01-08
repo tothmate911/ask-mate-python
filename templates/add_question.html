@@ -25,10 +25,10 @@
             <input type="file" name="image" accept=".png, .jpg">
         </p>
         {% if comment is not defined and type == "question" %}
-            <input type="hidden" name="view_number" value="0">
-            <input type="hidden" name="vote_number" value="0">
+            <input type="hidden" name="view_number" value=0>
+            <input type="hidden" name="vote_number" value=0>
         {% elif comment is not defined and type == "answer" %}
-            <input type="hidden" name="vote_number" value="0">
+            <input type="hidden" name="vote_number" value=0>
             <input type="hidden" name="question_id" value="{{ question_id }}">
         {% endif %}
         <p>

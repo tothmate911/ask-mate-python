@@ -8,7 +8,7 @@
     <body>
         <h1>Edit question</h1>
         <p>Question id: {{ question['id'] }}</p>
-        <form action="{{ '/question/' + question['id'] + '/edit' }}" method="post">
+        <form action="{{ from_url }}" method="post">
             <p>
                 <label for="title">Title:</label><br>
                 <input type="text" name="title" id="title" size="40" value="{{ question['title'] }}">
