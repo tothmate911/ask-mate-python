@@ -2,6 +2,7 @@ import csv
 from datetime import datetime
 import time
 import os
+import database_manager
 
 ANSWER_FILE_PATH = 'sample_data/answer.csv'
 QUESTION_FILE_PATH = 'sample_data/question.csv'
@@ -10,6 +11,7 @@ ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message
 IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
 ROOT_PATH='static/images'
+POSITIVE ='+'
 
 
 def get_all_questions(time=False):
@@ -211,14 +213,25 @@ def allowed_image(filename):
 
 
 def get_image_path_for_question_by_id(question_id):
-    question = get_question_by_id(question_id)
-    return question['image']
+    delete_file = []
+    question = database_manager.get_question_by_id(question_id)
+    answers_by_question = database_manager.get_all_answer_by_question_id(question_id)
+    delete_file.append(question[0]['image'])
+    for answer in answers_by_question:
+        delete_file.append(answer['image'])
+    return delete_file
 
+def get_image_path_for_answer_by_id(answer_id):
+    answer = database_manager.get_answer_by_id(answer_id)
+    return answer[0]['image']
 
-def delete_image_by_question_id(question_id):
+def delete_image_by_id(id, type='question'):
     try:
-        path=get_image_path_for_question_by_id(question_id)
-        print(path)
-        os.remove(path)
+        if type == 'answer':
+            path = get_image_path_for_answer_by_id(id)
+        else:
+            path = get_image_path_for_question_by_id(id)
+        for file in path:
+            os.remove(path)
     except:
         pass

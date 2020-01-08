@@ -3,8 +3,8 @@ import data_handler
 import database_manager
 import os
 from werkzeug.utils import secure_filename
-app = Flask(__name__)
 from datetime import datetime
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -24,15 +24,14 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     if request.method == 'POST':
-        new_question = {'title': request.form.get('title'),
+        new_question = {'submission_time': datetime.now(),
+                        'title': request.form.get('title'),
                         'message': request.form.get('message'),
                         'view_number': request.form.get('view_number'),
-                        'vote_number': request.form.get('vote_number'),}
-        new_question['submission_time'] = datetime.now()
+                        'vote_number': request.form.get('vote_number'),
+                        'image': request.form.get('image')}
+        if request.files['image'].filename != "":
 
-        if request.files['image'].filename == "":
-            new_question['image'] = " "
-        else:
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
                 return redirect(request.url)
@@ -56,7 +55,7 @@ def route_new_question():
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = database_manager.get_question_by_id(question_id)
-    answers = data_handler.all_answer_for_one_question(question_id)
+    answers = database_manager.get_all_answer_by_question_id(question_id)
     try:
         order_by = request.args['order_by']
         order_direction = request.args['order_direction']
@@ -67,18 +66,30 @@ def route_question(question_id):
 
     return render_template("answer.html",
                            question=question[0],
-                           answer=sorted_answers, order_by=order_by, order_direction=order_direction)
+                           answer=sorted_answers,
+                           order_by=order_by,
+                           order_direction=order_direction,
+                           positive=data_handler.POSITIVE)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
-                      'submission_time': request.form.get('submission_time'),
                       'vote_number': request.form.get('vote_number'),
                       'image': request.form.get('image'),
                       'question_id': request.form.get('question_id')}
-        data_handler.add_answer(new_answer, question_id)
+        if request.files['image'].filename != "":
+            image = request.files['image']
+            if not data_handler.allowed_image(image.filename):
+                return redirect(request.url)
+            else:
+                filename = secure_filename(image.filename)
+
+                image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
+                new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+        new_answer['submission_time'] = datetime.now()
+        database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
     return render_template("add_question.html",
@@ -92,79 +103,75 @@ def route_new_answer(question_id):
 
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
-    data_handler.delete_image_by_question_id(question_id)
-    data_handler.delete_question(question_id)
-    data_handler.delete_answers_by_question_id(question_id)
+    data_handler.delete_image_by_id(question_id)
+    database_manager.delete_question(question_id)
     return redirect('/lists')
 
 
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
-    questionid = data_handler.search_question_id_by_answer(answer_id)
-    data_handler.delete_specific_answer(answer_id)
-    return redirect(f'/question/{questionid}')
+    question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
+    data_handler.delete_image_by_id(answer_id)
+    database_manager.delete_answer(answer_id)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
-    data_handler.vote(question_id)
+    database_manager.vote(question_id, type='question', positive=True)
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
-    data_handler.vote(question_id, type_vote_up=False)
+    database_manager.vote(question_id, type='question', positive=False)
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/answer/<answer_id>/vote_up')
 def answer_vote_up(answer_id):
-    data_handler.vote(answer_id, question_type=False)
-    question_id = data_handler.search_question_id_by_answer(answer_id)
+    question = database_manager.get_answer_by_id(answer_id)
+    question_id = question[0]['question_id']
+    database_manager.vote(answer_id, type='answer', positive=True)
     return redirect(f'/question/{question_id}')
 
 
 @app.route('/answer/<answer_id>/vote_down')
 def answer_vote_down(answer_id):
-    question_id = data_handler.search_question_id_by_answer(answer_id)
-    data_handler.vote(answer_id, question_type=False, type_vote_up=False)
+    question = database_manager.get_answer_by_id(answer_id)
+    question_id = question[0]['question_id']
+    database_manager.vote(answer_id, type='answer', positive=False)
     return redirect(f'/question/{question_id}')
 
 
-@app.route('/question/<question_id>/edit',methods = ['GET', 'POST'])
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    question = data_handler.get_question_by_id(question_id)
+    question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
-        edited_question = {}
-        datas_from_question = ['id', 'submission_time', 'view_number', 'vote_number', 'image']
-        for data in datas_from_question:
-            edited_question[data] = question[data]
         datas_from_edit = ['title', 'message']
         for data in datas_from_edit:
-            edited_question[data] = request.form[data]
+            question[data] = request.form[data]
+        database_manager.update_question(question, question_id)
+        return redirect(url_for('route_question', question_id=question_id))
 
-        data_handler.update_question(edited_question)
-        return redirect(url_for('route_question', question_id=edited_question['id']))
-
-    return render_template('edit_question.html', question=question)
+    return render_template('edit_question.html',
+                           question=question,
+                           from_url=url_for('edit_question', question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
-    answer = data_handler.get_answer_by_id(answer_id)
+    answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
-        edited_answer = {}
-        datas_from_answer = ['id', 'submission_time', 'vote_number', 'question_id', 'image']
-        for data in datas_from_answer:
-            edited_answer[data] = answer[data]
         datas_from_edit = ['message']
         for data in datas_from_edit:
-            edited_answer[data] = request.form[data]
+            answer[data] = request.form[data]
+        database_manager.update_answer(answer, answer_id)
+        return redirect(url_for('route_question', question_id=answer['question_id']))
 
-        data_handler.update_answer(edited_answer)
-        return redirect(url_for('route_question', question_id=edited_answer['question_id']))
-
-    return render_template('edit_answer.html', answer=answer)
+    return render_template('edit_answer.html',
+                           answer=answer,
+                           from_url=url_for('edit_answer', answer_id=answer_id))
 
 @app.route('/search')
 def route_search():
