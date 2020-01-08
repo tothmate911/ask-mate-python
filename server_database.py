@@ -12,8 +12,8 @@ def main_page():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
 
-    sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
-    return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
+    first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
+    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by, order_direction=order_direction)
 
 
 @app.route('/lists')

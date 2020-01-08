@@ -13,6 +13,20 @@ def get_all_questions_sorted(cursor, order_by='submission_time', order_direction
 
 
 @database_common.connection_handler
+def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+    cursor.execute(f"""
+                    SELECT * FROM
+                    (
+                        SELECT * FROM question
+                        ORDER BY submission_time ASC
+                        LIMIT 5
+                    ) AS T1 ORDER BY {order_by} {order_direction};
+                    """)
+    five_latest_questions_sorted = cursor.fetchall()
+    return five_latest_questions_sorted
+
+
+@database_common.connection_handler
 def add_question(cursor, new_question):
     cursor.execute("""
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
