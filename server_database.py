@@ -124,7 +124,7 @@ def delete_question(question_id):
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
-    data_handler.delete_image_by_id(answer_id, type='answer')
+    data_handler.delete_image_by_id(answer_id, answer=True)
     database_manager.delete_answer(answer_id)
     return redirect(f'/question/{question_id}')
 

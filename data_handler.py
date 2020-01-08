@@ -228,13 +228,14 @@ def get_image_path_for_answer_by_id(answer_id):
     return answer[0]['image']
 
 
-def delete_image_by_id(id, type='question'):
+def delete_image_by_id(id, answer=False):
     try:
-        if type == 'answer':
+        if answer:
             path = get_image_path_for_answer_by_id(id)
+            os.remove(path)
         else:
             path = get_image_path_for_question_by_id(id)
-        for file in path:
-            os.remove(file)
+            for file in path:
+                os.remove(file)
     except:
         pass
