@@ -10,8 +10,8 @@ DATA_HEADER = ['id', 'submission_time', 'view_number', 'vote_number', 'title', '
 ANSWER_HEADER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 IMAGE_UPLOAD_PATH = "static/images"
 ALLOWED_IMAGE_TYPE = ["PNG", "JPG"]
-ROOT_PATH='static/images'
-POSITIVE ='+'
+ROOT_PATH = 'static/images'
+POSITIVE = '+'
 
 
 def get_all_questions(time=False):
@@ -126,7 +126,7 @@ def real_date_time(timestamp):
 
 
 def delete_question(id):
-    questions=get_all_questions()
+    questions = get_all_questions()
     for each_question in questions:
         if id == each_question['id']:
             questions.remove(each_question)
@@ -135,7 +135,7 @@ def delete_question(id):
 
 def delete_answers_by_question_id(id):
     answers = get_all_answers()
-    answers_to_delete=[]
+    answers_to_delete = []
     for each_answer in answers:
         if id == each_answer['question_id']:
             answers_to_delete.append(each_answer)
@@ -180,7 +180,8 @@ def delete_specific_answer(id):
 
 def sort_data(list_of_dicts, order_by, order_direction):
     converted_list = convert_numbers_in_list_to_int(list_of_dicts)
-    sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by] , reverse=True if order_direction == 'desc' else False)
+    sorted_list_of_dicts = sorted(converted_list, key=lambda item: item[order_by],
+                                  reverse=True if order_direction == 'desc' else False)
     return sorted_list_of_dicts
 
 
@@ -221,9 +222,11 @@ def get_image_path_for_question_by_id(question_id):
         delete_file.append(answer['image'])
     return delete_file
 
+
 def get_image_path_for_answer_by_id(answer_id):
     answer = database_manager.get_answer_by_id(answer_id)
     return answer[0]['image']
+
 
 def delete_image_by_id(id, type='question'):
     try:
@@ -232,6 +235,6 @@ def delete_image_by_id(id, type='question'):
         else:
             path = get_image_path_for_question_by_id(id)
         for file in path:
-            os.remove(path)
+            os.remove(file)
     except:
         pass
