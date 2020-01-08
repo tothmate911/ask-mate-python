@@ -2,7 +2,7 @@ body {
     font-family: "JetBrains Mono", "arial", "helvetica", serif;
         font-size: 14px;
         font-style: italic;
-    /*background-image: url("static/images/romans.jpg");*/
+    /*background-image: url("/home/mate/codecool/web/ask-mate-python/static/images/romans.jpg");*/
     background-color: darkred;
 }
 
