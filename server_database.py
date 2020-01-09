@@ -202,6 +202,7 @@ def edit_answer(answer_id):
 def route_search():
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
+    data_handler.remove_from_list(questions)
     questions = data_handler.search_highlight(questions, search_phrase)
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
@@ -280,7 +281,11 @@ def add_tag(question_id):
         old_tag = request.form.get('use_tag')
         if new_tag is not '':
             tag['name'] = new_tag
-            database_manager.add_tag(tag, question_id)
+            duplicate = data_handler.tag_duplicate_check(new_tag)
+            if duplicate:
+                database_manager.add_old_tag(tag, question_id)
+            else:
+                database_manager.add_tag(tag, question_id)
         else:
             tag['name'] = old_tag
             database_manager.add_old_tag(tag, question_id)
