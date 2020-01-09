@@ -20,30 +20,34 @@
     </form>
 {% for quest in question %}
     <div id="question_listed">
-        <table>
-            <tr>
-                <td><h5>ID:</h5></td>
-                <td>{{ quest['id'] }}</td>
-                <td><h5>Title:</h5></td>
-                <td><a class="question" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
-                <td><h5>Submission time:</h5></td>
-                <td>{{ quest['submission_time'] }}</td>
-                <td><h5>View:</h5></td>
-                <td>{{ quest['view_number'] }}</td>
-                <td><h5>Like:</h5></td>
-                <td>{{ quest['vote_number'] }}</td>
-            </tr>
-        </table>
-        <table>
-            <tr>
-                <td><h5>Message:</h5></td>
-                <td width="1000">{{ quest['message'] | safe }}</td>
-                {% if quest['image'] is not none %}
-                    <td><img src="{{ quest['image'] }}" alt="image" height="300" width="260"></td>
-                {% endif %}
-            </tr>
-        </table><br>
-        <table>
+    <table>
+    <tr>
+    <td>
+        <ul class="question-statistics">
+            <li class="show-big">{{ quest['vote_number'] }}</li>
+            <li>votes</li>
+            <li class="show-big" >{{ quest['view_number'] }}</li>
+            <li>views</li>
+            <li>ID: {{ quest['id'] }}</li>
+            <li>Submission time: {{ quest['submission_time'] }}</li>
+        </ul>
+    </td>
+    <td>
+        <ul class="question-content">
+            <li class="question-title" ><a class="question" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></li>
+            <li class="question-message" >{{ quest['message'] }}</li>
+        </ul>
+    </td>
+    <td>
+        <div id="question-list-image">
+            {% if quest['image'] is not none %}
+                <img src="{{ quest['image'] }}" alt="image" height="300" width="260">
+            {% endif %}
+        </div>
+    </td>
+    </tr>
+    </table>
+    <table>
             <tr>
                 <td width="100"><h5>Tags:</h5></td>
                 {% for tag in tags %}
@@ -57,7 +61,6 @@
                 <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
             </tr>
         </table>
-
     </div>
     {% endfor %}
 {% endblock %}

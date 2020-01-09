@@ -49,7 +49,7 @@ table {
 }
 
 td {
-    padding: 1em;
+    padding: 0 0.5em;
 }
 
 tr {
@@ -61,19 +61,19 @@ label {
     font-size: 1.3em;
 }
 
-ul {
+ul.ribbon {
     background-color: black;
     opacity: 0.8;
     padding: 1.6% 6%;
 }
 
-li {
+ul.ribbon li {
     display: inline;
     padding: 0 4%;
     text-transform: uppercase;
 }
 
-li a {
+ul.ribbon li a {
     color: gold;
     font: normal 2em arial;
 }
@@ -113,4 +113,12 @@ a.question {
     text-decoration: underline;
     font-style: italic;
 
+}
+
+ul.question-statistics, ul.question-content, #question-list-image {
+    display: inline-block;
+}
+
+#question-list-image {
+    float: right;
 }
