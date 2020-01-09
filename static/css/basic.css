@@ -26,8 +26,6 @@ strong {
 
 h5 {
     font-size: 1em;
-    margin: 0 3%;
-    padding: 10%;
     color: black;
 }
 
@@ -51,8 +49,7 @@ table {
 }
 
 td {
-    border: darkred 1px solid;
-    margin: 0 2%;
+    padding: 1em;
 }
 
 tr {
@@ -81,7 +78,7 @@ li a {
     font: normal 2em arial;
 }
 
-li a:hover {
+a:hover {
     color: red;
 }
 
@@ -89,11 +86,31 @@ li a:hover {
     background-color: gold;
     margin: 1em;
     border-radius: 0.6em;
+    border: 1px darkred solid;
 }
 
-select, button {
-    font-size: 1.2em;
+b {
+    color: green;
+    background-color: aqua;
 }
-input {
-    font-size: 1.2em;
+
+form.order_by {
+    display: inline-block;
+    font-size: 1.5em;
+}
+
+form.search {
+    display: inline-block;
+    float: right;
+    font-size: 1.5em;
+}
+
+select, button, input {
+    font-size: 1em;
+}
+
+a.question {
+    text-decoration: underline;
+    font-style: italic;
+
 }

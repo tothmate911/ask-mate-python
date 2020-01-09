@@ -1,12 +1,7 @@
-<!DOCTYPE>
-<html lang="en">
-    <head>
-        <link href="/static/css/basic.css" rel="stylesheet"/>
-        <meta charset="UTF-8">
-        <title>Edit answer | Ask mate</title>
-    </head>
-    <body>
-    {% if type="comment"%}
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% if type=="comment"%}
         <h1>Edit comment</h1>
         <p>Comment id: {{ comment['id'] }}</p>
         <form action="{{ form_url }}" method="post">
@@ -14,7 +9,7 @@
                 <label for="message">Message:</label><br>
                 <textarea name="message" id="message" cols="80" rows="10" required>{{ comment['message'] }}</textarea>
             </p>
-            <button type="submit" value="Edit answer">Edit answer</button>
+            <button type="submit" value="Edit comment">Edit comment</button>
         </form>
     {%else%}
         <h1>Edit answer</h1>
@@ -27,5 +22,4 @@
             <button type="submit" value="Edit answer">Edit answer</button>
         </form>
     {%endif%}
-    </body>
-</html>
+{% endblock %}
