@@ -273,32 +273,37 @@ def delete_comment(comment_id):
 
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
-    all_tag = database_manager.all_tag()
+    all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
         tag = {}
         new_tag = request.form.get('new_tag')
-        old_tag = request.form.get('old_tag')
-        if new_tag is not None:
+        old_tag = request.form.get('use_tag')
+        if new_tag is not '':
             tag['name'] = new_tag
+            database_manager.add_tag(tag, question_id)
         else:
             tag['name'] = old_tag
-        database_manager.add_tag(tag, question_id, new_tag)
+            database_manager.add_old_tag(tag, question_id)
+        return redirect(f'/question/{question_id}')
+
     return render_template('add_tag.html',
                            question_id=question_id,
                            tags=all_tag)
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
 def delete_tag(question_id, tag_id):
-    database_manager.delete_tag(tag_id)
+    database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
 
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
+    tags = database_manager.all_tag()
     tag = database_manager.tag_by_tag_id(tag_id)[0]
     return render_template('Search.html',
                            question=questions_by_tag_id,
-                           tag=tag)
+                           tag=tag,
+                           tags=tags)
 
 
 

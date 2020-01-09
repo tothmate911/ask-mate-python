@@ -2,9 +2,9 @@
 
 {% block content %}
     {% if type == 'search' %}
-        <h3>Search with: {{ seach_word }}</h3>
+        <h3>Search with: {{ search_word }}</h3>
     {% else %}
-        <h3>Search with: {{ tag }} tag</h3>
+        <h3>Search with: {{ tag['name'] }} tag</h3>
     {% endif %}
     {% for quest in question %}
             <table>

@@ -144,9 +144,12 @@ def search_in_questions(cursor, search_phrase):
         SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
         FROM question 
         FULL JOIN answer a on question.id = a.question_id
+        FULL JOIN question_tag qt on question.id = qt.question_id
+        FULL JOIN tag t on qt.tag_id = t.id
         WHERE question.title LIKE '%{search_phrase}%'
         OR question.message LIKE '%{search_phrase}%'
         OR a.message LIKE '%{search_phrase}%'
+        OR t.name LIKE '%{search_phrase}%';
     """)
     searched_question = cursor.fetchall()
     return searched_question
@@ -215,22 +218,12 @@ def update_comment(cursor, comment, id):
 
 
 @database_common.connection_handler
-def all_tag(cursor):
+def all_tag_name(cursor):
     cursor.execute("""
-                    SELECT name FROM tag
-                    WHERE name IS NOT null
+                    SELECT * FROM tag
     """)
     tags = cursor.fetchall()
     return tags
-
-
-@database_common.connection_handler
-def tag_by_question_id(cursor, question_id):
-    cursor.execute(f"""
-                    SELECT tag.name qt.question_id FROM tag
-                    FULL JOIN question_tag qt on tag.id = qt.tag_id
-                    WHERE qt.question_id = {question_id}
-    """)
 
 
 @database_common.connection_handler
@@ -244,23 +237,24 @@ def tag_id_by_tag_name(cursor, tag):
 
 
 @database_common.connection_handler
-def add_tag(cursor, tag, question_id, new_tag):
-    if new_tag:
-        cursor.execute(f"""
-                        INSERT INTO tag (name)
-                        VALUES (%s);
-        """, tag['name'])
-        tag_id = tag_id_by_tag_name(tag['name'])[0]
-        cursor.execute(f"""
-                        INSERT INTO question_tag (question_id, tag_id)
-                        VALUES ({question_id}, {tag_id})
-        """)
-    else:
-        tag_id = tag_id_by_tag_name(tag)[0]
-        cursor.execute(f"""
-                        INSERT INTO question_tag (question_id, tag_id)
-                        VALUES ({question_id}, {tag_id})
-        """)
+def add_tag(cursor, tag, question_id):
+    cursor.execute(f"""
+                    INSERT INTO tag (name)
+                    VALUES ('{tag['name']}');
+    """)
+    tag_id = tag_id_by_tag_name(tag['name'])[0]
+    cursor.execute(f"""
+                    INSERT INTO question_tag (question_id, tag_id)
+                    VALUES ({question_id}, {tag_id['id']});
+    """)
+
+@database_common.connection_handler
+def add_old_tag(cursor, tag, question_id):
+    tag_id = tag_id_by_tag_name(tag['name'])[0]
+    cursor.execute(f"""
+                    INSERT INTO question_tag (question_id, tag_id)
+                    VALUES ({question_id}, {tag_id['id']});
+    """)
 
 
 @database_common.connection_handler
@@ -272,10 +266,10 @@ def delete_tag_by_question_id(cursor, question_id):
 
 
 @database_common.connection_handler
-def delete_tag(cursor, tag_id):
+def delete_tag(cursor, tag_id, question_id):
     cursor.execute(f"""
                     DELETE FROM question_tag
-                    WHERE tag_id = {tag_id}
+                    WHERE tag_id = {tag_id} AND question_id = {question_id}
     """)
 
 
@@ -284,8 +278,8 @@ def all_question_by_tag_id(cursor, tag_id):
     cursor.execute(f"""
                     SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image
                     FROM question
-                    FULL JOIN question_tag
-                    WHERE question_tag.tag_id = {tag_id}
+                    FULL JOIN question_tag qt on question.id = qt.question_id
+                    WHERE qt.tag_id = {tag_id}
     """)
     questions = cursor.fetchall()
     return questions
