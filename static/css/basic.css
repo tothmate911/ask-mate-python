@@ -49,7 +49,7 @@ table {
 }
 
 td {
-    padding: 0 0.5em;
+    padding: 1em;
 }
 
 tr {
@@ -109,8 +109,8 @@ select, button, input {
     font-size: 1em;
 }
 
-#question-list-image {
-    float: right;
+td {
+    border: darkred 1px solid;
 }
 
 td.question-statistics {
@@ -131,11 +131,20 @@ p.show-big {
     font-weight: bold;
 }
 
+table.question {
+    width: 100%;
+    position: relative;
+}
+
+td.question-content {
+    width: 100%;
+    position: relative;
+}
+
 a.question-title{
     color: black;
     font-weight: bold;
-    position: relative;
-    top: 0;
+    display: inline-block;
 }
 
 p.question-message {
@@ -144,11 +153,17 @@ p.question-message {
     text-align: left;
 }
 
-td.question-submission-data {
-    font-size: 0.6em;
-    text-align: left;
+table.tags {
+    display: inline-block;
 }
 
-td {
-    border: darkred 1px solid;
+#question-submission-data-box {
+    display: inline-block;
+    float: right;
+}
+
+#question-submission-data {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
 }

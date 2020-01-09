@@ -20,7 +20,7 @@
     </form>
 {% for quest in question %}
     <div id="question_listed">
-    <table>
+    <table class="question">
     <tr>
         <td class="question-statistics">
             <p>ID: {{ quest['id'] }}</p>
@@ -29,17 +29,27 @@
             <p class="show-big" >{{ quest['view_number'] }}</p>
             <p>views</p>
         </td>
-        <td>
+        <td class="question-content">
             <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
             <p class="question-message">{{ quest['message'] }}</p>
-            <table>
+            <table class="tags">
                 <tr>
-                    <td class="tags"></td>
-                    <td class="question-submission-data">Submission time: {{ quest['submission_time'] }}</td>
+                    {% for tag in tags %}
+                        {% if tag['question_id'] == quest['id'] %}
+                            <td>
+                                <a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
+                                <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}">x</a></sup>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                    <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
                 </tr>
             </table>
+        <div id="question-submission-data-box">
+            <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
+        </div>
         </td>
-        <td>
+        <td class="question-image">
             <div id="question-list-image">
                 {% if quest['image'] is not none %}
                     <img src="{{ quest['image'] }}" alt="image" height="300" width="260">
@@ -48,20 +58,6 @@
         </td>
     </tr>
     </table>
-    <table>
-            <tr>
-                <td><h5>Tags:</h5></td>
-                {% for tag in tags %}
-                    {% if tag['question_id'] == quest['id'] %}
-                        <td><h6><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
-                            <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}">x</a></sup></h6></td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-            <tr>
-                <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
-            </tr>
-        </table>
     </div>
     {% endfor %}
 {% endblock %}
