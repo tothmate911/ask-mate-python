@@ -12,10 +12,13 @@ app = Flask(__name__)
 def main_page():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
-
+    tags = database_manager.all_tag()
     first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
-    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by,
-                           order_direction=order_direction)
+    return render_template("lists.html",
+                           question=first_five_sorted_questions,
+                           order_by=order_by,
+                           order_direction=order_direction,
+                           tags=tags)
 
 
 @app.route('/lists')
@@ -78,13 +81,15 @@ def route_question(question_id):
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
+    tags = database_manager.all_tag()
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
                            question_comment=question_comment,
                            answer_comment=answer_comment,
                            order_by=order_by,
-                           order_direction=order_direction)
+                           order_direction=order_direction,
+                           tags=tags)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -200,11 +205,13 @@ def route_search():
     questions = data_handler.search_highlight(questions, search_phrase)
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
+    tags = database_manager.all_tag()
     return render_template('Search.html',
                            question=questions,
                            answer=answers,
                            type='search',
-                           search_word=search_phrase)
+                           search_word=search_phrase,
+                           tags=tags)
 
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])

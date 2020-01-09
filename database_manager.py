@@ -213,13 +213,16 @@ def update_comment(cursor, comment, id):
                     SET message = '{comment['message']}', edited_count=edited_count+1, submission_time='{comment['submission_time']}'
                     WHERE id = {id}""")
 
+
 @database_common.connection_handler
 def all_tag(cursor):
     cursor.execute("""
-                    SELECT * FROM tag
+                    SELECT name FROM tag
+                    WHERE name IS NOT null
     """)
     tags = cursor.fetchall()
     return tags
+
 
 @database_common.connection_handler
 def tag_by_question_id(cursor, question_id):
@@ -229,23 +232,25 @@ def tag_by_question_id(cursor, question_id):
                     WHERE qt.question_id = {question_id}
     """)
 
+
 @database_common.connection_handler
 def tag_id_by_tag_name(cursor, tag):
     cursor.execute(f"""
                     SELECT * FROM tag
-                    WHERE name = {tag['name']}
+                    WHERE name = '{tag}'
     """)
     tag = cursor.fetchall()
     return tag
+
 
 @database_common.connection_handler
 def add_tag(cursor, tag, question_id, new_tag):
     if new_tag:
         cursor.execute(f"""
                         INSERT INTO tag (name)
-                        VALUES ('{tag}');
-        """)
-        tag_id = tag_id_by_tag_name(tag)[0]
+                        VALUES (%s);
+        """, tag['name'])
+        tag_id = tag_id_by_tag_name(tag['name'])[0]
         cursor.execute(f"""
                         INSERT INTO question_tag (question_id, tag_id)
                         VALUES ({question_id}, {tag_id})
@@ -257,12 +262,14 @@ def add_tag(cursor, tag, question_id, new_tag):
                         VALUES ({question_id}, {tag_id})
         """)
 
+
 @database_common.connection_handler
 def delete_tag_by_question_id(cursor, question_id):
     cursor.execute(f"""
                     DELETE FROM question_tag
                     WHERE question_id = {question_id}
     """)
+
 
 @database_common.connection_handler
 def delete_tag(cursor, tag_id):
@@ -271,15 +278,18 @@ def delete_tag(cursor, tag_id):
                     WHERE tag_id = {tag_id}
     """)
 
+
 @database_common.connection_handler
 def all_question_by_tag_id(cursor, tag_id):
     cursor.execute(f"""
-                    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image FROM question
+                    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image
+                    FROM question
                     FULL JOIN question_tag
                     WHERE question_tag.tag_id = {tag_id}
     """)
     questions = cursor.fetchall()
     return questions
+
 
 @database_common.connection_handler
 def tag_by_tag_id(cursor, tag_id):
@@ -289,6 +299,7 @@ def tag_by_tag_id(cursor, tag_id):
     """)
     tag = cursor.fetchall()
     return tag
+
 
 @database_common.connection_handler
 def all_tag(cursor):
