@@ -100,7 +100,7 @@
                 <td><h5>Message:</h5></td>
                 <td width="900" colspan="11">{{ comment['message'] | safe }}</td>
                 {% if comment['image'] is not none %}
-                    <td><img src="/{{ comment['image'] }}" alt="" height="300" width="260"></td>
+                    <td><a href="{{ url_for('full_screen', question_id=question['id'], image=comment['image'][14:]) }}"><img src="/{{ comment['image'] }}" alt="" height="300" width="260"></a></td>
                 {% endif %}
                 <td width="30"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id'])}}">comment</a></td>
             </tr>
