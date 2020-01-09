@@ -1,13 +1,13 @@
 body {
     font-family: "JetBrains Mono", "arial", "helvetica", serif;
-        font-size: 14px;
-        font-style: italic;
+    font-size: 14px;
     background-image: url("../images/romans.jpg");
     background-attachment: fixed;
 }
 
 #content {
     background-color: white;
+    opacity: 0.9;
     margin: 5% 10%;
     padding: 2%;
 }
@@ -26,10 +26,9 @@ strong {
 
 h5 {
     font-size: 1em;
-    margin: 1%;
-    padding: 20%;
+    margin: 0 3%;
+    padding: 10%;
     color: black;
-    display: inline-block;
 }
 
 p {
@@ -51,6 +50,15 @@ table {
         font-size: 1.4em;
 }
 
+td {
+    border: darkred 1px solid;
+    margin: 0 2%;
+}
+
+tr {
+    display: block;
+}
+
 label {
     color: black;
     font-size: 1.3em;
@@ -58,6 +66,7 @@ label {
 
 ul {
     background-color: black;
+    opacity: 0.8;
     padding: 1.6% 6%;
 }
 
@@ -79,6 +88,7 @@ li a:hover {
 #question_listed {
     background-color: gold;
     margin: 1em;
+    border-radius: 0.6em;
 }
 
 select, button {
