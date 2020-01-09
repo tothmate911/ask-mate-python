@@ -51,7 +51,7 @@
             </tr>
         </table>
     {% endfor %}
-    <form method="get">
+    <form class="order_by" method="get">
             <label for="order_by">Order answers by</label>
             <select name="order_by" id="order_by">
                 {% for option, option_text in {'submission_time': 'submission time', 'message': 'message', 'vote_number': 'number of votes'}.items() %}

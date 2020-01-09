@@ -1,47 +1,37 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <p>
-        <table>
-            <tr>
-                <td width="1050">
-                    <form method="get">
-                        <label for="order_by">Order by</label>
-                        <select name="order_by" id="order_by">
-                            {% for option, option_text in {'title': 'title', 'submission_time': 'submission time', 'message': 'message', 'view_number': 'number of views', 'vote_number': 'number of votes'}.items() %}
-                                <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
-                            {% endfor %}
-                        </select>
-                            <label for="order_direction"></label><select name="order_direction" id="order_direction">
-                            <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
-                            <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
-                        </select>
-                        <button type="submit">SORT</button>
-                    </form>
-                </td>
-                <td>
-                    <form action="{{ url_for('route_search') }}" method="get">
-                        <input type="search" placeholder="Search" name="search" id="search">
-                        <button type="submit">Search</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
-    </p>
+    <form class="order_by" method="get">
+        <label for="order_by">Order by</label>
+        <select name="order_by" id="order_by">
+            {% for option, option_text in {'title': 'title', 'submission_time': 'submission time', 'message': 'message', 'view_number': 'number of views', 'vote_number': 'number of votes'}.items() %}
+                <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
+            {% endfor %}
+        </select>
+            <label for="order_direction"></label><select name="order_direction" id="order_direction">
+            <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+            <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
+        </select>
+        <button type="submit">SORT</button>
+    </form>
+    <form class="search" action="{{ url_for('route_search') }}" method="get">
+        <input type="search" placeholder="Search" name="search" id="search">
+        <button type="submit">Search</button>
+    </form>
 {% for quest in question %}
     <div id="question_listed">
         <table>
             <tr>
                 <td><h5>ID:</h5></td>
-                <td  width="50">{{ quest['id'] }}</td>
+                <td>{{ quest['id'] }}</td>
                 <td><h5>Title:</h5></td>
-                <td  width="300"><a href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
+                <td><a class="question" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
                 <td><h5>Submission time:</h5></td>
-                <td  width="150">{{ quest['submission_time'] }}</td>
+                <td>{{ quest['submission_time'] }}</td>
                 <td><h5>View:</h5></td>
-                <td  width="50">{{ quest['view_number'] }}</td>
+                <td>{{ quest['view_number'] }}</td>
                 <td><h5>Like:</h5></td>
-                <td  width="20">{{ quest['vote_number'] }}</td>
+                <td>{{ quest['vote_number'] }}</td>
             </tr>
         </table>
         <table>

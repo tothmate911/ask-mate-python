@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link href="/static/css/basic.css" rel="stylesheet"/>
-    <meta charset="UTF-8">
-    <title>{{ comment_name }}</title>
-</head>
-<body>
+{% extends 'layout.html' %}
+
+{% block content %}
     <h1>{{ comment_name }}</h1>
     <br>
     {% if type == 'answer' %}
@@ -32,5 +27,4 @@
             </p>
         </form>
     {% endif %}
-</body>
-</html>
+{% endblock %}

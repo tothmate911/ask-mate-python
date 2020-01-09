@@ -1,13 +1,13 @@
 body {
     font-family: "JetBrains Mono", "arial", "helvetica", serif;
-        font-size: 14px;
-        font-style: italic;
+    font-size: 14px;
     background-image: url("../images/romans.jpg");
     background-attachment: fixed;
 }
 
 #content {
     background-color: white;
+    opacity: 0.9;
     margin: 5% 10%;
     padding: 2%;
 }
@@ -26,10 +26,7 @@ strong {
 
 h5 {
     font-size: 1em;
-    margin: 1%;
-    padding: 20%;
     color: black;
-    display: inline-block;
 }
 
 p {
@@ -51,6 +48,14 @@ table {
         font-size: 1.4em;
 }
 
+td {
+    padding: 1em;
+}
+
+tr {
+    display: block;
+}
+
 label {
     color: black;
     font-size: 1.3em;
@@ -58,6 +63,7 @@ label {
 
 ul {
     background-color: black;
+    opacity: 0.8;
     padding: 1.6% 6%;
 }
 
@@ -72,23 +78,39 @@ li a {
     font: normal 2em arial;
 }
 
-li a:hover {
+a:hover {
     color: red;
 }
 
 #question_listed {
     background-color: gold;
     margin: 1em;
-}
-
-select, button {
-    font-size: 1.2em;
-}
-input {
-    font-size: 1.2em;
+    border-radius: 0.6em;
+    border: 1px darkred solid;
 }
 
 b {
     color: green;
     background-color: aqua;
+}
+
+form.order_by {
+    display: inline-block;
+    font-size: 1.5em;
+}
+
+form.search {
+    display: inline-block;
+    float: right;
+    font-size: 1.5em;
+}
+
+select, button, input {
+    font-size: 1em;
+}
+
+a.question {
+    text-decoration: underline;
+    font-style: italic;
+
 }

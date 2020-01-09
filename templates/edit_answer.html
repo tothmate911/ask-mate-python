@@ -1,11 +1,6 @@
-<!DOCTYPE>
-<html lang="en">
-    <head>
-        <link href="/static/css/basic.css" rel="stylesheet"/>
-        <meta charset="UTF-8">
-        <title>Edit answer | Ask mate</title>
-    </head>
-    <body>
+{% extends 'layout.html' %}
+
+{% block content %}
     {% if type=="comment"%}
         <h1>Edit comment</h1>
         <p>Comment id: {{ comment['id'] }}</p>
@@ -27,5 +22,4 @@
             <button type="submit" value="Edit answer">Edit answer</button>
         </form>
     {%endif%}
-    </body>
-</html>
+{% endblock %}
