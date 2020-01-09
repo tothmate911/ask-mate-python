@@ -91,6 +91,12 @@ def route_question(question_id):
                            order_direction=order_direction,
                            tags=tags)
 
+@app.route('/question/<question_id>/<image>')
+def full_screen(question_id, image):
+    image_route = '/' + data_handler.ROOT_PATH + '/' + image
+    return render_template('full_image.html',
+                           image=image_route,
+                           question_id=question_id)
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
