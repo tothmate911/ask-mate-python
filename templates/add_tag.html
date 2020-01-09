@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <form action="{{ url_for('add_tag', question_id=question_id) }}" method="post">
+        <p><label for="new_tag">Add new tag:</label></p>
+        <p><input type="text" name="new_tag" id="new_tag"></p>
+        <p><label for="old_tag">Or use a exist tag:</label></p>
+        <select name="use_tag" id="old_tag">
+            {% for tag in tags %}
+                <option value="{{ tag['name'] }}">{{ tag['name'] }}</option>
+            {% endfor %}
+        </select>
+        <p><button type="submit">Send</button></p>
+    </form>
+{% endblock %}

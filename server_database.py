@@ -12,19 +12,26 @@ app = Flask(__name__)
 def main_page():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
-
+    tags = database_manager.all_tag()
     first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
-    return render_template("lists.html", question=first_five_sorted_questions, order_by=order_by,
-                           order_direction=order_direction)
+    return render_template("lists.html",
+                           question=first_five_sorted_questions,
+                           order_by=order_by,
+                           order_direction=order_direction,
+                           tags=tags)
 
 
 @app.route('/lists')
 def route_lists():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
-
+    tags = database_manager.all_tag()
     sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
-    return render_template("lists.html", question=sorted_questions, order_by=order_by, order_direction=order_direction)
+    return render_template("lists.html",
+                           question=sorted_questions,
+                           order_by=order_by,
+                           order_direction=order_direction,
+                           tags=tags)
 
 
 @app.route('/add_question', methods=['GET', 'POST'])
@@ -74,13 +81,15 @@ def route_question(question_id):
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
+    tags = database_manager.all_tag()
     return render_template("answer.html",
                            question=question[0],
                            answer=sorted_answers,
                            question_comment=question_comment,
                            answer_comment=answer_comment,
                            order_by=order_by,
-                           order_direction=order_direction)
+                           order_direction=order_direction,
+                           tags=tags)
 
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
@@ -196,9 +205,13 @@ def route_search():
     questions = data_handler.search_highlight(questions, search_phrase)
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
+    tags = database_manager.all_tag()
     return render_template('Search.html',
                            question=questions,
-                           answer=answers)
+                           answer=answers,
+                           type='search',
+                           search_word=search_phrase,
+                           tags=tags)
 
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
@@ -258,6 +271,34 @@ def delete_comment(comment_id):
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
 
+@app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
+def add_tag(question_id):
+    all_tag = database_manager.all_tag()
+    if request.method == 'POST':
+        tag = {}
+        new_tag = request.form.get('new_tag')
+        old_tag = request.form.get('old_tag')
+        if new_tag is not None:
+            tag['name'] = new_tag
+        else:
+            tag['name'] = old_tag
+        database_manager.add_tag(tag, question_id, new_tag)
+    return render_template('add_tag.html',
+                           question_id=question_id,
+                           tags=all_tag)
+
+@app.route('/question/<question_id>/tag/<tag_id>/delete')
+def delete_tag(question_id, tag_id):
+    database_manager.delete_tag(tag_id)
+    return redirect(f'/question/{question_id}')
+
+@app.route('/tag/search/<tag_id>')
+def search_with_tag(tag_id):
+    questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
+    tag = database_manager.tag_by_tag_id(tag_id)[0]
+    return render_template('Search.html',
+                           question=questions_by_tag_id,
+                           tag=tag)
 
 
 

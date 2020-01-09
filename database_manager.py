@@ -38,7 +38,6 @@ def add_question(cursor, new_question):
                     new_question['title'],
                     new_question['message'],
                     new_question['image']))
-    pass
 
 
 @database_common.connection_handler
@@ -110,6 +109,7 @@ def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submissi
 
 @database_common.connection_handler
 def delete_question(cursor, question_id):
+    delete_tag_by_question_id(question_id)
     cursor.execute(f"""
                     DELETE FROM comment
                     WHERE question_id = {question_id}""")
@@ -209,6 +209,104 @@ def update_answer(cursor, answer, id):
 @database_common.connection_handler
 def update_comment(cursor, comment, id):
     cursor.execute(f"""
-                        UPDATE comment
-                        SET message = '{comment['message']}', edited_count=edited_count+1, submission_time='{comment['submission_time']}'
-                        WHERE id = {id}""")
+                    UPDATE comment
+                    SET message = '{comment['message']}', edited_count=edited_count+1, submission_time='{comment['submission_time']}'
+                    WHERE id = {id}""")
+
+
+@database_common.connection_handler
+def all_tag(cursor):
+    cursor.execute("""
+                    SELECT name FROM tag
+                    WHERE name IS NOT null
+    """)
+    tags = cursor.fetchall()
+    return tags
+
+
+@database_common.connection_handler
+def tag_by_question_id(cursor, question_id):
+    cursor.execute(f"""
+                    SELECT tag.name qt.question_id FROM tag
+                    FULL JOIN question_tag qt on tag.id = qt.tag_id
+                    WHERE qt.question_id = {question_id}
+    """)
+
+
+@database_common.connection_handler
+def tag_id_by_tag_name(cursor, tag):
+    cursor.execute(f"""
+                    SELECT * FROM tag
+                    WHERE name = '{tag}'
+    """)
+    tag = cursor.fetchall()
+    return tag
+
+
+@database_common.connection_handler
+def add_tag(cursor, tag, question_id, new_tag):
+    if new_tag:
+        cursor.execute(f"""
+                        INSERT INTO tag (name)
+                        VALUES (%s);
+        """, tag['name'])
+        tag_id = tag_id_by_tag_name(tag['name'])[0]
+        cursor.execute(f"""
+                        INSERT INTO question_tag (question_id, tag_id)
+                        VALUES ({question_id}, {tag_id})
+        """)
+    else:
+        tag_id = tag_id_by_tag_name(tag)[0]
+        cursor.execute(f"""
+                        INSERT INTO question_tag (question_id, tag_id)
+                        VALUES ({question_id}, {tag_id})
+        """)
+
+
+@database_common.connection_handler
+def delete_tag_by_question_id(cursor, question_id):
+    cursor.execute(f"""
+                    DELETE FROM question_tag
+                    WHERE question_id = {question_id}
+    """)
+
+
+@database_common.connection_handler
+def delete_tag(cursor, tag_id):
+    cursor.execute(f"""
+                    DELETE FROM question_tag
+                    WHERE tag_id = {tag_id}
+    """)
+
+
+@database_common.connection_handler
+def all_question_by_tag_id(cursor, tag_id):
+    cursor.execute(f"""
+                    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image
+                    FROM question
+                    FULL JOIN question_tag
+                    WHERE question_tag.tag_id = {tag_id}
+    """)
+    questions = cursor.fetchall()
+    return questions
+
+
+@database_common.connection_handler
+def tag_by_tag_id(cursor, tag_id):
+    cursor.execute(f"""
+                    SELECT * FROM tag
+                    WHERE id = {tag_id}
+    """)
+    tag = cursor.fetchall()
+    return tag
+
+
+@database_common.connection_handler
+def all_tag(cursor):
+    cursor.execute(f"""
+                    SELECT * FROM question_tag
+                    FULL JOIN tag t on question_tag.tag_id = t.id
+                    WHERE question_tag.question_id IS NOT null;
+    """)
+    tags = cursor.fetchall()
+    return tags
