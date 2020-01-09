@@ -78,7 +78,7 @@ ul.ribbon li a {
     font: normal 2em arial;
 }
 
-a:hover {
+a.question:hover, ul.ribbon a:hover {
     color: red;
 }
 
@@ -109,16 +109,29 @@ select, button, input {
     font-size: 1em;
 }
 
-a.question {
-    text-decoration: underline;
-    font-style: italic;
-
-}
-
-ul.question-statistics, ul.question-content, #question-list-image {
-    display: inline-block;
-}
-
 #question-list-image {
     float: right;
+}
+
+ul.question-statistics {
+    list-style-type: none;
+    text-align: center;
+}
+
+ul.question-content {
+    list-style-type: none;
+}
+
+li.question-title {
+    padding: 1em 0;
+}
+
+a.question{
+    color: black;
+    font-style: italic;
+}
+
+li.show-big {
+    font-size: 1.6em;
+    padding-top: 0.5em;
 }
