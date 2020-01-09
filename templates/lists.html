@@ -53,6 +53,21 @@
                 {% endif %}
             </tr>
         </table><br>
+        <table>
+            <tr>
+                <td width="100"><h5>Tags:</h5></td>
+                {% for tag in tags %}
+                    {% if tag['question_id'] == quest['id'] %}
+                        <td><h6><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
+                            <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}">x</a></sup></h6></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
+            </tr>
+        </table>
+
     </div>
     {% endfor %}
 {% endblock %}

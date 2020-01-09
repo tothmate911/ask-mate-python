@@ -1,6 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    {% if type == 'search' %}
+        <h3>Search with: {{ seach_word }}</h3>
+    {% else %}
+        <h3>Search with: {{ tag }} tag</h3>
+    {% endif %}
     {% for quest in question %}
             <table>
                 <tr>
@@ -26,32 +31,34 @@
                     {% endif %}
                 </tr>
             </table><br>
-        {% for comment in answer %}
-            {% if quest['id'] == comment['question_id'] %}
-                <table>
-                    <tr>
-                        <td width="100"></td>
-                        <td  width="50">ID: {{ comment['id'] }}</td>
-                        <td><h5>Submission time:</h5></td>
-                        <td  width="150">{{ comment['submission_time'] }}</td>
-                        <td><h5>Like:</h5></td>
-                        <td  width="50">{{ comment['vote_number'] }}</td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <td width="100"></td>
-                        <td><h5>Message:</h5></td>
-                        <td width="900">{{ comment['message'] | safe }}</td>
-                        {% if comment['image'] is not none %}
-                            <td><img src="{{ comment['image'] }}" alt="" height="300" width="260"></td>
-                        {% endif %}
-                    </tr>
-                </table>
-            {% endif %}
-        {% endfor %}
+        {% if type == 'search' %}
+            {% for comment in answer %}
+                {% if quest['id'] == comment['question_id'] %}
+                    <table>
+                        <tr>
+                            <td width="100"></td>
+                            <td  width="50">ID: {{ comment['id'] }}</td>
+                            <td><h5>Submission time:</h5></td>
+                            <td  width="150">{{ comment['submission_time'] }}</td>
+                            <td><h5>Like:</h5></td>
+                            <td  width="50">{{ comment['vote_number'] }}</td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td width="100"></td>
+                            <td><h5>Message:</h5></td>
+                            <td width="900">{{ comment['message'] | safe }}</td>
+                            {% if comment['image'] is not none %}
+                                <td><img src="{{ comment['image'] }}" alt="" height="300" width="260"></td>
+                            {% endif %}
+                        </tr>
+                    </table>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     {% endfor %}
      <p>
-            <a href="{{ url_for('route_lists', question_id=question_id) }}">Back</a>
+            <a href="{{ url_for('route_lists') }}">Back</a>
      </p>
 {% endblock %}
