@@ -78,7 +78,7 @@ ul.ribbon li a {
     font: normal 2em arial;
 }
 
-a.question:hover, ul.ribbon a:hover {
+a.question-title:hover, ul.ribbon a:hover {
     color: red;
 }
 
@@ -113,25 +113,42 @@ select, button, input {
     float: right;
 }
 
-ul.question-statistics {
+td.question-statistics {
     list-style-type: none;
     text-align: center;
+    padding: 0.5em;
 }
 
-ul.question-content {
-    list-style-type: none;
+td.question-statistics p {
+    letter-spacing: normal;
+    word-spacing: normal;
+    margin: 0;
 }
 
-li.question-title {
-    padding: 1em 0;
-}
-
-a.question{
-    color: black;
-    font-style: italic;
-}
-
-li.show-big {
+p.show-big {
     font-size: 1.6em;
     padding-top: 0.5em;
+    font-weight: bold;
+}
+
+a.question-title{
+    color: black;
+    font-weight: bold;
+    position: relative;
+    top: 0;
+}
+
+p.question-message {
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-align: left;
+}
+
+td.question-submission-data {
+    font-size: 0.6em;
+    text-align: left;
+}
+
+td {
+    border: darkred 1px solid;
 }
