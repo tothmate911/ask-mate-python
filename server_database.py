@@ -91,6 +91,12 @@ def route_question(question_id):
                            order_direction=order_direction,
                            tags=tags)
 
+@app.route('/question/<question_id>/<image>')
+def full_screen(question_id, image):
+    image_route = '/' + data_handler.ROOT_PATH + '/' + image
+    return render_template('full_image.html',
+                           image=image_route,
+                           question_id=question_id)
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
@@ -202,6 +208,7 @@ def edit_answer(answer_id):
 def route_search():
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
+    data_handler.remove_from_list(questions)
     questions = data_handler.search_highlight(questions, search_phrase)
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
@@ -280,7 +287,11 @@ def add_tag(question_id):
         old_tag = request.form.get('use_tag')
         if new_tag is not '':
             tag['name'] = new_tag
-            database_manager.add_tag(tag, question_id)
+            duplicate = data_handler.tag_duplicate_check(new_tag)
+            if duplicate:
+                database_manager.add_old_tag(tag, question_id)
+            else:
+                database_manager.add_tag(tag, question_id)
         else:
             tag['name'] = old_tag
             database_manager.add_old_tag(tag, question_id)

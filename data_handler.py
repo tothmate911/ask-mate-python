@@ -83,3 +83,19 @@ def search_highlight(text, search_word):
             except:
                 continue
     return new_text
+
+def remove_from_list(questions):
+    remove = []
+    for index in range(len(questions)):
+        if questions[index]['id'] is None:
+            remove.append(questions[index])
+    for element in remove:
+        questions.remove(element)
+    return questions
+
+def tag_duplicate_check(tag):
+    all_tag = database_manager.all_tag_name()
+    for element in all_tag:
+        if element['name'] == tag:
+            return True
+    return False
