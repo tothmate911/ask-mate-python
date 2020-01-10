@@ -109,10 +109,6 @@ select, button, input {
     font-size: 1em;
 }
 
-td {
-    border: darkred 1px solid;
-}
-
 td.question-statistics {
     list-style-type: none;
     text-align: center;
@@ -139,6 +135,8 @@ table.question {
 td.question-content {
     width: 100%;
     position: relative;
+    border-left: darkred 1px solid;
+
 }
 
 a.question-title{
@@ -166,4 +164,24 @@ table.tags {
     position: absolute;
     bottom: 1em;
     right: 1em;
+}
+
+ul.tags li {
+    display: inline;
+    border: 1px solid darkred;
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+ul.tag-buttons li {
+    display: inline;
+}
+
+ul.tag-buttons li a {
+    color: black;
+    font-size: 1.5em;
+}
+
+ul.tag-buttons li a:hover {
+    color: red;
 }

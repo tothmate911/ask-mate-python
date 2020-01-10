@@ -32,22 +32,20 @@
         <td class="question-content">
             <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
             <p class="question-message">{{ quest['message'] }}</p>
-            <table class="tags">
-                <tr>
-                    {% for tag in tags %}
-                        {% if tag['question_id'] == quest['id'] %}
-                            <td>
-                                <a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
-                                <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}">x</a></sup>
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                    <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
-                </tr>
-            </table>
-        <div id="question-submission-data-box">
-            <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
-        </div>
+            <ul class="tags">
+                {% for tag in tags %}
+                    {% if tag['question_id'] == quest['id'] %}
+                        <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
+                            <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}" onclick="return confirm('Are you sure you want to delete the tag?');">x</a></sup></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            <ul class="tag-buttons">
+                <li><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></li>
+            </ul>
+            <div id="question-submission-data-box">
+                <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
+            </div>
         </td>
         <td class="question-image">
             <div id="question-list-image">
@@ -58,6 +56,7 @@
         </td>
     </tr>
     </table>
+
     </div>
     {% endfor %}
 {% endblock %}
