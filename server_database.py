@@ -148,6 +148,7 @@ def question_vote_up(question_id):
     database_manager.vote(question_id, type='question', vote='+')
     return redirect((url_for('route_question', question_id=question_id)))
 
+
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
     database_manager.vote(question_id, type='question', vote='-')
