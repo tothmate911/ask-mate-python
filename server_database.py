@@ -146,8 +146,7 @@ def delete_answer(answer_id):
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
     database_manager.vote(question_id, type='question', vote='+')
-    return redirect(f'/question/{question_id}')
-
+    return redirect((url_for('route_question', question_id=question_id)))
 
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
