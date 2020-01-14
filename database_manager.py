@@ -186,11 +186,11 @@ def vote(cursor, id, type, vote):
 
 
 @database_common.connection_handler
-def update_question(cursor, question, id):
+def update_question(cursor, updated_question):
     cursor.execute(f"""
                     UPDATE question
-                    SET title = '{question['title']}', message = '{question['message']}'
-                    WHERE id = {id}""")
+                    SET title = '{updated_question['title']}', message = '{updated_question['message']}'
+                    WHERE id = {updated_question['id']}""")
 
 
 @database_common.connection_handler

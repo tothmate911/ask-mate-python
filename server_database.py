@@ -79,6 +79,7 @@ def route_question(question_id):
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
+
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
     tags = database_manager.all_tag()
@@ -164,8 +165,8 @@ def answer_vote_up(answer_id):
 
 @app.route('/answer/<answer_id>/vote_down')
 def answer_vote_down(answer_id):
-    question = database_manager.get_answer_by_id(answer_id)
-    question_id = question[0]['question_id']
+    answer = database_manager.get_answer_by_id(answer_id)
+    question_id = answer[0]['question_id']
     database_manager.vote(answer_id, type='answer', vote='-')
     return redirect(f'/question/{question_id}')
 
@@ -179,7 +180,7 @@ def edit_question(question_id):
             question[data] = request.form[data]
         question['submission_time'] = datetime.now()
         question = data_handler.apostroph_change(question)
-        database_manager.update_question(question, question_id)
+        database_manager.update_question(question)
         return redirect(url_for('route_question', question_id=question_id))
 
     return render_template('edit_question.html',
@@ -315,7 +316,6 @@ def search_with_tag(tag_id):
                            question=questions_by_tag_id,
                            tag=tag,
                            tags=tags)
-
 
 
 if __name__ == "__main__":
