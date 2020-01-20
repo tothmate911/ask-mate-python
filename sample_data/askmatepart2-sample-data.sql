@@ -18,14 +18,13 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS pk_ques
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
-ALTER TABLE IF EXISTS ONLY public.user DROP CONSTRAINT IF EXISTS pk_user_name CASCADE;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS pk_user_name CASCADE;
 
 DROP TABLE IF EXISTS public.question;
 DROP SEQUENCE IF EXISTS public.question_id_seq;
 CREATE TABLE question (
     id serial NOT NULL,
     submission_time timestamp without time zone,
-    user_name text,
     view_number integer,
     vote_number integer,
     title text,
@@ -39,7 +38,6 @@ DROP SEQUENCE IF EXISTS public.answer_id_seq;
 CREATE TABLE answer (
     id serial NOT NULL,
     submission_time timestamp without time zone,
-    user_name text,
     vote_number integer,
     question_id integer,
     message text,
@@ -51,7 +49,6 @@ DROP TABLE IF EXISTS public.comment;
 DROP SEQUENCE IF EXISTS public.comment_id_seq;
 CREATE TABLE comment (
     id serial NOT NULL,
-    user_name text,
     question_id integer,
     answer_id integer,
     message text,
@@ -74,7 +71,7 @@ CREATE TABLE tag (
     name text
 );
 
-DROP TABLE IF EXISTS public.user;
+DROP TABLE IF EXISTS public.users;
 DROP SEQUENCE IF EXISTS public.user_name;
 CREATE TABLE users (
     user_name varchar(15) NOT NULL,
@@ -101,13 +98,13 @@ ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
 
 ALTER TABLE ONLY question
-    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (username) REFERENCES users(user_name);
 
 ALTER TABLE ONLY answer
-    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (username) REFERENCES users(user_name);
 
 ALTER TABLE ONLY comment
-    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (username) REFERENCES users(user_name);
 
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id);
