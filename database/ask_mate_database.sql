@@ -9,9 +9,10 @@ CREATE TABLE question (
     submission_time integer NOT NULL,
     view_number integer,
     vote_number integer,
-    title character varying(2550),
-    message character varying(2550) NOT NULL,
-    image character varying(2550)
+    title character varying(255),
+    message character varying(255) NOT NULL,
+    image character varying(255),
+    usernname varchar(255)
 );
 
 CREATE TABLE answer (

@@ -256,6 +256,7 @@ def add_new_comment_to_answer(answer_id):
                            answer_id=answer_id,
                            question_id=question_id)
 
+
 @app.route('/comment/<comment_id>/edit' , methods=['GET','POST'])
 def edit_comment(comment_id):
         comment = database_manager.get_comment_by_id(comment_id)[0]
@@ -316,6 +317,11 @@ def search_with_tag(tag_id):
                            question=questions_by_tag_id,
                            tag=tag,
                            tags=tags)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    return render_template('login.html')
 
 
 if __name__ == "__main__":

@@ -27,7 +27,8 @@ CREATE TABLE question (
     vote_number integer,
     title text,
     message text,
-    image text
+    image text,
+    username varchar(255)
 );
 
 DROP TABLE IF EXISTS public.answer;
@@ -39,7 +40,8 @@ CREATE TABLE answer (
     vote_number integer,
     question_id integer,
     message text,
-    image text
+    image text,
+    username varchar(255)
 );
 
 DROP TABLE IF EXISTS public.comment;
@@ -51,7 +53,8 @@ CREATE TABLE comment (
     answer_id integer,
     message text,
     submission_time timestamp without time zone,
-    edited_count integer
+    edited_count integer,
+    username varchar(255)
 );
 
 
