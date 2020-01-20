@@ -304,3 +304,11 @@ def all_tag(cursor):
     """)
     tags = cursor.fetchall()
     return tags
+
+@database_common.connection_handler
+def all_user(cursor):
+    cursor.execute("""
+                    SELECT user_name FROM users
+                    ORDER BY user_name;
+    """)
+    return cursor.fetchall()

@@ -318,6 +318,11 @@ def search_with_tag(tag_id):
                            tag=tag,
                            tags=tags)
 
+@app.route('/all_user')
+def all_user():
+    users = database_manager.all_user()
+    return render_template('list_users.html',
+                           users=users)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
