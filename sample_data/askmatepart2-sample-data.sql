@@ -74,10 +74,10 @@ CREATE TABLE tag (
     name text
 );
 
-DROP TABLE IF EXISTS public.user;
+DROP TABLE IF EXISTS public.users;
 DROP SEQUENCE IF EXISTS public.user_name;
 CREATE TABLE users (
-    user_name serial NOT NULL,
+    user_name varchar(15) ,
     hash_password text,
     date timestamp
 );
