@@ -92,12 +92,14 @@ def route_question(question_id):
                            order_direction=order_direction,
                            tags=tags)
 
+
 @app.route('/question/<question_id>/<image>')
 def full_screen(question_id, image):
     image_route = '/' + data_handler.ROOT_PATH + '/' + image
     return render_template('full_image.html',
                            image=image_route,
                            question_id=question_id)
+
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
@@ -257,28 +259,30 @@ def add_new_comment_to_answer(answer_id):
                            question_id=question_id)
 
 
-@app.route('/comment/<comment_id>/edit' , methods=['GET','POST'])
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
-        comment = database_manager.get_comment_by_id(comment_id)[0]
-        if request.method == 'POST':
-            datas_from_edit = ['message']
-            for data in datas_from_edit:
-                comment[data] = request.form[data]
-            comment['submission_time']=datetime.now()
-            comment = data_handler.apostroph_change(comment)
-            database_manager.update_comment(comment, comment_id)
-            return redirect(url_for('route_question', question_id=comment['question_id']))
+    comment = database_manager.get_comment_by_id(comment_id)[0]
+    if request.method == 'POST':
+        datas_from_edit = ['message']
+        for data in datas_from_edit:
+            comment[data] = request.form[data]
+        comment['submission_time'] = datetime.now()
+        comment = data_handler.apostroph_change(comment)
+        database_manager.update_comment(comment, comment_id)
+        return redirect(url_for('route_question', question_id=comment['question_id']))
 
-        return render_template('edit_answer.html',
-                               comment=comment,
-                               type='comment',
-                               from_url=url_for('edit_comment', comment_id=comment_id))
+    return render_template('edit_answer.html',
+                           comment=comment,
+                           type='comment',
+                           from_url=url_for('edit_comment', comment_id=comment_id))
+
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
     comment = database_manager.get_comment_by_id(comment_id)[0]
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
+
 
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
@@ -303,10 +307,12 @@ def add_tag(question_id):
                            question_id=question_id,
                            tags=all_tag)
 
+
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
 def delete_tag(question_id, tag_id):
     database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
+
 
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
@@ -321,6 +327,12 @@ def search_with_tag(tag_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        login_username = request.form.get('username')
+        login_password = request.form.get('password')
+
+        hashed_pw_for_login_username = data_manager.get_hashed_pw_for_username(login_username)
+
     return render_template('login.html')
 
 
