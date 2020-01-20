@@ -6,16 +6,19 @@
 -- Dumped by pg_dump version 9.5.6
 
 ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS pk_question_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.question DROP CONSTRAINT IF EXISTS fk_user_name CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS pk_answer_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.anser DROP CONSTRAINT IF EXISTS fk_user_name CASCADE;
 ALTER TABLE IF EXISTS ONLY public.answer DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.comment DROP CONSTRAINT IF EXISTS pk_comment_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.comment DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.comment DROP CONSTRAINT IF EXISTS fk_user_name CASCADE;
 ALTER TABLE IF EXISTS ONLY public.comment DROP CONSTRAINT IF EXISTS fk_answer_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS pk_question_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
-ALTER TABLE IF EXISTS ONLY public.user DROP CONSTRAINT IF EXISTS user_name CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user DROP CONSTRAINT IF EXISTS pk_user_name CASCADE;
 
 DROP TABLE IF EXISTS public.question;
 DROP SEQUENCE IF EXISTS public.question_id_seq;
@@ -28,7 +31,7 @@ CREATE TABLE question (
     title text,
     message text,
     image text,
-    username varchar(255)
+    username varchar(15)
 );
 
 DROP TABLE IF EXISTS public.answer;
@@ -41,7 +44,7 @@ CREATE TABLE answer (
     question_id integer,
     message text,
     image text,
-    username varchar(255)
+    username varchar(15)
 );
 
 DROP TABLE IF EXISTS public.comment;
@@ -54,7 +57,7 @@ CREATE TABLE comment (
     message text,
     submission_time timestamp without time zone,
     edited_count integer,
-    username varchar(255)
+    username varchar(15)
 );
 
 
@@ -71,16 +74,16 @@ CREATE TABLE tag (
     name text
 );
 
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS public.user;
 DROP SEQUENCE IF EXISTS public.user_name;
-CREATE TABLE user (
+CREATE TABLE users (
     user_name serial NOT NULL,
     hash_password text,
     date timestamp
 );
 
-ALTER TABLE ONLY user
-    ADD CONSTRAINT user_name PRIMARY KEY (user_name);
+ALTER TABLE ONLY users
+    ADD CONSTRAINT pk_user_name PRIMARY KEY (user_name);
 
 ALTER TABLE ONLY answer
     ADD CONSTRAINT pk_answer_id PRIMARY KEY (id);
@@ -96,6 +99,15 @@ ALTER TABLE ONLY question_tag
 
 ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
+
+ALTER TABLE ONLY question
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
+
+ALTER TABLE ONLY answer
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
+
+ALTER TABLE ONLY comment
+    ADD CONSTRAINT fk_user_name FOREIGN KEY (user_name) REFERENCES users(user_name);
 
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id);
