@@ -1,12 +1,13 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for, session, escape
 import data_handler
 import database_manager
+import password_handler
 import os
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
 app = Flask(__name__)
-
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def main_page():
@@ -23,6 +24,9 @@ def main_page():
 
 @app.route('/lists')
 def route_lists():
+    if 'username' in session:
+        user = str(escape(session['username']))
+
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     tags = database_manager.all_tag()
@@ -31,7 +35,8 @@ def route_lists():
                            question=sorted_questions,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/add_question', methods=['GET', 'POST'])
@@ -329,9 +334,14 @@ def search_with_tag(tag_id):
 def login():
     if request.method == 'POST':
         login_username = request.form.get('username')
-        login_password = request.form.get('password')
+        login_plain_text_password = request.form.get('password')
 
-        hashed_pw_for_login_username = data_manager.get_hashed_pw_for_username(login_username)
+        hashed_pw_for_login_username = database_manager.get_hashed_pw_for_username(login_username)
+        password_is_ok = password_handler.verify_password(login_plain_text_password, hashed_pw_for_login_username)
+
+        if password_is_ok is True:
+            session['username'] = login_username
+            return redirect(url_for('route_lists'))
 
     return render_template('login.html')
 

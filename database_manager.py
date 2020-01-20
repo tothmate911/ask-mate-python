@@ -304,3 +304,13 @@ def all_tag(cursor):
     """)
     tags = cursor.fetchall()
     return tags
+
+
+@database_common.connection_handler
+def get_hashed_pw_for_username(cursor, username):
+    cursor.execute("""
+                    SELECT hash_password FROM users
+                    WHERE user_name = %(user_name)s
+                    """, {'user_name': username})
+    hashed_pw_for_username = cursor.fetchone().get('hash_password', None)
+    return hashed_pw_for_username
