@@ -11,10 +11,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def main_page():
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
@@ -30,10 +27,7 @@ def main_page():
 
 @app.route('/lists')
 def route_lists():
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -49,10 +43,7 @@ def route_lists():
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     if request.method == 'POST':
         new_question = {'submission_time': datetime.now(),
@@ -94,10 +85,7 @@ def view_up(question_id):
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     question = database_manager.get_question_by_id(question_id)
     order_by = request.args.get('order_by', 'submission_time')
@@ -128,10 +116,7 @@ def full_screen(question_id, image):
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
@@ -206,10 +191,7 @@ def answer_vote_down(answer_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
@@ -229,10 +211,7 @@ def edit_question(question_id):
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
@@ -252,10 +231,7 @@ def edit_answer(answer_id):
 
 @app.route('/search')
 def route_search():
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
@@ -275,10 +251,7 @@ def route_search():
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     if request.method == 'POST':
         new_comment = request.form.to_dict()
@@ -297,10 +270,7 @@ def add_new_comment_to_question(question_id):
 
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
@@ -322,10 +292,7 @@ def add_new_comment_to_answer(answer_id):
 
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     comment = database_manager.get_comment_by_id(comment_id)[0]
     if request.method == 'POST':
@@ -353,10 +320,7 @@ def delete_comment(comment_id):
 
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
@@ -389,10 +353,7 @@ def delete_tag(question_id, tag_id):
 
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
 
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
@@ -405,10 +366,7 @@ def search_with_tag(tag_id):
 
 @app.route('/all_user')
 def all_user():
-    if 'username' in session:
-        user = str(escape(session['username']))
-    else:
-        user = None
+    user = password_handler.get_logged_in_user()
     users = database_manager.all_user()
     return render_template('list_users.html',
                            users=users,
