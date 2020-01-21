@@ -1,4 +1,5 @@
 import bcrypt
+from flask import session, escape
 
 
 def hash_password(plain_text_password):
@@ -10,3 +11,11 @@ def hash_password(plain_text_password):
 def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+def get_logged_in_user():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+    return user
