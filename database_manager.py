@@ -329,3 +329,33 @@ def all_user(cursor):
                     ORDER BY user_name;
     """)
     return cursor.fetchall()
+
+@database_common.connection_handler
+def question_of_user(cursor, user_name):
+    cursor.execute("""
+                    SELECT DISTINCT(question.id), question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, question.username FROM question
+                    FULL JOIN answer a on question.id = a.question_id
+                    FULL JOIN comment c on question.id = c.question_id 
+                    WHERE question.username = %(user_name)s
+                    OR a.username = %(user_name)s
+                    OR c.username = %(user_name)s
+    """, {'user_name': user_name})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def answer_of_user(cursor, user_name):
+    cursor.execute("""
+                    SELECT DISTINCT (answer.id), answer.id, answer.submission_time, answer.vote_number, answer.question_id, answer.message, answer.image, answer.username FROM answer
+                    FULL JOIN comment c on answer.id = c.answer_id
+                    WHERE answer.username = %(user_name)s
+                    OR c.username = %(user_name)s
+    """, {'user_name': user_name})
+    return cursor.fetchall()
+
+@database_common.connection_handler
+def comment_of_user(cursor, user_name):
+    cursor.execute("""
+                    SELECT * FROM comment
+                    WHERE username = %(user_name)s
+    """, {'user_name': user_name})
+    return cursor.fetchall()
