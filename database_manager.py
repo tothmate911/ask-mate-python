@@ -1,4 +1,3 @@
-import data_handler
 import database_common
 from datetime import datetime
 from psycopg2.extensions import AsIs
@@ -30,7 +29,6 @@ def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_d
 
 @database_common.connection_handler
 def add_question(cursor, new_question):
-    order = 'ASC' if order == 'ASC' else 'DSC'
     cursor.execute("""
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
                     VALUES (%s, %s, %s, %s, %s, %s);
@@ -45,17 +43,9 @@ def add_question(cursor, new_question):
 
 @database_common.connection_handler
 def add_answer(cursor, new_answer):
-    new_answer = data_handler.apostroph_change(new_answer)
-
     cursor.execute(f"""
                 INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-                VALUES (
-                    '{new_answer['submission_time']}',
-                    {new_answer['vote_number']}, 
-                    {new_answer['question_id']},
-                    '{new_answer['message']}',
-                    '{new_answer['image']}'
-                );     
+                VALUES ('{new_answer['submission_time']}', {new_answer['vote_number']}, {new_answer['question_id']}, '{new_answer['message']}', '{new_answer['image']}');     
     """)
 
 
@@ -259,7 +249,6 @@ def add_tag(cursor, tag, question_id):
                     VALUES ({question_id}, {tag_id['id']});
     """)
 
-
 @database_common.connection_handler
 def add_old_tag(cursor, tag, question_id):
     tag_id = tag_id_by_tag_name(tag['name'])[0]
@@ -323,3 +312,20 @@ def member_registration(cursor, username,hashed_pw):
                     INSERT INTO users(user_name, hash_password, date)
                     VALUES (%s,%s,%s)""",
                    (username,hashed_pw,datetime.now()))
+
+@database_common.connection_handler
+def get_hashed_pw_for_username(cursor, username):
+    cursor.execute("""
+                    SELECT hash_password FROM users
+                    WHERE user_name = %(user_name)s
+                    """, {'user_name': username})
+    hashed_pw_for_username = cursor.fetchone().get('hash_password', None)
+    return hashed_pw_for_username
+
+@database_common.connection_handler
+def all_user(cursor):
+    cursor.execute("""
+                    SELECT user_name FROM users
+                    ORDER BY user_name;
+    """)
+    return cursor.fetchall()

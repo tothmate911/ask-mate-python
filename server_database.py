@@ -1,16 +1,22 @@
-from flask import Flask, render_template, redirect, request, url_for,make_response
+from flask import Flask, render_template, redirect, request, url_for, session, escape,make_response
 import data_handler
 import database_manager
+import password_handler
 import os
 import utility
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
 app = Flask(__name__)
-
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def main_page():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
     tags = database_manager.all_tag()
@@ -19,11 +25,17 @@ def main_page():
                            question=first_five_sorted_questions,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/lists')
 def route_lists():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     tags = database_manager.all_tag()
@@ -32,38 +44,45 @@ def route_lists():
                            question=sorted_questions,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
-    if request.method == 'GET':
-        return render_template("add_question.html",
-                               comment_name='Add new question',
-                               form_url=url_for('route_new_question'),
-                               comment_title='Question title',
-                               comment_message='Question message',
-                               type='question')
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
 
-    new_question = {'submission_time': datetime.now(),
-                    'title': request.form.get('title'),
-                    'message': request.form.get('message'),
-                    'view_number': request.form.get('view_number'),
-                    'vote_number': request.form.get('vote_number'),
-                    'image': request.form.get('image')}
-    if request.files['image'].filename != "":
-        image = request.files['image']
-        if not data_handler.allowed_image(image.filename):
-            return redirect(request.url)
+    if request.method == 'POST':
+        new_question = {'submission_time': datetime.now(),
+                        'title': request.form.get('title'),
+                        'message': request.form.get('message'),
+                        'view_number': request.form.get('view_number'),
+                        'vote_number': request.form.get('vote_number'),
+                        'image': request.form.get('image')}
+        if request.files['image'].filename != "":
 
-        filename = secure_filename(image.filename)
-        image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
-        new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+            image = request.files['image']
+            if not data_handler.allowed_image(image.filename):
+                return redirect(request.url)
+            else:
+                filename = secure_filename(image.filename)
 
-    new_question = data_handler.apostroph_change(new_question)
-    database_manager.add_question(new_question)
-    return redirect('/lists')
+                image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
+                new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+        new_question = data_handler.apostroph_change(new_question)
+        database_manager.add_question(new_question)
+        return redirect('/lists')
 
+    return render_template("add_question.html",
+                           comment_name='Add new question',
+                           form_url=url_for('route_new_question'),
+                           comment_title='Question title',
+                           comment_message='Question message',
+                           type='question',
+                           user=user)
 
 
 @app.route('/view_up/<question_id>')
@@ -76,6 +95,11 @@ def view_up(question_id):
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     question = database_manager.get_question_by_id(question_id)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -91,7 +115,9 @@ def route_question(question_id):
                            answer_comment=answer_comment,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
+
 
 @app.route('/question/<question_id>/<image>')
 def full_screen(question_id, image):
@@ -102,6 +128,11 @@ def full_screen(question_id, image):
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
                       'vote_number': request.form.get('vote_number'),
@@ -117,6 +148,7 @@ def route_new_answer(question_id):
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
+        new_answer = data_handler.apostroph_change(new_answer)
         database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
@@ -125,7 +157,8 @@ def route_new_answer(question_id):
                            comment_name='Add new answer',
                            form_url=url_for('route_new_answer', question_id=question_id),
                            comment_message='Answer message',
-                           question_id=question_id)
+                           question_id=question_id,
+                           user=user)
 
 
 @app.route('/question/<question_id>/delete')
@@ -173,6 +206,11 @@ def answer_vote_down(answer_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
         datas_from_edit = ['title', 'message']
@@ -185,11 +223,17 @@ def edit_question(question_id):
 
     return render_template('edit_question.html',
                            question=question,
-                           from_url=url_for('edit_question', question_id=question_id))
+                           from_url=url_for('edit_question', question_id=question_id),
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
         datas_from_edit = ['message']
@@ -202,11 +246,17 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html',
                            answer=answer,
-                           from_url=url_for('edit_answer', answer_id=answer_id))
+                           from_url=url_for('edit_answer', answer_id=answer_id),
+                           user = user)
 
 
 @app.route('/search')
 def route_search():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
     data_handler.remove_from_list(questions)
@@ -219,11 +269,17 @@ def route_search():
                            answer=answers,
                            type='search',
                            search_word=search_phrase,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
@@ -235,11 +291,17 @@ def add_new_comment_to_question(question_id):
                            comment_name='Add Comment',
                            form_url=url_for('add_new_comment_to_question', question_id=question_id),
                            comment_message='Add Comment',
-                           question_id=question_id, )
+                           question_id=question_id,
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
         new_comment = request.form.to_dict()
@@ -254,25 +316,33 @@ def add_new_comment_to_answer(answer_id):
                            form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
                            comment_message='Add Comment',
                            answer_id=answer_id,
-                           question_id=question_id)
+                           question_id=question_id,
+                           user=user)
 
 
-@app.route('/comment/<comment_id>/edit' , methods=['GET','POST'])
+@app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
-        comment = database_manager.get_comment_by_id(comment_id)[0]
-        if request.method == 'POST':
-            datas_from_edit = ['message']
-            for data in datas_from_edit:
-                comment[data] = request.form[data]
-            comment['submission_time']=datetime.now()
-            comment = data_handler.apostroph_change(comment)
-            database_manager.update_comment(comment, comment_id)
-            return redirect(url_for('route_question', question_id=comment['question_id']))
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
 
-        return render_template('edit_answer.html',
-                               comment=comment,
-                               type='comment',
-                               from_url=url_for('edit_comment', comment_id=comment_id))
+    comment = database_manager.get_comment_by_id(comment_id)[0]
+    if request.method == 'POST':
+        datas_from_edit = ['message']
+        for data in datas_from_edit:
+            comment[data] = request.form[data]
+        comment['submission_time'] = datetime.now()
+        comment = data_handler.apostroph_change(comment)
+        database_manager.update_comment(comment, comment_id)
+        return redirect(url_for('route_question', question_id=comment['question_id']))
+
+    return render_template('edit_answer.html',
+                           comment=comment,
+                           type='comment',
+                           from_url=url_for('edit_comment', comment_id=comment_id),
+                           user=user)
+
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
@@ -282,6 +352,11 @@ def delete_comment(comment_id):
 
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
         tag = {}
@@ -301,7 +376,9 @@ def add_tag(question_id):
 
     return render_template('add_tag.html',
                            question_id=question_id,
-                           tags=all_tag)
+                           tags=all_tag,
+                           user=user)
+
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
 def delete_tag(question_id, tag_id):
@@ -310,19 +387,50 @@ def delete_tag(question_id, tag_id):
 
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
     tag = database_manager.tag_by_tag_id(tag_id)[0]
     return render_template('Search.html',
                            question=questions_by_tag_id,
                            tag=tag,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
-
+@app.route('/all_user')
+def all_user():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
+    users = database_manager.all_user()
+    return render_template('list_users.html',
+                           users=users,
+                           user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        login_username = request.form.get('username')
+        login_plain_text_password = request.form.get('password')
+
+        hashed_pw_for_login_username = database_manager.get_hashed_pw_for_username(login_username)
+        password_is_ok = password_handler.verify_password(login_plain_text_password, hashed_pw_for_login_username)
+
+        if password_is_ok is True:
+            session['username'] = login_username
+            return redirect(url_for('route_lists'))
+
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('route_lists'))
 
 @app.route('/registration', methods=['GET','POST'])
 def registration():
