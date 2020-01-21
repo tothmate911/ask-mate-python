@@ -6,17 +6,21 @@
     <link href="/static/css/basic.css" rel="stylesheet"/>
 </head>
 <body>
-    <h1>Ask <strong>Mate</strong></h1>
-    <ul class="ribbon">
-        <li><a href="{{ url_for('main_page') }}">Home</a> </li>
-        <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
-        <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
-        <li><a href="{{ url_for('login') }}">Login</a> </li>
-        <li>{% if user is defined %}Signed in as: {{ user }} {% endif %}</li>
-    </ul>
-    <div id="content">
-        {% block content %} {% endblock %}
-    </div>
-    {% include 'footer.html' %}
+<h1>Ask <strong>Mate</strong></h1>
+<ul class="ribbon">
+    <li><a href="{{ url_for('main_page') }}">Home</a></li>
+    <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
+    <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
+    {% if user != None %}
+        <li>Signed in as: {{ user }} </li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+    {% endif %}
+</ul>
+<div id="content">
+    {% block content %} {% endblock %}
+</div>
+{% include 'footer.html' %}
 </body>
 </html>

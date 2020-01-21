@@ -72,11 +72,12 @@ ul.ribbon li {
     padding: 0 2%;
     text-transform: uppercase;
     color: gold;
+    font-size: 20px;
 }
 
 ul.ribbon li a {
     color: gold;
-    font: normal 2em arial;
+    font: normal 1em arial;
 }
 
 a.question-title:hover, ul.ribbon a:hover {
