@@ -89,6 +89,7 @@ def route_question(question_id):
     user = password_handler.get_logged_in_user()
 
     question = database_manager.get_question_by_id(question_id)
+    print(question)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
