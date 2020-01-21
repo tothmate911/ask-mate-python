@@ -405,9 +405,14 @@ def search_with_tag(tag_id):
 
 @app.route('/all_user')
 def all_user():
+    if 'username' in session:
+        user = str(escape(session['username']))
+    else:
+        user = None
     users = database_manager.all_user()
     return render_template('list_users.html',
-                           users=users)
+                           users=users,
+                           user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
