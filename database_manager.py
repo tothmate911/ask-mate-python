@@ -30,15 +30,16 @@ def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_d
 @database_common.connection_handler
 def add_question(cursor, new_question):
     cursor.execute("""
-                    INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
-                    VALUES (%s, %s, %s, %s, %s, %s);
+                    INSERT INTO question (submission_time, view_number, vote_number, title, message, image, username)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
                     """,
                    (new_question['submission_time'],
                     new_question['view_number'],
                     new_question['vote_number'],
                     new_question['title'],
                     new_question['message'],
-                    new_question['image']))
+                    new_question['image'],
+                    new_question['username']))
 
 
 @database_common.connection_handler
