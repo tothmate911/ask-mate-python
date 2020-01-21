@@ -123,7 +123,8 @@ def route_new_answer(question_id):
                       'vote_number': request.form.get('vote_number'),
                       'image': request.form.get('image'),
                       'question_id': request.form.get('question_id'),
-                      'submission_time': datetime.now()}
+                      'submission_time': datetime.now(),
+                      'username' : user}
         if request.files['image'].filename != "":
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
