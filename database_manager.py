@@ -1,5 +1,6 @@
 import data_handler
 import database_common
+from datetime import datetime
 from psycopg2.extensions import AsIs
 
 
@@ -320,4 +321,5 @@ def all_tag(cursor):
 def member_registration(cursor, username,hashed_pw):
     cursor.execute(f"""
                     INSERT INTO users(user_name, hash_password, date)
-                    VALUES ({username},{hashed_pw},date())""")
+                    VALUES (%s,%s,%s)""",
+                   (username,hashed_pw,datetime.now()))

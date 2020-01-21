@@ -6,5 +6,10 @@
 </head>
 <body>
 <h1 id="title">User Registration</h1>
+<form action="{{ url_for ('registration')}}" method="post">
+    <input type="text" name="username" maxlength="15"><br>
+    <input type="password" name="password" maxlength="10"><br>
+    <input type="submit" value="Submit">
+</form>
 </body>
 </html>

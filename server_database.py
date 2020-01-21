@@ -326,9 +326,10 @@ def login():
 
 @app.route('/registration', methods=['GET','POST'])
 def registration():
-    if request.method='POST':
+    if request.method=='POST':
         hashed_pw=utility.hash_password(request.form.get('password'))
         database_manager.member_registration(request.form.get('username'), hashed_pw)
+        return redirect('/')
 
     return render_template('registration.html',
                            type='registration',
