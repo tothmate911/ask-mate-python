@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, request, url_for, session, escape
+from flask import Flask, render_template, redirect, request, url_for, session, escape,make_response
 import data_handler
 import database_manager
 import password_handler
 import os
+import utility
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
@@ -112,7 +113,6 @@ def full_screen(question_id, image):
     return render_template('full_image.html',
                            image=image_route,
                            question_id=question_id)
-
 
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
@@ -317,7 +317,6 @@ def delete_comment(comment_id):
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
 
-
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
     user = password_handler.get_logged_in_user()
@@ -349,7 +348,6 @@ def add_tag(question_id):
 def delete_tag(question_id, tag_id):
     database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
-
 
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
@@ -391,6 +389,17 @@ def login():
 def logout():
     session.pop('username', None)
     return redirect(url_for('route_lists'))
+
+@app.route('/registration', methods=['GET','POST'])
+def registration():
+    if request.method=='POST':
+        hashed_pw=utility.hash_password(request.form.get('password'))
+        database_manager.member_registration(request.form.get('username'), hashed_pw)
+        return redirect('/')
+
+    return render_template('registration.html',
+                           type='registration',
+                           comment_name='Registration',)
 
 
 if __name__ == "__main__":
