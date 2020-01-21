@@ -406,6 +406,16 @@ def registration():
                            type='registration',
                            comment_name='Registration',)
 
+@app.route('/user/<user_name>')
+def user_page(user_name):
+    datas = {}
+    datas['tag'] = database_manager.all_tag()
+    datas['user_name'] = user_name
+    datas['question'] = database_manager.question_of_user(user_name)
+    datas['answer'] = database_manager.answer_of_user(user_name)
+    datas['comment'] = database_manager.comment_of_user(user_name)
+    return render_template('user_page.html',
+                           data=datas)
 
 if __name__ == "__main__":
     app.run(

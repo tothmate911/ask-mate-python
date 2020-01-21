@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h2>{{ data['user_name'] }}</h2>
+    {% for question in data['question'] %}
+            <table>
+                <tr>
+                    <td  width="50">User name: {{ question['username'] }}</td>
+                    <td><h5>Title:</h5></td>
+                    <td  width="300"><a href="{{ url_for('view_up', question_id=question['id']) }}">{{ question['title'] | safe }}</a></td>
+                    <td><h5>Submission time:</h5></td>
+                    <td  width="150">{{ question['submission_time'] }}</td>
+                    <td><h5>View:</h5></td>
+                    <td  width="50">{{ question['view_number'] }}</td>
+                    <td><h5>Like:</h5></td>
+                    <td  width="20">{{ question['vote_number'] }}</td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><h5>Message:</h5></td>
+                    <td width="1000">{{ question['message'] | safe }}</td>
+                    <td>{{ question['image'] }}</td>
+                    {% if question['image'] is not none %}
+                        <td><img src="{{ question['image'] }}" alt="" height="300" width="260"></td>
+                    {% endif %}
+                </tr>
+            </table><br>
+            <table>
+            <tr>
+                <td width="100"><h5>Tags:</h5></td>
+                {% for tag in data['tag'] %}
+                    {% if tag['question_id'] == question['id'] %}
+                        <td><h6><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
+                            <sup><a href="{{ url_for('delete_tag', question_id=question['id'], tag_id=tag['id']) }}" onclick="return confirm('Are you sure you want to delete the tag?');">x</a></sup></h6></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            <tr>
+                <td><a href="{{ url_for('add_tag', question_id=question['id']) }}"><h6>Add new tag</h6></a></td>
+            </tr>
+            </table>
+            {% for comment in data['comment'] %}
+                {% if question['id'] == comment['question_id'] and comment['answer_id'] == None %}
+                    <table>
+                    <tr>
+                        <td width="150"></td>
+                        <td width="300">{{ comment['submission_time'] }}</td>
+                        <td width="300">Time's edited: {{ comment['edited_count'] }}</td>
+                        <td width="100"><a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit</a></td>
+                        <td width="50"><a href="{{ url_for('delete_comment', comment_id=comment['id']) }}" onclick="return confirm('Are you sure you want to delete the comment?');">Delete</a></td>
+                    </tr>
+                    <tr>
+                        <td width="150"></td>
+                        <td colspan="5">{{ comment['username'] }} say:{{ comment['message'] }}</td>
+                    </tr>
+                    </table>
+                {% endif %}
+            {% endfor %}
+        {% for answer in data['answer'] %}
+            {% if question['id'] == answer['question_id'] %}
+                <table>
+                    <tr>
+                        <td width="50"></td>
+                        <td  width="50">User name: {{ answer['username'] }}</td>
+                        <td><h5>Submission time:</h5></td>
+                        <td  width="150">{{ answer['submission_time'] }}</td>
+                        <td><h5>Like:</h5></td>
+                        <td  width="50">{{ answer['vote_number'] }}</td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td width="50"></td>
+                        <td><h5>Message:</h5></td>
+                        <td width="900">{{ answer['message'] | safe }}</td>
+                        {% if answer['image'] is not none %}
+                            <td><img src="{{ answer['image'] }}" alt="" height="300" width="260"></td>
+                        {% endif %}
+                    </tr>
+                </table>
+                {% for comment in data['comment'] %}
+                    {% if answer['id'] == comment['answer_id'] %}
+                        <table>
+                        <tr>
+                            <td width="150"></td>
+                            <td width="300">{{ comment['submission_time'] }}</td>
+                            <td width="300">Time's edited: {{ comment['edited_count'] }}</td>
+                            <td width="100"><a href="{{ url_for('edit_comment', comment_id=comment['id']) }}">Edit</a></td>
+                            <td width="50"><a href="{{ url_for('delete_comment', comment_id=comment['id']) }}" onclick="return confirm('Are you sure you want to delete the comment?');">Delete</a></td>
+                        </tr>
+                        <tr>
+                            <td width="150"></td>
+                            <td colspan="5">{{ comment['username'] }} say:{{ comment['message'] }}</td>
+                        </tr>
+                        </table>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
