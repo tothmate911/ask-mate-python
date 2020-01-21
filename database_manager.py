@@ -191,7 +191,7 @@ def vote(cursor, id, type, vote):
 def update_question(cursor, updated_question):
     cursor.execute(f"""
                     UPDATE question
-                    SET title = '{updated_question['title']}', message = '{updated_question['message']}'
+                    SET title = '{updated_question['title']}', message = '{updated_question['message']}', accepted_answer_id = {updated_question['accepted_answer_id']}
                     WHERE id = {updated_question['id']}""")
 
 
