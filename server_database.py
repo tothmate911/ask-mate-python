@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, request, url_for, session, escape
+from flask import Flask, render_template, redirect, request, url_for, session, escape,make_response
 import data_handler
 import database_manager
 import password_handler
 import os
+import utility
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
@@ -11,6 +12,8 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def main_page():
+    user = password_handler.get_logged_in_user()
+
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
     tags = database_manager.all_tag()
@@ -19,13 +22,13 @@ def main_page():
                            question=first_five_sorted_questions,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/lists')
 def route_lists():
-    if 'username' in session:
-        user = str(escape(session['username']))
+    user = password_handler.get_logged_in_user()
 
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -41,6 +44,8 @@ def route_lists():
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
+    user = password_handler.get_logged_in_user()
+
     if request.method == 'POST':
         new_question = {'submission_time': datetime.now(),
                         'title': request.form.get('title'),
@@ -67,7 +72,8 @@ def route_new_question():
                            form_url=url_for('route_new_question'),
                            comment_title='Question title',
                            comment_message='Question message',
-                           type='question')
+                           type='question',
+                           user=user)
 
 
 @app.route('/view_up/<question_id>')
@@ -80,6 +86,8 @@ def view_up(question_id):
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
+    user = password_handler.get_logged_in_user()
+
     question = database_manager.get_question_by_id(question_id)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -95,7 +103,8 @@ def route_question(question_id):
                            answer_comment=answer_comment,
                            order_by=order_by,
                            order_direction=order_direction,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/question/<question_id>/<image>')
@@ -105,9 +114,10 @@ def full_screen(question_id, image):
                            image=image_route,
                            question_id=question_id)
 
-
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
+    user = password_handler.get_logged_in_user()
+
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
                       'vote_number': request.form.get('vote_number'),
@@ -132,7 +142,8 @@ def route_new_answer(question_id):
                            comment_name='Add new answer',
                            form_url=url_for('route_new_answer', question_id=question_id),
                            comment_message='Answer message',
-                           question_id=question_id)
+                           question_id=question_id,
+                           user=user)
 
 
 @app.route('/question/<question_id>/delete')
@@ -180,6 +191,8 @@ def answer_vote_down(answer_id):
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
+    user = password_handler.get_logged_in_user()
+
     question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
         datas_from_edit = ['title', 'message']
@@ -192,11 +205,14 @@ def edit_question(question_id):
 
     return render_template('edit_question.html',
                            question=question,
-                           from_url=url_for('edit_question', question_id=question_id))
+                           from_url=url_for('edit_question', question_id=question_id),
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
+    user = password_handler.get_logged_in_user()
+
     answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
         datas_from_edit = ['message']
@@ -209,11 +225,14 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html',
                            answer=answer,
-                           from_url=url_for('edit_answer', answer_id=answer_id))
+                           from_url=url_for('edit_answer', answer_id=answer_id),
+                           user = user)
 
 
 @app.route('/search')
 def route_search():
+    user = password_handler.get_logged_in_user()
+
     search_phrase = request.args.get('search')
     questions = database_manager.search_in_questions(search_phrase)
     data_handler.remove_from_list(questions)
@@ -226,11 +245,14 @@ def route_search():
                            answer=answers,
                            type='search',
                            search_word=search_phrase,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
+    user = password_handler.get_logged_in_user()
+
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
@@ -242,11 +264,14 @@ def add_new_comment_to_question(question_id):
                            comment_name='Add Comment',
                            form_url=url_for('add_new_comment_to_question', question_id=question_id),
                            comment_message='Add Comment',
-                           question_id=question_id, )
+                           question_id=question_id,
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
+    user = password_handler.get_logged_in_user()
+
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
         new_comment = request.form.to_dict()
@@ -261,11 +286,14 @@ def add_new_comment_to_answer(answer_id):
                            form_url=url_for('add_new_comment_to_answer', answer_id=answer_id),
                            comment_message='Add Comment',
                            answer_id=answer_id,
-                           question_id=question_id)
+                           question_id=question_id,
+                           user=user)
 
 
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
+    user = password_handler.get_logged_in_user()
+
     comment = database_manager.get_comment_by_id(comment_id)[0]
     if request.method == 'POST':
         datas_from_edit = ['message']
@@ -279,7 +307,8 @@ def edit_comment(comment_id):
     return render_template('edit_answer.html',
                            comment=comment,
                            type='comment',
-                           from_url=url_for('edit_comment', comment_id=comment_id))
+                           from_url=url_for('edit_comment', comment_id=comment_id),
+                           user=user)
 
 
 @app.route('/comment/<comment_id>/delete')
@@ -288,9 +317,10 @@ def delete_comment(comment_id):
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
 
-
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
+    user = password_handler.get_logged_in_user()
+
     all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
         tag = {}
@@ -310,7 +340,8 @@ def add_tag(question_id):
 
     return render_template('add_tag.html',
                            question_id=question_id,
-                           tags=all_tag)
+                           tags=all_tag,
+                           user=user)
 
 
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
@@ -318,22 +349,26 @@ def delete_tag(question_id, tag_id):
     database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
 
-
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
+    user = password_handler.get_logged_in_user()
+
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
     tag = database_manager.tag_by_tag_id(tag_id)[0]
     return render_template('Search.html',
                            question=questions_by_tag_id,
                            tag=tag,
-                           tags=tags)
+                           tags=tags,
+                           user=user)
 
 @app.route('/all_user')
 def all_user():
+    user = password_handler.get_logged_in_user()
     users = database_manager.all_user()
     return render_template('list_users.html',
-                           users=users)
+                           users=users,
+                           user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -349,6 +384,22 @@ def login():
             return redirect(url_for('route_lists'))
 
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('route_lists'))
+
+@app.route('/registration', methods=['GET','POST'])
+def registration():
+    if request.method=='POST':
+        hashed_pw=utility.hash_password(request.form.get('password'))
+        database_manager.member_registration(request.form.get('username'), hashed_pw)
+        return redirect('/')
+
+    return render_template('registration.html',
+                           type='registration',
+                           comment_name='Registration',)
 
 @app.route('/user/<user_name>')
 def user_page(user_name):

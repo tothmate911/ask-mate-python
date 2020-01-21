@@ -1,4 +1,5 @@
 import database_common
+from datetime import datetime
 from psycopg2.extensions import AsIs
 
 
@@ -141,7 +142,7 @@ def delete_comment(cursor, comment_id):
 @database_common.connection_handler
 def search_in_questions(cursor, search_phrase):
     cursor.execute(F"""
-        SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
+        SELECT DISTINCT (question.id), question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
         FROM question 
         FULL JOIN answer a on question.id = a.question_id
         FULL JOIN question_tag qt on question.id = qt.question_id
@@ -305,6 +306,12 @@ def all_tag(cursor):
     tags = cursor.fetchall()
     return tags
 
+@database_common.connection_handler
+def member_registration(cursor, username,hashed_pw):
+    cursor.execute(f"""
+                    INSERT INTO users(user_name, hash_password, date)
+                    VALUES (%s,%s,%s)""",
+                   (username,hashed_pw,datetime.now()))
 
 @database_common.connection_handler
 def get_hashed_pw_for_username(cursor, username):
