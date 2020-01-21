@@ -11,6 +11,7 @@
         <li><a href="{{ url_for('main_page') }}">Home</a> </li>
         <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
         <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
+        <li><a href="{{ url_for('all_user') }}">Users</a></li>
         <li><a href="{{ url_for('login') }}">Login</a> </li>
         <li>{% if user is defined %}Signed in as: {{ user }} {% endif %}</li>
     </ul>
