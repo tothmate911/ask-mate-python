@@ -1,3 +1,4 @@
+import data_handler
 import database_common
 from psycopg2.extensions import AsIs
 
@@ -28,6 +29,7 @@ def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_d
 
 @database_common.connection_handler
 def add_question(cursor, new_question):
+    order = 'ASC' if order == 'ASC' else 'DSC'
     cursor.execute("""
                     INSERT INTO question (submission_time, view_number, vote_number, title, message, image)
                     VALUES (%s, %s, %s, %s, %s, %s);
@@ -42,9 +44,17 @@ def add_question(cursor, new_question):
 
 @database_common.connection_handler
 def add_answer(cursor, new_answer):
+    new_answer = data_handler.apostroph_change(new_answer)
+
     cursor.execute(f"""
                 INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-                VALUES ('{new_answer['submission_time']}', {new_answer['vote_number']}, {new_answer['question_id']}, '{new_answer['message']}', '{new_answer['image']}');     
+                VALUES (
+                    '{new_answer['submission_time']}',
+                    {new_answer['vote_number']}, 
+                    {new_answer['question_id']},
+                    '{new_answer['message']}',
+                    '{new_answer['image']}'
+                );     
     """)
 
 
@@ -141,7 +151,7 @@ def delete_comment(cursor, comment_id):
 @database_common.connection_handler
 def search_in_questions(cursor, search_phrase):
     cursor.execute(F"""
-        SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
+        SELECT DISTINCT (question.id), question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
         FROM question 
         FULL JOIN answer a on question.id = a.question_id
         FULL JOIN question_tag qt on question.id = qt.question_id
@@ -247,6 +257,7 @@ def add_tag(cursor, tag, question_id):
                     INSERT INTO question_tag (question_id, tag_id)
                     VALUES ({question_id}, {tag_id['id']});
     """)
+
 
 @database_common.connection_handler
 def add_old_tag(cursor, tag, question_id):

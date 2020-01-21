@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for,make_response
 import data_handler
 import database_manager
 import os
@@ -36,33 +36,33 @@ def route_lists():
 
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
-    if request.method == 'POST':
-        new_question = {'submission_time': datetime.now(),
-                        'title': request.form.get('title'),
-                        'message': request.form.get('message'),
-                        'view_number': request.form.get('view_number'),
-                        'vote_number': request.form.get('vote_number'),
-                        'image': request.form.get('image')}
-        if request.files['image'].filename != "":
+    if request.method == 'GET':
+        return render_template("add_question.html",
+                               comment_name='Add new question',
+                               form_url=url_for('route_new_question'),
+                               comment_title='Question title',
+                               comment_message='Question message',
+                               type='question')
 
-            image = request.files['image']
-            if not data_handler.allowed_image(image.filename):
-                return redirect(request.url)
-            else:
-                filename = secure_filename(image.filename)
+    new_question = {'submission_time': datetime.now(),
+                    'title': request.form.get('title'),
+                    'message': request.form.get('message'),
+                    'view_number': request.form.get('view_number'),
+                    'vote_number': request.form.get('vote_number'),
+                    'image': request.form.get('image')}
+    if request.files['image'].filename != "":
+        image = request.files['image']
+        if not data_handler.allowed_image(image.filename):
+            return redirect(request.url)
 
-                image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
-                new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
-        new_question = data_handler.apostroph_change(new_question)
-        database_manager.add_question(new_question)
-        return redirect('/lists')
+        filename = secure_filename(image.filename)
+        image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
+        new_question.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
 
-    return render_template("add_question.html",
-                           comment_name='Add new question',
-                           form_url=url_for('route_new_question'),
-                           comment_title='Question title',
-                           comment_message='Question message',
-                           type='question')
+    new_question = data_handler.apostroph_change(new_question)
+    database_manager.add_question(new_question)
+    return redirect('/lists')
+
 
 
 @app.route('/view_up/<question_id>')
@@ -116,7 +116,6 @@ def route_new_answer(question_id):
 
                 image.save(os.path.join(data_handler.IMAGE_UPLOAD_PATH, filename))
                 new_answer.update({'image': f"{data_handler.IMAGE_UPLOAD_PATH}/{image.filename}"})
-        new_answer = data_handler.apostroph_change(new_answer)
         database_manager.add_answer(new_answer)
         return redirect(f'/question/{question_id}')
 
@@ -319,9 +318,17 @@ def search_with_tag(tag_id):
                            tags=tags)
 
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
+
+@app.route('/registration', methods=['GET','POST'])
+def registration():
+    if request.method='POST':
+    return render_template('add_question.html',
+                           type=registration,
+                           comment_name='Registration',)
 
 
 if __name__ == "__main__":
