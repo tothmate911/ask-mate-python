@@ -424,6 +424,13 @@ def accept_answer(question_id, answer_id):
     database_manager.update_question(question)
     return redirect(f'/question/{question_id}')
 
+@app.route('/accepted_answer/cancel/<question_id>/')
+def cancel_answer(question_id):
+    question = database_manager.get_question_by_id(question_id)[0]
+    question['accepted_answer_id'] = 'null'
+    database_manager.update_question(question)
+    return redirect(f'/question/{question_id}')
+
 if __name__ == "__main__":
     app.run(
         host='0.0.0.0',

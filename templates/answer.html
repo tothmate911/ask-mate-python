@@ -131,6 +131,13 @@
                 <td width="30"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id']) }}">comment</a>
                 </td>
             </tr>
+            {% if question['username'] == user %}
+                <tr>
+                    <td width="100"></td>
+                    <td><a href="{{ url_for('cancel_answer', question_id=question['id'], answer_id=comment['id']) }}"
+                    onclick="return confirm('Are you sure how cancel your accepted answer?');">Cancel answer</a></td>
+                </tr>
+            {% endif %}
         </table>
         {% for a_comment in answer_comment %}
             {% if a_comment['answer_id'] == comment['id'] %}
