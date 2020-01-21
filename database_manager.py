@@ -315,3 +315,9 @@ def all_tag(cursor):
     """)
     tags = cursor.fetchall()
     return tags
+
+@database_common.connection_handler
+def member_registration(cursor, username,hashed_pw):
+    cursor.execute(f"""
+                    INSERT INTO users(user_name, hash_password, date)
+                    VALUES ({username},{hashed_pw},date())""")

@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, url_for,make_respon
 import data_handler
 import database_manager
 import os
+import utility
 from werkzeug.utils import secure_filename
 from datetime import datetime
 
@@ -326,8 +327,11 @@ def login():
 @app.route('/registration', methods=['GET','POST'])
 def registration():
     if request.method='POST':
-    return render_template('add_question.html',
-                           type=registration,
+        hashed_pw=utility.hash_password(request.form.get('password'))
+        database_manager.member_registration(request.form.get('username'), hashed_pw)
+
+    return render_template('registration.html',
+                           type='registration',
                            comment_name='Registration',)
 
 
