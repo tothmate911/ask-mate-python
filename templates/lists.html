@@ -47,6 +47,7 @@
                 <li><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></li>
             </ul>
             <div id="question-submission-data-box">
+                <p>Asked by {{ quest['username'] }}</p>
                 <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
             </div>
         </td>
