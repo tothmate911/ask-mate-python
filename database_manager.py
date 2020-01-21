@@ -314,3 +314,11 @@ def get_hashed_pw_for_username(cursor, username):
                     """, {'user_name': username})
     hashed_pw_for_username = cursor.fetchone().get('hash_password', None)
     return hashed_pw_for_username
+
+@database_common.connection_handler
+def all_user(cursor):
+    cursor.execute("""
+                    SELECT user_name FROM users
+                    ORDER BY user_name;
+    """)
+    return cursor.fetchall()
