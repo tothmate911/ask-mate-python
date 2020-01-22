@@ -81,7 +81,8 @@ def route_new_question():
 @app.route('/view_up/<question_id>')
 def view_up(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
+    if user == None or user != question_owner:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
     question['view_number'] = question['view_number'] + 1
@@ -155,7 +156,8 @@ def route_new_answer(question_id):
 @app.route('/question/<question_id>/delete')
 def delete_question(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
+    if user == None or user != question_owner:
         return redirect('/')
     data_handler.delete_image_by_id(question_id)
     database_manager.delete_question(question_id)
@@ -165,7 +167,8 @@ def delete_question(question_id):
 @app.route('/answer/<answer_id>/delete')
 def delete_answer(answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
+    if user == None or user != answer_owner:
         return redirect('/')
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     data_handler.delete_image_by_id(answer_id, answer=True)
@@ -193,6 +196,9 @@ def question_vote_down(question_id):
 
 @app.route('/answer/<answer_id>/vote_up')
 def answer_vote_up(answer_id):
+    user = password_handler.get_logged_in_user()
+    if user == None:
+        return redirect('/')
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
     database_manager.vote(answer_id, type='answer', vote='+')
@@ -213,7 +219,8 @@ def answer_vote_down(answer_id):
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def edit_question(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
+    if user == None or user != question_owner:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
@@ -229,14 +236,14 @@ def edit_question(question_id):
     return render_template('edit_answer.html',
                            question=question,
                            from_url=url_for('edit_question', question_id=question_id),
-                           user=user,
                            type='question')
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
 def edit_answer(answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
+    if user == None or user != answer_owner:
         return redirect('/')
     answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
@@ -250,8 +257,7 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html',
                            answer=answer,
-                           from_url=url_for('edit_answer', answer_id=answer_id),
-                           user = user)
+                           from_url=url_for('edit_answer', answer_id=answer_id))
 
 
 @app.route('/search')
@@ -321,7 +327,8 @@ def add_new_comment_to_answer(answer_id):
 @app.route('/comment/<comment_id>/edit', methods=['GET', 'POST'])
 def edit_comment(comment_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    comment_owner = database_manager.get_answer_by_id(comment_id)[0]['username']
+    if user == None or user != comment_owner:
         return redirect('/')
     comment = database_manager.get_comment_by_id(comment_id)[0]
     if request.method == 'POST':
@@ -336,14 +343,14 @@ def edit_comment(comment_id):
     return render_template('edit_answer.html',
                            comment=comment,
                            type='comment',
-                           from_url=url_for('edit_comment', comment_id=comment_id),
-                           user=user)
+                           from_url=url_for('edit_comment', comment_id=comment_id))
 
 
 @app.route('/comment/<comment_id>/delete')
 def delete_comment(comment_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    comment_owner = database_manager.get_answer_by_id(comment_id)[0]['username']
+    if user == None or user != comment_owner:
         return redirect('/')
     comment = database_manager.get_comment_by_id(comment_id)[0]
     database_manager.delete_comment(comment_id)
@@ -352,7 +359,8 @@ def delete_comment(comment_id):
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    question_owner = database_manager.get_answer_by_id(question_id)[0]['username']
+    if user == None or user != question_owner:
         return redirect('/')
     all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
@@ -380,7 +388,8 @@ def add_tag(question_id):
 @app.route('/question/<question_id>/tag/<tag_id>/delete')
 def delete_tag(question_id, tag_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    question_owner = database_manager.get_answer_by_id(question_id)[0]['username']
+    if user == None or user != question_owner:
         return redirect('/')
     database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
