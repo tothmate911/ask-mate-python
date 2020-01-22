@@ -81,6 +81,17 @@ CREATE TABLE users (
     reputation integer DEFAULT 0
 );
 
+DROP TABLE IF EXISTS public.reputation;
+CREATE TABLE votes (
+    user_name varchar(15),
+    question_id integer,
+    F
+
+
+    date timestamp without time zone,
+    reputation integer DEFAULT 0
+);
+
 ALTER TABLE ONLY users
     ADD CONSTRAINT pk_user_name PRIMARY KEY (user_name);
 
