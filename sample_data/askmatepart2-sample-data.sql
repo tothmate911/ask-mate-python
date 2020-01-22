@@ -30,7 +30,8 @@ CREATE TABLE question (
     title text,
     message text,
     image text,
-    username varchar(15)
+    username varchar(15),
+    accepted_answer_id integer
 );
 
 DROP TABLE IF EXISTS public.answer;
