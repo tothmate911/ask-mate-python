@@ -52,7 +52,8 @@ def route_new_question():
                         'message': request.form.get('message'),
                         'view_number': request.form.get('view_number'),
                         'vote_number': request.form.get('vote_number'),
-                        'image': request.form.get('image')}
+                        'image': request.form.get('image'),
+                        'username': user}
         if request.files['image'].filename != "":
 
             image = request.files['image']
@@ -370,7 +371,7 @@ def all_user():
     users = database_manager.all_user()
     return render_template('list_users.html',
                            users=users,
-                           user=user)
+                           log_user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -385,7 +386,8 @@ def login():
             session['username'] = login_username
             return redirect(url_for('route_lists'))
 
-    return render_template('login.html')
+    return render_template('login.html',
+                           user=None)
 
 @app.route('/logout')
 def logout():
@@ -395,8 +397,11 @@ def logout():
 @app.route('/registration', methods=['GET','POST'])
 def registration():
     if request.method=='POST':
+        registration_username = request.form.get('username')
         hashed_pw=utility.hash_password(request.form.get('password'))
-        database_manager.member_registration(request.form.get('username'), hashed_pw)
+        database_manager.member_registration(registration_username, hashed_pw)
+        # session['username'] = registration_username
+
         return redirect('/')
 
     return render_template('registration.html',
