@@ -190,7 +190,9 @@ def question_vote_up(question_id):
         database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
         database_manager.vote(question_id, type='question', vote='+')
 
-    database_manager.update_reputation( )
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
+    database_manager.update_reputation(question_owner)
+
     return redirect(url_for('route_question', question_id=question_id))
 
 
@@ -209,6 +211,9 @@ def question_vote_down(question_id):
         database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
         database_manager.vote(question_id, type='question', vote='-')
 
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
+    database_manager.update_reputation(question_owner)
+    
     return redirect(url_for('route_question', question_id=question_id))
 
 
@@ -229,6 +234,9 @@ def answer_vote_up(answer_id):
         database_manager.update_user_vote_for_answer(user, answer_id, new_user_vote_for_answer)
         database_manager.vote(answer_id, type='answer', vote='+')
 
+    answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
+    database_manager.update_reputation(answer_owner)
+    
     return redirect(f'/question/{question_id}')
 
 
@@ -248,6 +256,9 @@ def answer_vote_down(answer_id):
         new_user_vote_for_answer = current_user_vote_for_answer - 1
         database_manager.update_user_vote_for_answer(user, answer_id, new_user_vote_for_answer)
         database_manager.vote(answer_id, type='answer', vote='-')
+
+    answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
+    database_manager.update_reputation(answer_owner)
 
     return redirect(f'/question/{question_id}')
 

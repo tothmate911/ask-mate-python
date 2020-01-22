@@ -468,7 +468,51 @@ def update_user_vote_for_answer(cursor, user, answer_id, vote_value):
                     WHERE user_name = %(user_name)s and answer_id = %(answer_id)s
                     """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
 
+@database_common.connection_handler
+def update_reputation(cursor, user):
+    cursor.execute("""
+                    SELECT question.username,
+                           SUM(CASE votes.vote_value
+                                   WHEN 1 THEN 5
+                                   WHEN -1 THEN -2
+                                   ELSE 0
+                               END) AS weighed_vote_value
+                    FROM votes
+                             JOIN question
+                                  ON votes.question_id = question.id
+                    WHERE question.username = %(user_name)s
+                    GROUP BY question.username; 
+                    """, {'user_name': user})
+    wighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
 
-def update_reputation():
+    cursor.execute("""
+                        SELECT answer.username,
+                               SUM(CASE votes.vote_value
+                                       WHEN 1 THEN 10
+                                       WHEN -1 THEN -2
+                                       ELSE 0
+                                   END) AS weighed_vote_value
+                        FROM votes
+                                 JOIN answer
+                                      ON votes.answer_id = answer.id
+                        WHERE answer.username = %(user_name)s
+                        GROUP BY answer.username; 
+                        """, {'user_name': user})
+    weighed_answer_vote_value = cursor.fetchone()['weighed_vote_value']
 
-    return None
+    cursor.execute("""
+                    SELECT answer.username, COUNT(*) * 15 AS weighed_accepted_value
+                    FROM question
+                             JOIN answer
+                                  ON question.accepted_answer_id = answer.id
+                    WHERE answer.username = %(user_name)s
+                    GROUP BY answer.username
+                    """, {'user_name': user})
+    weighed_accepted_value = cursor.fetchone()['weighed_accepted_value']
+
+    reputation = wighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
+    cursor.execute("""
+                    UPDATE users
+                    SET reputation = %(reputation)s
+                    WHERE user_name = %(user_name)s;
+                    """, {'reputation': reputation, 'user_name': user})
