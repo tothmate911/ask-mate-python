@@ -4,9 +4,11 @@ from psycopg2.extensions import AsIs
 
 
 @database_common.connection_handler
-def get_all_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+def get_all_questions_sorted_with_reputation(cursor, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
-                    SELECT * FROM question
+                    SELECT * 
+                    FROM question JOIN users
+                    ON question.username = users.user_name
                     ORDER BY {order_by} {order_direction};
                     """)
     all_questions_sorted = cursor.fetchall()
@@ -14,11 +16,13 @@ def get_all_questions_sorted(cursor, order_by='submission_time', order_direction
 
 
 @database_common.connection_handler
-def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='DESC'):
+def get_five_latest_questions_sorted_with_reputation(cursor, order_by='submission_time', order_direction='DESC'):
     cursor.execute(f"""
                     SELECT * FROM
                     (
-                        SELECT * FROM question
+                        SELECT *
+                        FROM question JOIN users
+                        ON question.username = users.user_name
                         ORDER BY submission_time DESC
                         LIMIT 5
                     ) AS T1 ORDER BY {order_by} {order_direction};

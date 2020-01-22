@@ -17,9 +17,10 @@ def main_page():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'desc')
     tags = database_manager.all_tag()
-    first_five_sorted_questions = database_manager.get_five_latest_questions_sorted(order_by, order_direction)
+    first_five_sorted_questions_with_reputation = database_manager.get_five_latest_questions_sorted_with_reputation(
+        order_by, order_direction)
     return render_template("lists.html",
-                           question=first_five_sorted_questions,
+                           question=first_five_sorted_questions_with_reputation,
                            order_by=order_by,
                            order_direction=order_direction,
                            tags=tags,
@@ -33,9 +34,10 @@ def route_lists():
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     tags = database_manager.all_tag()
-    sorted_questions = database_manager.get_all_questions_sorted(order_by, order_direction)
+    sorted_questions_with_reputation = database_manager.get_all_questions_sorted_with_reputation(order_by,
+                                                                                                 order_direction)
     return render_template("lists.html",
-                           question=sorted_questions,
+                           question=sorted_questions_with_reputation,
                            order_by=order_by,
                            order_direction=order_direction,
                            tags=tags,
