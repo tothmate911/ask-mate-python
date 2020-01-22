@@ -483,7 +483,10 @@ def update_reputation(cursor, user):
                     WHERE question.username = %(user_name)s
                     GROUP BY question.username; 
                     """, {'user_name': user})
-    wighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
+    if cursor.fetchone() == None:
+        weighed_question_vote_value = 0
+    else:
+        weighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
 
     cursor.execute("""
                         SELECT answer.username,
@@ -498,7 +501,10 @@ def update_reputation(cursor, user):
                         WHERE answer.username = %(user_name)s
                         GROUP BY answer.username; 
                         """, {'user_name': user})
-    weighed_answer_vote_value = cursor.fetchone()['weighed_vote_value']
+    if cursor.fetchone() == None:
+        weighed_answer_vote_value = 0
+    else:
+        weighed_answer_vote_value = cursor.fetchone()['weighed_vote_value']
 
     cursor.execute("""
                     SELECT answer.username, COUNT(*) * 15 AS weighed_accepted_value
@@ -508,9 +514,12 @@ def update_reputation(cursor, user):
                     WHERE answer.username = %(user_name)s
                     GROUP BY answer.username
                     """, {'user_name': user})
-    weighed_accepted_value = cursor.fetchone()['weighed_accepted_value']
+    if cursor.fetchone() == None:
+        weighed_accepted_value = 0
+    else:
+        weighed_accepted_value = cursor.fetchone()['weighed_accepted_value']
 
-    reputation = wighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
+    reputation = weighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
     cursor.execute("""
                     UPDATE users
                     SET reputation = %(reputation)s
