@@ -26,7 +26,7 @@
     <table class="question">
     <tr>
         <td class="question-statistics">
-            <p>ID: {{ quest['id'] }}</p>
+            <p>{{ quest['username'] }}</p>
             <p class="show-big">{{ quest['vote_number'] }}</p>
             <p>votes</p>
             <p class="show-big" >{{ quest['view_number'] }}</p>
@@ -38,13 +38,9 @@
             <ul class="tags">
                 {% for tag in tags %}
                     {% if tag['question_id'] == quest['id'] %}
-                        <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
-                            <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}" onclick="return confirm('Are you sure you want to delete the tag?');">x</a></sup></li>
+                        <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a></li>
                     {% endif %}
                 {% endfor %}
-            </ul>
-            <ul class="tag-buttons">
-                <li><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></li>
             </ul>
             <div id="question-submission-data-box">
                 <p>Asked by {{ quest['username'] }}</p>

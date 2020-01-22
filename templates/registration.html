@@ -1,15 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User Registration</title>
-</head>
-<body>
-<h1 id="title">User Registration</h1>
-<form action="{{ url_for ('registration')}}" method="post">
-    <input type="text" name="username" maxlength="15"><br>
-    <input type="password" name="password" maxlength="10"><br>
-    <input type="submit" value="Submit">
-</form>
-</body>
-</html>
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% if type == 'registration' %}
+    <h1 id="title">User Registration</h1>
+    <form action="{{ url_for ('registration')}}" method="post">
+        <input type="text" name="username" maxlength="15" placeholder="username"><br>
+        <input type="password" name="password" maxlength="20" placeholder="password"><br>
+        <input type="submit" value="Submit">
+    </form>
+        {% if message == 'registration fail' %}
+        <p id="reg message" hidden></p>
+        <script>function reg_fail() {
+            alert("This user name is reserved. Give the another user name!");
+            }
+            document.getElementById("reg message").innerHTML = reg_fail();
+        </script>
+        {% endif %}
+    {% else %}
+        <p  id="message" hidden></p>
+        <h2>Please enter your login information!</h2>
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="text" name="username" placeholder="username"><br>
+            <input type="password" name="password" placeholder="password"><br>
+            <button type="submit">Login</button>
+        </form>
+        {% if message %}
+            <script>function message_window() {
+            alert("Wrong user name, or password. Try again.");
+            }
+            document.getElementById("message").innerHTML = message_window();
+            </script>
+        {% endif %}
+    {% endif %}
+{% endblock %}
