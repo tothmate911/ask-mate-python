@@ -11,6 +11,21 @@
             </p>
             <button type="submit" value="Edit comment">Edit comment</button>
         </form>
+    {% elif type == 'question' %}
+        <h1>Edit question</h1>
+        <p>Question id: {{ question['id'] }}</p>
+        <form action="{{ from_url }}" method="post">
+            <p>
+                <label for="title">Title:</label><br>
+                <input type="text" name="title" id="title" size="40" value="{{ question['title'] }}">
+            </p>
+            <p>
+                <label for="message">Message:</label><br>
+                <textarea name="message" id="message" cols="80" rows="10" required>{{ question['message'] }}</textarea>
+            </p>
+            <button type="submit" value="Edit question">Edit question</button>
+
+        </form>
     {%else%}
         <h1>Edit answer</h1>
         <p>Answer id: {{ answer['id'] }}</p>
