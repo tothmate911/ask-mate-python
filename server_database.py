@@ -80,10 +80,6 @@ def route_new_question():
 
 @app.route('/view_up/<question_id>')
 def view_up(question_id):
-    user = password_handler.get_logged_in_user()
-    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
-    if user == None or user != question_owner:
-        return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
     question['view_number'] = question['view_number'] + 1
     database_manager.view_up(question['id'])
