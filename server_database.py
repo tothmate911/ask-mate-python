@@ -90,7 +90,6 @@ def route_question(question_id):
     user = password_handler.get_logged_in_user()
 
     question = database_manager.get_question_by_id(question_id)
-    print(question)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
     sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
@@ -259,6 +258,7 @@ def add_new_comment_to_question(question_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment['username'] = user
         new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
@@ -279,6 +279,7 @@ def add_new_comment_to_answer(answer_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment['username'] = user
         new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')

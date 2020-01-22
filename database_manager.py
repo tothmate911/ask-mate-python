@@ -39,7 +39,8 @@ def add_question(cursor, new_question):
                     new_question['title'],
                     new_question['message'],
                     new_question['image'],
-                    new_question['username']))
+                    new_question['username']
+                    ))
 
 
 @database_common.connection_handler
