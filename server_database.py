@@ -401,14 +401,19 @@ def registration():
     if request.method=='POST':
         registration_username = request.form.get('username')
         hashed_pw=utility.hash_password(request.form.get('password'))
+        users = database_manager.all_user()
+        for user in users:
+            if user['user_name'] == registration_username:
+                return render_template('registration.html',
+                                       type='registration',
+                                       message='registration fail')
         database_manager.member_registration(registration_username, hashed_pw)
         # session['username'] = registration_username
 
         return redirect('/')
 
     return render_template('registration.html',
-                           type='registration',
-                           comment_name='Registration',)
+                           type='registration')
 
 @app.route('/user/<user_name>')
 def user_page(user_name):

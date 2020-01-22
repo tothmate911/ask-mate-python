@@ -8,6 +8,14 @@
         <input type="password" name="password" maxlength="20" placeholder="password"><br>
         <input type="submit" value="Submit">
     </form>
+        {% if message == 'registration fail' %}
+        <p id="reg message" hidden></p>
+        <script>function reg_fail() {
+            alert("This user name is reserved. Give the another user name!");
+            }
+            document.getElementById("reg message").innerHTML = reg_fail();
+        </script>
+        {% endif %}
     {% else %}
         <p  id="message" hidden></p>
         <h2>Please enter your login information!</h2>
