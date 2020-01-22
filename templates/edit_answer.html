@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-{% if user != None %}
     {% if type=="comment"%}
         <h1>Edit comment</h1>
         <p>Comment id: {{ comment['id'] }}</p>
@@ -38,5 +37,4 @@
             <button type="submit" value="Edit answer">Edit answer</button>
         </form>
     {%endif%}
-{% endif %}
 {% endblock %}
