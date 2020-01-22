@@ -124,7 +124,7 @@ ALTER TABLE ONLY question_tag
 
 INSERT INTO users VALUES ('Bala', '010000000', '2017-04-28 07:29:00');
 INSERT INTO users VALUES ('Pivi', '000000000', '2017-04-27 07:29:00');
-INSERT INTO users VALUES ('AskMate', '000000001', '2017-04-26 07:29:00');
+INSERT INTO users VALUES ('AskMate', '$2b$12$GWsa6mRqxM1Ri98rSI7kpOtpOT9xot5rz.kWg4.jpECIfRuVUYWju', '2017-04-26 07:29:00');
 
 INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL, 'Bala');
 INSERT INTO question VALUES (1, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
