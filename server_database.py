@@ -369,7 +369,8 @@ def all_user():
     users = database_manager.all_user()
     return render_template('list_users.html',
                            users=users,
-                           log_user=user)
+                           log_user=user,
+                           user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -11,7 +11,7 @@
     <li><a href="{{ url_for('main_page') }}">Home</a></li>
     <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
     <li><a href="{{ url_for('all_user') }}">Users</a></li>
-    {% if user != None %}
+    {% if user and user != None %}
         <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
         <li>Signed in as: {{ user }}</li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>

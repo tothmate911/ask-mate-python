@@ -326,7 +326,7 @@ def get_hashed_pw_for_username(cursor, username):
 @database_common.connection_handler
 def all_user(cursor):
     cursor.execute("""
-                    SELECT user_name FROM users
+                    SELECT user_name, reputation FROM users
                     ORDER BY user_name;
     """)
     return cursor.fetchall()

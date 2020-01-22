@@ -77,7 +77,8 @@ DROP SEQUENCE IF EXISTS public.user_name;
 CREATE TABLE users (
     user_name varchar(15) NOT NULL,
     hash_password text,
-    date timestamp without time zone
+    date timestamp without time zone,
+    reputation integer DEFAULT 0
 );
 
 ALTER TABLE ONLY users
