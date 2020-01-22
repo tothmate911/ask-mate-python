@@ -485,8 +485,9 @@ def update_reputation(cursor, user):
                     """, {'user_name': user})
     if cursor.fetchone() == None:
         weighed_question_vote_value = 0
-    else:
-        weighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
+    elif type(cursor.fetchone()) != None:
+        weighed_question_vote_value = 100
+        # weighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
 
     cursor.execute("""
                         SELECT answer.username,
