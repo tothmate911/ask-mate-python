@@ -95,6 +95,16 @@ a.question-title:hover, ul.ribbon a:hover {
     border: 1px darkred solid;
 }
 
+#answer_listed {
+    background-color: gold;
+    margin: 1em;
+    border-radius: 0.6em;
+    border: 1px darkred solid;
+    border-collapse: collapse;
+    width: 80%;
+    float: right;
+}
+
 b {
     color: green;
     background-color: aqua;
@@ -127,6 +137,11 @@ td.question-statistics p {
     margin: 0;
 }
 
+td.answer-statistics {
+    float: right;
+}
+
+
 p.show-big {
     font-size: 1.6em;
     padding-top: 0.5em;
@@ -142,7 +157,11 @@ td.question-content {
     width: 100%;
     position: relative;
     border-left: darkred 1px solid;
+}
 
+td.answer-content {
+    width: 100%;
+    position: relative;
 }
 
 a.question-title{
