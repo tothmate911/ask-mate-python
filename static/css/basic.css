@@ -12,16 +12,18 @@ body {
     padding: 2%;
 }
 
-h1 {
+h1.label {
     font-size: 4em;
     font-style: normal;
     margin: 2%;
     padding: 1% 9%;
     color : gold;
+    text-align: center;
 }
-strong {
+strong.label {
     color: darkred;
     font-style: italic;
+    text-align: center;
 }
 
 h5 {
@@ -186,4 +188,19 @@ ul.tag-buttons li a {
 
 ul.tag-buttons li a:hover {
     color: red;
+}
+
+p.login {
+    text-align: right;
+    float: right;
+    letter-spacing: 0em;
+    font-weight: bold;
+    margin: 1px 1px 1px 1px;
+    word-spacing: 3px;
+}
+
+h3.login {
+    align-items: start;
+    float: left;
+    margin: 20px 10px 1px 1px;
 }
