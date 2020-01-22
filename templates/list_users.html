@@ -4,7 +4,11 @@
     {% for user in users %}
         <table>
             <tr>
+                {% if log_user != None %}
+                <td><a href="{{ url_for('user_page', user_name = user['user_name']) }}">{{ user['user_name'] }}</a></td>
+                {% else %}
                 <td>{{ user['user_name'] }}</td>
+                {% endif %}
             </tr>
         </table>
     {% endfor %}
