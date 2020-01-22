@@ -21,16 +21,22 @@
 {% for quest in question %}
     <div id="question_listed">
     <table class="question">
+    <tr class="question_line">
+        <td class="question-statistics">
+            <p class="user"><a href="{{ url_for('user_page', user_name=quest['username']) }}">{{ quest['username'] }}</a></p>
+        </td>
+        <td>
+            <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
+        </td>
+    </tr>
     <tr>
         <td class="question-statistics">
-            <p>{{ quest['username'] }}</p>
+            <p>votes:</p>
             <p class="show-big">{{ quest['vote_number'] }}</p>
-            <p>votes</p>
+            <p>views:</p>
             <p class="show-big" >{{ quest['view_number'] }}</p>
-            <p>views</p>
         </td>
         <td class="question-content">
-            <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
             <p class="question-message">{{ quest['message'] }}</p>
             <ul class="tags">
                 {% for tag in tags %}
@@ -39,16 +45,19 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <div id="question-submission-data-box">
-                <p>Asked by {{ quest['username'] }}</p>
-                <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
-            </div>
         </td>
         <td class="question-image">
             <div id="question-list-image">
                 {% if quest['image'] is not none %}
                     <img src="{{ quest['image'] }}" alt="image" height="300" width="260">
                 {% endif %}
+            </div>
+        </td>
+    </tr>
+    <tr class="question_down_line">
+        <td>
+            <div id="question-submission-data-box">
+                <div id="question-submission-data">{{ quest['submission_time'] }}</div>
             </div>
         </td>
     </tr>

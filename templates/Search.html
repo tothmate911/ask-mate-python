@@ -7,44 +7,50 @@
         <h3>Search with: {{ tag['name'] }} tag</h3>
     {% endif %}
     {% for quest in question %}
-            <table>
-                <tr>
-                    <td><h5>ID:</h5></td>
-                    <td  width="50">{{ quest['id'] }}</td>
-                    <td><h5>Title:</h5></td>
-                    <td  width="300"><a href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a></td>
-                    <td><h5>Submission time:</h5></td>
-                    <td  width="150">{{ quest['submission_time'] }}</td>
-                    <td><h5>View:</h5></td>
-                    <td  width="50">{{ quest['view_number'] }}</td>
-                    <td><h5>Like:</h5></td>
-                    <td  width="20">{{ quest['vote_number'] }}</td>
-                </tr>
-            </table>
-            <table>
-                <tr>
-                    <td><h5>Message:</h5></td>
-                    <td width="1000">{{ quest['message'] | safe }}</td>
-                    <td>{{ quest['image'] }}</td>
+        <div id="question_listed">
+        <table class="question">
+        <tr class="question_line">
+            <td class="question-statistics">
+                <p class="user"><a href="{{ url_for('user_page', user_name=quest['username']) }}">{{ quest['username'] }}</a></p>
+            </td>
+            <td>
+                <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
+            </td>
+        </tr>
+        <tr>
+            <td class="question-statistics">
+                <p>votes:</p>
+                <p class="show-big">{{ quest['vote_number'] }}</p>
+                <p>views:</p>
+                <p class="show-big" >{{ quest['view_number'] }}</p>
+            </td>
+            <td class="question-content">
+                <p class="question-message">{{ quest['message'] }}</p>
+                <ul class="tags">
+                    {% for tag in tags %}
+                        {% if tag['question_id'] == quest['id'] %}
+                            <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </td>
+            <td class="question-image">
+                <div id="question-list-image">
                     {% if quest['image'] is not none %}
-                        <td><img src="{{ quest['image'] }}" alt="" height="300" width="260"></td>
+                        <img src="{{ quest['image'] }}" alt="image" height="300" width="260">
                     {% endif %}
-                </tr>
-            </table><br>
-            <table>
-            <tr>
-                <td width="100"><h5>Tags:</h5></td>
-                {% for tag in tags %}
-                    {% if tag['question_id'] == quest['id'] %}
-                        <td><h6><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a>
-                            <sup><a href="{{ url_for('delete_tag', question_id=quest['id'], tag_id=tag['id']) }}" onclick="return confirm('Are you sure you want to delete the tag?');">x</a></sup></h6></td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-            <tr>
-                <td><a href="{{ url_for('add_tag', question_id=quest['id']) }}"><h6>Add new tag</h6></a></td>
-            </tr>
-            </table>
+                </div>
+            </td>
+        </tr>
+        <tr class="question_down_line">
+            <td>
+                <div id="question-submission-data-box">
+                    <div id="question-submission-data">{{ quest['submission_time'] }}</div>
+                </div>
+            </td>
+        </tr>
+        </table>
+        </div>
         {% if type == 'search' %}
             {% for comment in answer %}
                 {% if quest['id'] == comment['question_id'] %}

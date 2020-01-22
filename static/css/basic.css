@@ -71,15 +71,17 @@ ul.ribbon {
 
 ul.ribbon li {
     display: inline;
-    padding: 0 2%;
+    padding: 0 6.7%;
     text-transform: uppercase;
     color: gold;
     font-size: 20px;
+    font-weight: bold;
 }
 
 ul.ribbon li a {
     color: gold;
     font: normal 1em arial;
+    font-weight: bold;
 }
 
 a.question-title:hover, ul.ribbon a:hover {
@@ -147,6 +149,8 @@ a.question-title{
     color: black;
     font-weight: bold;
     display: inline-block;
+    align-content: center;
+    word-wrap: break-word;
 }
 
 p.question-message {
@@ -161,13 +165,12 @@ table.tags {
 
 #question-submission-data-box {
     display: inline-block;
-    float: right;
+    float: left;
 }
 
 #question-submission-data {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
+    position: relative;
+
 }
 
 ul.tags li {
@@ -175,6 +178,9 @@ ul.tags li {
     border: 1px solid darkred;
     border-radius: 5px;
     padding: 0.5em;
+    font-size: 10px;
+    float: left;
+    align-items: start;
 }
 
 ul.tag-buttons li {
@@ -183,7 +189,7 @@ ul.tag-buttons li {
 
 ul.tag-buttons li a {
     color: black;
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 ul.tag-buttons li a:hover {
@@ -199,8 +205,26 @@ p.login {
     word-spacing: 3px;
 }
 
-h3.login {
+h2.login {
     align-items: start;
     float: left;
-    margin: 20px 10px 1px 1px;
+    margin: 130px 10px 1px 1px;
+    background-color: gold;
+}
+
+p.user {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+tr.question_line {
+    border-bottom: #9C1A1C 1px solid;
+}
+
+tr.question_down_line {
+    border-top: #9C1A1C 1px solid;
+}
+
+p.login {
+    margin: 95px 1px 1px 1px
 }

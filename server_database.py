@@ -233,7 +233,8 @@ def edit_question(question_id):
     return render_template('edit_answer.html',
                            question=question,
                            from_url=url_for('edit_question', question_id=question_id),
-                           type='question')
+                           type='question',
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
@@ -254,7 +255,8 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html',
                            answer=answer,
-                           from_url=url_for('edit_answer', answer_id=answer_id))
+                           from_url=url_for('edit_answer', answer_id=answer_id),
+                           user=user)
 
 
 @app.route('/search')
@@ -342,7 +344,8 @@ def edit_comment(comment_id):
     return render_template('edit_answer.html',
                            comment=comment,
                            type='comment',
-                           from_url=url_for('edit_comment', comment_id=comment_id))
+                           from_url=url_for('edit_comment', comment_id=comment_id),
+                           user=user)
 
 
 @app.route('/comment/<comment_id>/delete')
@@ -413,7 +416,7 @@ def all_user():
     users = database_manager.all_user()
     return render_template('list_users.html',
                            users=users,
-                           log_user=user)
+                           user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -471,7 +474,8 @@ def user_page(user_name):
     datas['answer'] = database_manager.answer_of_user(user_name)
     datas['comment'] = database_manager.comment_of_user(user_name)
     return render_template('user_page.html',
-                           data=datas)
+                           data=datas,
+                           user=user)
 
 @app.route('/accepted_answer/<question_id>/<answer_id>')
 def accept_answer(question_id, answer_id):

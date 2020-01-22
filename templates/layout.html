@@ -9,8 +9,8 @@
 {% if user == None %}
     <p class="login"><a href="{{ url_for('login') }}">Login</a> or <a href="{{url_for('registration')}}">Registration</a></p>
 {% else %}
-    <h3 class="login"><a href="{{ url_for('user_page', user_name=user) }}">{{ user }}</a></h3><br>
-    <p class="login"><a href="{{ url_for('logout') }}">Logout</a></p>
+    <h2 class="login"><a href="{{ url_for('user_page', user_name=user) }}">{{ user }}</a></h2><br>
+    <p class="login"><a href="{{ url_for('logout') }}"><img src="/static/images/new_logout.png" height="50" width="50"></a></p>
 {% endif %}
 <h1 class="label">Ask <strong class="label">Mate</strong></h1>
 <ul class="ribbon">
@@ -18,7 +18,9 @@
     <li><a href="{{ url_for('route_lists') }}">Show all questions</a></li>
     <li><a href="{{ url_for('all_user') }}">Users</a></li>
     {% if user != None %}
-        <li><a href="{{ url_for('route_new_question') }}">Add new question</a></li>
+        <li><a href="{{ url_for('route_new_question') }}">New question</a></li>
+    {% else %}
+        <li>New question</li>
     {% endif %}
 </ul>
 <div id="content">
