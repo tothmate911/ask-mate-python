@@ -23,7 +23,7 @@ ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS pk_user_name C
 DROP TABLE IF EXISTS public.question;
 DROP SEQUENCE IF EXISTS public.question_id_seq;
 CREATE TABLE question (
-    id serial NOT NULL,
+    id serial,
     submission_time timestamp without time zone,
     view_number integer,
     vote_number integer,
@@ -77,17 +77,6 @@ DROP SEQUENCE IF EXISTS public.user_name;
 CREATE TABLE users (
     user_name varchar(15) NOT NULL,
     hash_password text,
-    date timestamp without time zone,
-    reputation integer DEFAULT 0
-);
-
-DROP TABLE IF EXISTS public.reputation;
-CREATE TABLE votes (
-    user_name varchar(15),
-    question_id integer,
-    F
-
-
     date timestamp without time zone,
     reputation integer DEFAULT 0
 );
@@ -168,3 +157,14 @@ SELECT pg_catalog.setval('tag_id_seq', 3, true);
 INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
+
+DROP TABLE IF EXISTS public.votes;
+CREATE TABLE votes (
+    user_name varchar(15),
+    question_id integer,
+    answer_id integer,
+    vote_value integer CHECK (vote_value BETWEEN -1 and 1),
+    FOREIGN KEY (user_name) REFERENCES users(user_name),
+    FOREIGN KEY (question_id) REFERENCES question(id),
+    FOREIGN KEY (answer_id) REFERENCES answer(id)
+);
