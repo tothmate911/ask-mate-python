@@ -124,7 +124,8 @@ def route_new_answer(question_id):
                       'vote_number': request.form.get('vote_number'),
                       'image': request.form.get('image'),
                       'question_id': request.form.get('question_id'),
-                      'submission_time': datetime.now()}
+                      'submission_time': datetime.now(),
+                      'username' : user}
         if request.files['image'].filename != "":
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
@@ -257,6 +258,7 @@ def add_new_comment_to_question(question_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment['username'] = user
         new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')
@@ -277,6 +279,7 @@ def add_new_comment_to_answer(answer_id):
     if request.method == 'POST':
         new_comment = request.form.to_dict()
         new_comment['submission_time'] = datetime.now()
+        new_comment['username'] = user
         new_comment = data_handler.apostroph_change(new_comment)
         database_manager.write_new_comment(new_comment)
         return redirect(f'/question/{question_id}')

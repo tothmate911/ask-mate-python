@@ -39,14 +39,15 @@ def add_question(cursor, new_question):
                     new_question['title'],
                     new_question['message'],
                     new_question['image'],
-                    new_question['username']))
+                    new_question['username']
+                    ))
 
 
 @database_common.connection_handler
 def add_answer(cursor, new_answer):
     cursor.execute(f"""
-                INSERT INTO answer (submission_time, vote_number, question_id, message, image)
-                VALUES ('{new_answer['submission_time']}', {new_answer['vote_number']}, {new_answer['question_id']}, '{new_answer['message']}', '{new_answer['image']}');     
+                INSERT INTO answer (submission_time, vote_number, question_id, message, image,username)
+                VALUES ('{new_answer['submission_time']}', {new_answer['vote_number']}, {new_answer['question_id']}, '{new_answer['message']}', '{new_answer['image']}', '{new_answer['username']}');     
     """)
 
 
