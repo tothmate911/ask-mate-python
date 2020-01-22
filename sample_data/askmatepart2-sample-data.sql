@@ -168,3 +168,6 @@ CREATE TABLE votes (
     FOREIGN KEY (question_id) REFERENCES question(id),
     FOREIGN KEY (answer_id) REFERENCES answer(id)
 );
+
+INSERT INTO  votes (user_name, question_id, vote_value) VALUES ('AskMate', 0, 1);
+INSERT INTO  votes (user_name, question_id, vote_value) VALUES ('AskMate', 1, -1);

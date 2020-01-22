@@ -180,8 +180,18 @@ def question_vote_up(question_id):
     user = password_handler.get_logged_in_user()
     if user == None:
         return redirect('/')
-    database_manager.vote(question_id, type='question', vote='+')
-    return redirect((url_for('route_question', question_id=question_id)))
+
+    current_user_vote_for_question = database_manager.get_user_vote_for_question(user, question_id)
+    if current_user_vote_for_question == None:
+        database_manager.add_user_vote_for_question(user, question_id, 1)
+        database_manager.vote(question_id, type='question', vote='+')
+    elif current_user_vote_for_question < 1:
+        new_user_vote_for_question = current_user_vote_for_question + 1
+        database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
+        database_manager.vote(question_id, type='question', vote='+')
+
+    database_manager.update_reputation( )
+    return redirect(url_for('route_question', question_id=question_id))
 
 
 @app.route('/question/<question_id>/vote_down')
@@ -189,8 +199,17 @@ def question_vote_down(question_id):
     user = password_handler.get_logged_in_user()
     if user == None:
         return redirect('/')
-    database_manager.vote(question_id, type='question', vote='-')
-    return redirect(f'/question/{question_id}')
+
+    current_user_vote_for_question = database_manager.get_user_vote_for_question(user, question_id)
+    if current_user_vote_for_question == None:
+        database_manager.add_user_vote_for_question(user, question_id, -1)
+        database_manager.vote(question_id, type='question', vote='-')
+    elif current_user_vote_for_question > -1:
+        new_user_vote_for_question = current_user_vote_for_question - 1
+        database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
+        database_manager.vote(question_id, type='question', vote='-')
+
+    return redirect(url_for('route_question', question_id=question_id))
 
 
 @app.route('/answer/<answer_id>/vote_up')
@@ -200,7 +219,16 @@ def answer_vote_up(answer_id):
         return redirect('/')
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
-    database_manager.vote(answer_id, type='answer', vote='+')
+
+    current_user_vote_for_answer = database_manager.get_user_vote_for_answer(user, answer_id)
+    if current_user_vote_for_answer == None:
+        database_manager.add_user_vote_for_answer(user, answer_id, 1)
+        database_manager.vote(answer_id, type='answer', vote='+')
+    elif current_user_vote_for_answer < 1:
+        new_user_vote_for_answer = current_user_vote_for_answer + 1
+        database_manager.update_user_vote_for_answer(user, answer_id, new_user_vote_for_answer)
+        database_manager.vote(answer_id, type='answer', vote='+')
+
     return redirect(f'/question/{question_id}')
 
 
@@ -211,7 +239,16 @@ def answer_vote_down(answer_id):
         return redirect('/')
     answer = database_manager.get_answer_by_id(answer_id)
     question_id = answer[0]['question_id']
-    database_manager.vote(answer_id, type='answer', vote='-')
+
+    current_user_vote_for_answer = database_manager.get_user_vote_for_answer(user, answer_id)
+    if current_user_vote_for_answer == None:
+        database_manager.add_user_vote_for_answer(user, answer_id, -1)
+        database_manager.vote(answer_id, type='answer', vote='-')
+    elif current_user_vote_for_answer > -1:
+        new_user_vote_for_answer = current_user_vote_for_answer - 1
+        database_manager.update_user_vote_for_answer(user, answer_id, new_user_vote_for_answer)
+        database_manager.vote(answer_id, type='answer', vote='-')
+
     return redirect(f'/question/{question_id}')
 
 

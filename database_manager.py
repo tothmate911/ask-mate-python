@@ -1,5 +1,6 @@
 import database_common
 from datetime import datetime
+from psycopg2 import sql
 from psycopg2.extensions import AsIs
 
 
@@ -365,3 +366,109 @@ def comment_of_user(cursor, user_name):
                     WHERE username = %(user_name)s
     """, {'user_name': user_name})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def check_if_user_voted_for_question(cursor, user, question_id):
+    cursor.execute("""
+                    SELECT
+                    CASE WHEN EXISTS (SELECT vote_value FROM votes
+                                      WHERE user_name = %(user_name)s AND question_id = %(question_id)s)
+                         THEN 'True'
+                         ELSE 'False'
+                    END AS exist
+                    """, {'user_name': user, 'question_id': question_id})
+    if cursor.fetchone()['exist'] == 'True':
+        return True
+    else:
+        return False
+
+
+@database_common.connection_handler
+def get_user_vote_for_question(cursor, user, question_id):
+    if check_if_user_voted_for_question(user, question_id) is True:
+        cursor.execute("""
+                        SELECT vote_value FROM votes
+                        WHERE user_name = %(user_name)s AND question_id = %(question_id)s;
+                        """, {'user_name': user, 'question_id': question_id})
+        user_vote_for_question = cursor.fetchone()['vote_value']
+    else:
+        user_vote_for_question = None
+    return user_vote_for_question
+
+
+@database_common.connection_handler
+def add_user_vote_for_question(cursor, user, question_id, vote_value):
+    cursor.execute("""
+                    INSERT INTO votes
+                    (user_name, question_id, vote_value)
+                    VALUES (%(user_name)s, %(question_id)s, %(vote_value)s)
+                    """, {'user_name': user, 'question_id': question_id, 'vote_value': vote_value})
+
+
+@database_common.connection_handler
+def update_user_vote_for_question(cursor, user, question_id, vote_value):
+    cursor.execute("""
+                    UPDATE votes
+                    SET vote_value = %(vote_value)s
+                    WHERE user_name = %(user_name)s and question_id = %(question_id)s
+                    """, {'user_name': user, 'question_id': question_id, 'vote_value': vote_value})
+
+
+
+
+
+
+
+
+
+@database_common.connection_handler
+def check_if_user_voted_for_answer(cursor, user, answer_id):
+    cursor.execute("""
+                    SELECT
+                    CASE WHEN EXISTS (SELECT vote_value FROM votes
+                                      WHERE user_name = %(user_name)s AND answer_id = %(answer_id)s)
+                         THEN 'True'
+                         ELSE 'False'
+                    END AS exist
+                    """, {'user_name': user, 'answer_id': answer_id})
+    if cursor.fetchone()['exist'] == 'True':
+        return True
+    else:
+        return False
+
+
+@database_common.connection_handler
+def get_user_vote_for_answer(cursor, user, answer_id):
+    if check_if_user_voted_for_answer(user, answer_id) is True:
+        cursor.execute("""
+                        SELECT vote_value FROM votes
+                        WHERE user_name = %(user_name)s AND answer_id = %(answer_id)s;
+                        """, {'user_name': user, 'answer_id': answer_id})
+        user_vote_for_answer = cursor.fetchone()['vote_value']
+    else:
+        user_vote_for_answer = None
+    return user_vote_for_answer
+
+
+@database_common.connection_handler
+def add_user_vote_for_answer(cursor, user, answer_id, vote_value):
+    cursor.execute("""
+                    INSERT INTO votes
+                    (user_name, answer_id, vote_value)
+                    VALUES (%(user_name)s, %(answer_id)s, %(vote_value)s)
+                    """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
+
+
+@database_common.connection_handler
+def update_user_vote_for_answer(cursor, user, answer_id, vote_value):
+    cursor.execute("""
+                    UPDATE votes
+                    SET vote_value = %(vote_value)s
+                    WHERE user_name = %(user_name)s and answer_id = %(answer_id)s
+                    """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
+
+
+def update_reputation():
+
+    return None
