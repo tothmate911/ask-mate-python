@@ -123,7 +123,7 @@ ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id);
 
 INSERT INTO users VALUES ('Bala', '010000000', '2017-04-28 07:29:00');
-INSERT INTO users VALUES ('Pivi', '000000000', '2017-04-27 07:29:00');
+INSERT INTO users VALUES ('Pivi', '$2b$12$FJh94FJnNIMnPC4jAjZU0uXnf44rC.pBQTlSFPNX5iKoIBkMmg7pe', '2017-04-27 07:29:00');
 INSERT INTO users VALUES ('AskMate', '000000001', '2017-04-26 07:29:00');
 
 INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL, 'Bala');

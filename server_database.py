@@ -376,16 +376,20 @@ def login():
     if request.method == 'POST':
         login_username = request.form.get('username')
         login_plain_text_password = request.form.get('password')
+        try:
+            hashed_pw_for_login_username = database_manager.get_hashed_pw_for_username(login_username)
+            password_is_ok = password_handler.verify_password(login_plain_text_password, hashed_pw_for_login_username)
+            if password_is_ok is True:
+                session['username'] = login_username
+                return redirect(url_for('route_lists'))
+        except:
+            return render_template('registration.html',
+                                   user=None,
+                                   message=True)
 
-        hashed_pw_for_login_username = database_manager.get_hashed_pw_for_username(login_username)
-        password_is_ok = password_handler.verify_password(login_plain_text_password, hashed_pw_for_login_username)
-
-        if password_is_ok is True:
-            session['username'] = login_username
-            return redirect(url_for('route_lists'))
-
-    return render_template('login.html',
-                           user=None)
+    return render_template('registration.html',
+                           user=None,
+                           message=False)
 
 @app.route('/logout')
 def logout():
