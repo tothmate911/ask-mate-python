@@ -200,14 +200,16 @@ def edit_question(question_id):
         for data in datas_from_edit:
             question[data] = request.form[data]
         question['submission_time'] = datetime.now()
+        question['accepted_answer_id'] = 'null'
         question = data_handler.apostroph_change(question)
         database_manager.update_question(question)
         return redirect(url_for('route_question', question_id=question_id))
 
-    return render_template('edit_question.html',
+    return render_template('edit_answer.html',
                            question=question,
                            from_url=url_for('edit_question', question_id=question_id),
-                           user=user)
+                           user=user,
+                           type='question')
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
