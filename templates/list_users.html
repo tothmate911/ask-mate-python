@@ -5,10 +5,12 @@
         <table>
             <tr>
                 {% if log_user != None %}
-                <td><a href="{{ url_for('user_page', user_name = user['user_name']) }}">{{ user['user_name'] }}</a></td>
+                    <td><a href="{{ url_for('user_page', user_name = user['user_name']) }}">{{ user['user_name'] }}</a>
+                    </td>
                 {% else %}
-                <td>{{ user['user_name'] }}</td>
+                    <td>{{ user['user_name'] }}</td>
                 {% endif %}
+                <td>Reputation: {{ user['reputation'] }}</td>
             </tr>
         </table>
     {% endfor %}
