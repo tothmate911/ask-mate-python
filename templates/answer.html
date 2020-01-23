@@ -1,11 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    {% if vote_ok == False %}
-        <script language="JavaScript">
-            alert("You have already voted this way!")
-        </script>
-    {% endif %}
     <p id="question_back_button">
         <a href="{{ url_for('route_lists', question_id=question_id) }}"><button>Back</button></a>
     </p>
