@@ -6,376 +6,297 @@
             alert("You have already voted this way!")
         </script>
     {% endif %}
-    <table>
-        <tr>
-            <td><h5>ID:</h5></td>
-            <td width="50">{{ question['id'] }}</td>
-            <td><h5>Title:</h5></td>
-            <td width="300">{{ question['title'] | safe }}</td>
-            <td><h5>Submission time:</h5></td>
-            <td width="150">{{ question['submission_time'] }}</td>
-            <td><h5>View:</h5></td>
-            <td width="50">{{ question['view_number'] }}</td>
-            <td><h5>Like:</h5></td>
-            <td width="50">{{ question['vote_number'] }}</td>
-            {% if user!=None %}
-                <td width="30"><h5>Vote:</h5></td>
-                <td width="20"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">+</a></td>
-                <td width="20"><a href="{{ url_for('question_vote_down', question_id=question['id']) }}">-</a></td>
-                <td width="30"><a
-                        href="{{ url_for('add_new_comment_to_question',question_id=question['id']) }}">comment</a></td>
-            {% endif %}
-        </tr>
-        <tr>Asked by {{ question['username'] }}</tr>
-    </table>
-    <table>
-        <tr>
-            <td><h5>Message:</h5></td>
-            <td width="1000" colspan="11">{{ question['message'] | safe }}</td>
-            {% if question['image'] is not none %}
-                <td>
-                    <a href="{{ url_for('full_screen', question_id=question['id'], image=question['image'][14:]) }}"><img
-                            src="/{{ question['image'] }}" alt="" height="300" width="260"></a></td>
-            {% endif %}
-        </tr>
-    </table>
-    <table>
-        <tr>
-            {% if user!=None %}
-                <td width="300"><a href="{{ url_for('route_new_answer', question_id=question['id']) }}">Add new
-                    answer</a></td>
-                {% if question['username'] == user %}
-                    <td width="200"><a href="{{ url_for('delete_question', question_id=question['id']) }}"
-                                       onclick="return confirm('Are you sure you want to delete the question?');">Delete</a>
-                    </td>
-                    <td><a href="{{ url_for('edit_question', question_id=question['id']) }}">Edit question</a></td>
+    <p id="question_back_button">
+        <a href="{{ url_for('route_lists', question_id=question_id) }}"><button>Back</button></a>
+    </p>
+    <div id="question_listed">
+    <table class="question">
+    <tr>
+        <td class="question-statistics" width="15%">
+            <p class="user"><a href="{{ url_for('user_page', user_name=question['username']) }}">{{ question['username'] }}</a></p>
+            <p class="reputation">({{ question['reputation'] }} point)</p>
+        </td>
+        <td width="80%">
+            <a class="question-title" href="{{ url_for('view_up', question_id=question['id']) }}">{{ question['title'] | safe }}</a>
+        </td>
+        {% if user !=None and user != question['username'] %}
+            <td class="like_button"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">
+                <img src="/static/images/like3.png" height="30" width="30"></a></td>
+            <td class="like_button"><a href="{{ url_for('question_vote_down', question_id=question['id']) }}">
+                <img src="/static/images/dislike3.png" height="30" width="30"></a></td>
+        {% endif %}
+    </tr>
+    <tr class="question_line">
+        <td class="question-statistics">
+            <p>votes:</p>
+            <p class="show-big">{{ question['vote_number'] }}</p>
+            <p>views:</p>
+            <p class="show-big" >{{ question['view_number'] }}</p>
+        </td>
+        <td class="question-content">
+            <p class="question-message">{{ question['message'] }}</p>
+            <ul class="tags">
+                {% for tag in tags %}
+                    {% if tag['question_id'] == question['id'] %}
+                        <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </td>
+        <td class="question-image">
+            <div id="question-list-image">
+                {% if question['image'] is not none %}
+                    <img src="{{ question['image'] }}" alt="image" height="300" width="260">
                 {% endif %}
+            </div>
+        </td>
+    </tr>
+    <tr class="question_down_line">
+        <td>
+            <div id="question-submission-data-box">
+                <div id="question-submission-data">{{ question['submission_time'] }}</div>
+            </div>
+        </td>
+    </tr>
+    <tr id="button_line">
+        {% if user!=None %}
+            {% if question['username'] == user %}
+                <td width="20%"><a href="{{ url_for('add_tag', question_id=question['id']) }}" id="question_buttons"><button>New tag</button></a></td>
+                <td width="20%"><a href="{{ url_for('edit_question', question_id=question['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+                <td width="20%"><a href="{{ url_for('delete_question', question_id=question['id']) }}" onclick="return confirm('Are you sure you want to delete the question?');" id="question_buttons">
+                    <button>Delete</button></a></td>
+            {% endif %}
+            <td width="25%"><a href="{{ url_for('route_new_answer', question_id=question['id']) }}" id="question_buttons"><button>New answer</button></a></td>
+            <td width="20%"><a href="{{ url_for('add_new_comment_to_question',question_id=question['id'])}}" id="question_buttons"><button>Comment</button></a></td>
+        {% endif %}
+    </tr>
+    </table>
+    </div>
+    <br>
+    {% for q_comment in question_comment %}
+        <div id="comment_listed">
+        <table class="comment">
+        <tr>
+            <td class="comment-statistics">
+                <p class="comment_user"><a href="{{ url_for('user_page', user_name=q_comment['username']) }}">{{ q_comment['username'] }}</a></p>
+            </td>
+            <td class="comment-statistics">
+                <p class="reputation">({{ q_comment['reputation'] }} point)</p>
+            </td>
+        </tr>
+        <tr class="question_line">
+            <td class="comment-content">
+                <p class="question-message">{{ q_comment['message'] | safe }}</p>
+            </td>
+        </tr>
+        <tr class="question_down_line">
+            <td>
+                <div id="question-submission-data-box">
+                    <div id="question-submission-data">{{ q_comment['submission_time'] }}</div>
+                </div>
+            </td>
+             {% if user!=None and q_comment['username'] == user %}
+            <td width="5%"><a href="{{ url_for('edit_comment', comment_id=q_comment['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+            <td><a href="{{ url_for('delete_comment', comment_id=q_comment['id']) }}" onclick="return confirm('Are you sure you want to delete the comment?');" id="question_buttons">
+                <button>Delete</button></a></td>
             {% endif %}
         </tr>
-    </table>
-    <table>
-        <tr>
-            <td width="100"><h5>Tags:</h5></td>
-            {% for tag in tags %}
-                {% if tag['question_id'] == question['id'] %}
-                    <td>
-                        <h6><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}">
-                            <ins>{{ tag['name'] }}</ins>
-                        </a>
-                            {% if question['username']== user %}
-                                <sup><a href="{{ url_for('delete_tag', question_id=question['id'], tag_id=tag['id']) }}"
-                                        onclick="return confirm('Are you sure you want to delete the tag?');">x</a></sup>
-                                </h6></td>
-                            {% endif %}
-                {% endif %}
-            {% endfor %}
-        </tr>
-        <tr>
-            <td><a href="{{ url_for('add_tag', question_id=question['id']) }}"><h6>Add new tag</h6></a></td>
-        </tr>
-        <p id="question_back_button">
-            <a href="{{ url_for('route_lists', question_id=question_id) }}">
-                <button>Back</button>
-            </a>
-        </p>
-        <div id="question_listed">
+        </table>
+        </div>
+    {% endfor %}
+    <form class="order_by" method="get">
+            <label for="order_by">Order answers by</label>
+            <select name="order_by" id="order_by">
+                {% for option, option_text in {'submission_time': 'submission time', 'message': 'message', 'vote_number': 'number of votes'}.items() %}
+                    <option name="{{ option }}" value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
+                {% endfor %}
+            </select>
+                <label for="order_direction"></label><select name="order_direction" id="order_direction">
+                <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
+                <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
+            </select>
+            <button type="submit">SORT</button>
+    </form>
+    {% for comment in answer %}
+        {% if question['accepted_answer_id'] == comment['id']%}
+            <div id="accept_answer_listed">
             <table class="question">
+            <tr>
+                <td class="question-statistics" width="15%">
+                    <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
+                    <p class="reputation">({{ question['reputation'] }} point)</p>
+                </td>
+                {% if question['username'] == user %}
+                    <td id="accept_buttons" width="80%"><a href="{{ url_for('cancel_answer', question_id=question['id'], answer_id=comment['id']) }}"
+                    onclick="return confirm('Are you sure how cancel your accepted answer??');"><button>Cancel answer</button></a></td>
+                {% endif %}
+                {% if user !=None and user != comment['username'] %}
+                    <td class="like_button"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">
+                        <img src="/static/images/like3.png" height="30" width="30"></a></td>
+                    <td class="like_button"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">
+                        <img src="/static/images/dislike3.png" height="30" width="30"></a></td>
+                {% endif %}
+            </tr>
+            <tr class="question_line">
+                <td class="question-statistics">
+                    <p>votes:</p>
+                    <p class="show-big">{{ comment['vote_number'] }}</p>
+                </td>
+                <td class="question-content">
+                    <p class="question-message">{{ comment['message'] | safe }}</p>
+                </td>
+                <td class="question-image">
+                    <div id="question-list-image">
+                        {% if comment['image'] is not none %}
+                            <img src="{{ comment['image'] }}" alt="image" height="300" width="260">
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            <tr class="question_down_line">
+                <td>
+                    <div id="question-submission-data-box">
+                        <div id="question-submission-data">{{ comment['submission_time'] }}</div>
+                    </div>
+                </td>
+            </tr>
+                <tr id="button_line">
+                {% if user!=None %}
+                    <td width="50%"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id'])}}" id="question_buttons"><button>comment</button></a></td>
+                    {% if comment['username']== user %}
+                        <td width="50%"><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+                        <td width="50%"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}" onclick="return confirm('Are you sure you want to delete the answer?');" id="question_buttons">
+                        <button>Delete</button></a></td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+            </table>
+            </div>
+        {% for a_comment in answer_comment %}
+            {% if a_comment['answer_id'] == comment['id'] %}
+                <div id="comment_listed">
+                <table class="comment">
                 <tr>
-                    <td class="question-statistics">
-                        <p class="user"><a
-                                href="{{ url_for('user_page', user_name=question['username']) }}">{{ question['username'] }}</a>
-                        </p>
+                    <td class="comment-statistics">
+                        <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
+                    </td>
+                    <td class="comment-statistics">
                         <p class="reputation">({{ question['reputation'] }} point)</p>
                     </td>
-                    <td width="80%">
-                        <a class="question-title"
-                           href="{{ url_for('view_up', question_id=question['id']) }}">{{ question['title'] | safe }}</a>
-                    </td>
-                    {% if user !=None and user != question['username'] %}
-                        <td class="like_button"><a href="{{ url_for('question_vote_up', question_id=question['id']) }}">
-                            <img src="/static/images/like3.png" height="30" width="30"></a></td>
-                        <td class="like_button"><a
-                                href="{{ url_for('question_vote_down', question_id=question['id']) }}">
-                            <img src="/static/images/dislike3.png" height="30" width="30"></a></td>
-                    {% endif %}
                 </tr>
                 <tr class="question_line">
-                    <td class="question-statistics">
-                        <p>votes:</p>
-                        <p class="show-big">{{ question['vote_number'] }}</p>
-                        <p>views:</p>
-                        <p class="show-big">{{ question['view_number'] }}</p>
-                    </td>
-                    <td class="question-content">
-                        <p class="question-message">{{ question['message'] }}</p>
-                        <ul class="tags">
-                            {% for tag in tags %}
-                                {% if tag['question_id'] == question['id'] %}
-                                    <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}">
-                                        <ins>{{ tag['name'] }}</ins>
-                                    </a></li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </td>
-                    <td class="question-image">
-                        <div id="question-list-image">
-                            {% if question['image'] is not none %}
-                                <img src="{{ question['image'] }}" alt="image" height="300" width="260">
-                            {% endif %}
-                        </div>
+                    <td class="comment-content">
+                        <p class="question-message">{{ a_comment['message'] | safe }}</p>
                     </td>
                 </tr>
                 <tr class="question_down_line">
                     <td>
                         <div id="question-submission-data-box">
-                            <div id="question-submission-data">{{ question['submission_time'] }}</div>
+                            <div id="question-submission-data">{{ a_comment['submission_time'] }}</div>
                         </div>
                     </td>
-                </tr>
-                <tr id="button_line">
-                    {% if user!=None %}
-                        {% if question['username'] == user %}
-                            <td width="20%"><a href="{{ url_for('add_tag', question_id=question['id']) }}"
-                                               id="question_buttons">
-                                <button>New tag</button>
-                            </a></td>
-                            <td width="20%"><a href="{{ url_for('edit_question', question_id=question['id']) }}"
-                                               id="question_buttons">
-                                <button>Edit</button>
-                            </a></td>
-                            <td width="20%"><a href="{{ url_for('delete_question', question_id=question['id']) }}"
-                                               onclick="return confirm('Are you sure you want to delete the question?');"
-                                               id="question_buttons">
-                                <button>Delete</button>
-                            </a></td>
-                        {% endif %}
-                        <td width="25%"><a href="{{ url_for('route_new_answer', question_id=question['id']) }}"
-                                           id="question_buttons">
-                            <button>New answer</button>
-                        </a></td>
-                        <td width="20%"><a
-                                href="{{ url_for('add_new_comment_to_question',question_id=question['id']) }}"
-                                id="question_buttons">
-                            <button>Comment</button>
-                        </a></td>
+                     {% if user!=None and a_comment['username'] == user %}
+                    <td width="5%"><a href="{{ url_for('edit_comment', comment_id=a_comment['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+                    <td><a href="{{ url_for('delete_comment', comment_id=a_comment['id']) }}" onclick="return confirm('Are you sure you want to delete the comment?');" id="question_buttons">
+                        <button>Delete</button></a></td>
                     {% endif %}
                 </tr>
-            </table>
-        </div>
-        <br>
-        {% for q_comment in question_comment %}
-            <table>
-                <tr>
-                    <td width="150"></td>
-                    <td width="300">{{ q_comment['submission_time'] }}</td>
-                    <td width="300">Time's edited: {{ q_comment['edited_count'] }}</td>
-                    {% if q_comment['username']== user %}
-                        <td width="100" i><a href="{{ url_for('edit_comment', comment_id=q_comment['id']) }}">Edit</a>
-                        </td>
-                        <td width="50"><a href="{{ url_for('delete_comment', comment_id=q_comment['id']) }}"
-                                          onclick="return confirm('Are you sure you want to delete the comment?');">Delete</a>
-                        </td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    <td width="150"></td>
-                    <td colspan="5">{{ q_comment['message'] }}</td>
-                </tr>
-            </table>
-        {% endfor %}
-        <form class="order_by" method="get">
-            <label for="order_by">Order answers by</label>
-            <select name="order_by" id="order_by">
-                {% for option, option_text in {'submission_time': 'submission time', 'message': 'message', 'vote_number': 'number of votes'}.items() %}
-                    <option name="{{ option }}"
-                            value="{{ option }}" {{ 'selected' if option == order_by }}>{{ option_text }}</option>
-                {% endfor %}
-            </select>
-            <label for="order_direction"></label><select name="order_direction" id="order_direction">
-            <option name="asc" value="asc" {{ 'selected' if order_direction == 'asc' }}>ascending</option>
-            <option name="desc" value="desc" {{ 'selected' if order_direction == 'desc' }}>descending</option>
-        </select>
-            <button type="submit">SORT</button>
-        </form>
-        {% for comment in answer %}
-            {% if question['accepted_answer_id'] == comment['id'] %}
-                <table>
-                    <tr>
-                        <td width="100"></td>
-                        <td width="50">{{ comment['username'] }}</td>
-                        <td><h5>Submission time:</h5></td>
-                        <td width="150">{{ comment['submission_time'] }}</td>
-                        <td><h5>Like:</h5></td>
-                        <td width="50">{{ comment['vote_number'] }}</td>
-                        <td width="30"><h5>Vote:</h5></td>
-                        <td width="20"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">+</a></td>
-                        <td width="20"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">-</a></td>
-                        <td width="120"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}"
-                                           onclick="return confirm('Are you sure you want to delete the answer?');">Delete</a>
-                        </td>
-                        <td><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}">Edit answer</a></td>
-                    </tr>
                 </table>
-                <table>
-                    <tr>
-                        <td width="100"></td>
-                        <td><h5>Message:</h5></td>
-                        <td width="900" colspan="11"><b>{{ comment['message'] | safe }}</b></td>
-                        {% if comment['image'] is not none %}
-                            <td>
-                                <a href="{{ url_for('full_screen', question_id=question['id'], image=comment['image'][14:]) }}"><img
-                                        src="/{{ comment['image'] }}" alt="" height="300" width="260"></a></td>
-                        {% endif %}
-                        <td width="30"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id']) }}">comment</a>
-                        </td>
-                    </tr>
-                    {% if question['username'] == user %}
-                        <tr>
-                            <td width="100"></td>
-                            <td>
-                                <a href="{{ url_for('cancel_answer', question_id=question['id'], answer_id=comment['id']) }}"
-                                   onclick="return confirm('Are you sure how cancel your accepted answer?');">Cancel
-                                    answer</a></td>
-                        </tr>
-                    {% endif %}
-                </table>
-                {% for a_comment in answer_comment %}
-                    {% if a_comment['answer_id'] == comment['id'] %}
-                        <table>
-                            <tr>
-                                <td width="150"></td>
-                                <td width="300">{{ a_comment['submission_time'] }}</td>
-                                <td width="300">Time's edited: {{ a_comment['edited_count'] }}</td>
-                                <td width="100"><a
-                                        href="{{ url_for('edit_comment', comment_id=a_comment['id']) }}">Edit</a>
-                                </td>
-                                <td width="50"><a href="{{ url_for('delete_comment', comment_id=a_comment['id']) }}"
-                                                  onclick="return confirm('Are you sure you want to delete the comment?');">Delete</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="150"></td>
-                                <td colspan="5">{{ a_comment['message'] }}</td>
-                            </tr>
-                        </table>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endfor %}
-        {% for comment in answer %}
-            {% if question['accepted_answer_id'] != comment['id'] %}
-                <div id="answer_listed">
-                    <table class="question">
-                        <tr>
-                            <td class="question-statistics">
-                                <p class="user"><a
-                                        href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a>
-                                </p>
-                                <!--<p class="reputation">({{ question['reputation'] }} point)</p>-->
-                            </td>
-                            {% if question['accepted_answer_id'] == None and comment['username'] != user %}
-                                <td id="accept_buttons" width="80%"><a
-                                        href="{{ url_for('accept_answer', question_id=question['id'], answer_id=comment['id']) }}"
-                                        onclick="return confirm('Are you sure how accept you this answer?');">
-                                    <button>Accept answer</button>
-                                </a></td>
-                            {% endif %}
-                            {% if user !=None and user != comment['username'] %}
-                                <td class="like_button"><a
-                                        href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">
-                                    <img src="/static/images/like3.png" height="30" width="30"></a></td>
-                                <td class="like_button"><a
-                                        href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">
-                                    <img src="/static/images/dislike3.png" height="30" width="30"></a></td>
-                            {% endif %}
-                        </tr>
-                        <tr class="question_line">
-                            <td class="question-statistics">
-                                <p>votes:</p>
-                                <p class="show-big">{{ comment['vote_number'] }}</p>
-                            </td>
-                            <td class="question-content">
-                                <p class="question-message">{{ comment['message'] | safe }}</p>
-                            </td>
-                            <td class="question-image">
-                                <div id="question-list-image">
-                                    {% if comment['image'] is not none %}
-                                        <img src="{{ comment['image'] }}" alt="image" height="300" width="260">
-                                    {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="question_down_line">
-                            <td>
-                                <div id="question-submission-data-box">
-                                    <div id="question-submission-data">{{ comment['submission_time'] }}</div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr id="button_line">
-                            {% if user!=None %}
-                                <td width="50%"><a
-                                        href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id']) }}"
-                                        id="question_buttons">
-                                    <button>comment</button>
-                                </a></td>
-                                {% if comment['username']== user %}
-                                    <td width="50%"><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}"
-                                                       id="question_buttons">
-                                        <button>Edit</button>
-                                    </a></td>
-                                    <td width="50%"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}"
-                                                       onclick="return confirm('Are you sure you want to delete the answer?');"
-                                                       id="question_buttons">
-                                        <button>Delete</button>
-                                    </a></td>
-                                {% endif %}
-                            {% endif %}
-                        </tr>
-                    </table>
                 </div>
-                {% for a_comment in answer_comment %}
-                    {% if a_comment['answer_id'] == comment['id'] %}
-                        <div id="comment_listed">
-                            <table class="comment">
-                                <tr>
-                                    <td class="comment-statistics" width="50%">
-                                        <p class="user"><a
-                                                href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a>
-                                        </p>
-                                        <!--<p class="reputation">({{ question['reputation'] }} point)</p>-->
-                                    </td>
-                                    {% if user!=None and a_comment['username'] == user %}
-                                        <td width="50%"><a
-                                                href="{{ url_for('edit_comment', comment_id=a_comment['id']) }}"
-                                                id="question_buttons">
-                                            <button>Edit</button>
-                                        </a></td>
-                                        <td><a href="{{ url_for('delete_comment', comment_id=a_comment['id']) }}"
-                                               onclick="return confirm('Are you sure you want to delete the comment?');"
-                                               id="question_buttons">
-                                            <button>Delete</button>
-                                        </a></td>
-                                    {% endif %}
-
-                                </tr>
-                                <tr class="question_line">
-                                    <td class="comment-content">
-                                        <p class="question-message">{{ a_comment['message'] | safe }}</p>
-                                    </td>
-                                </tr>
-                                <tr class="question_down_line">
-                                    <td>
-                                        <div id="question-submission-data-box">
-                                            <div id="question-submission-data">{{ a_comment['submission_time'] }}</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    {% endif %}
-                {% endfor %}
             {% endif %}
         {% endfor %}
+        {% endif %}
+    {% endfor %}
+    {% for comment in answer %}
+        {% if question['accepted_answer_id'] != comment['id']%}
+            <div id="answer_listed">
+            <table class="question">
+            <tr>
+                <td class="question-statistics" width="100">
+                    <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
+                    <p class="reputation">({{ comment['reputation'] }} point)</p>
+                </td>
+                {% if question['accepted_answer_id'] == None and comment['username'] != user %}
+                    <td id="accept_buttons" width="800"><a href="{{ url_for('accept_answer', question_id=question['id'], answer_id=comment['id']) }}"
+                    onclick="return confirm('Are you sure how accept you this answer?');"><button>Accept answer</button></a></td>
+                {% else %}
+                    <td width="800"></td>
+                {% endif %}
+                {% if user !=None and user != comment['username'] %}
+                    <td class="like_button" width="150"><a href="{{ url_for('answer_vote_up', answer_id=comment['id']) }}">
+                        <img src="/static/images/like3.png" height="30" width="30"></a></td>
+                    <td class="like_button"><a href="{{ url_for('answer_vote_down', answer_id=comment['id']) }}">
+                        <img src="/static/images/dislike3.png" height="30" width="30"></a></td>
+                {% endif %}
+            </tr>
+            <tr class="question_line">
+                <td class="question-statistics">
+                    <p>votes:</p>
+                    <p class="show-big">{{ comment['vote_number'] }}</p>
+                </td>
+                <td class="question-content">
+                    <p class="question-message">{{ comment['message'] | safe }}</p>
+                </td>
+                <td class="question-image">
+                    <div id="question-list-image">
+                        {% if comment['image'] is not none %}
+                            <img src="{{ comment['image'] }}" alt="image" height="300" width="260">
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            <tr class="question_down_line">
+                <td>
+                    <div id="question-submission-data-box">
+                        <div id="question-submission-data">{{ comment['submission_time'] }}</div>
+                    </div>
+                </td>
+            </tr>
+                <tr id="button_line">
+                {% if user!=None %}
+                    <td width="50%"><a href="{{ url_for('add_new_comment_to_answer',answer_id=comment['id'])}}" id="question_buttons"><button>comment</button></a></td>
+                    {% if comment['username']== user %}
+                        <td width="50%"><a href="{{ url_for('edit_answer', answer_id=comment['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+                        <td width="50%"><a href="{{ url_for('delete_answer', answer_id=comment['id']) }}" onclick="return confirm('Are you sure you want to delete the answer?');" id="question_buttons">
+                        <button>Delete</button></a></td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+            </table>
+            </div>
+        {% for a_comment in answer_comment %}
+            {% if a_comment['answer_id'] == comment['id'] %}
+                <div id="comment_listed">
+                <table class="comment">
+                <tr>
+                    <td class="comment-statistics">
+                        <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
+                    </td>
+                    <td class="comment-statistics">
+                        <p class="reputation">({{ a_comment['reputation'] }} point)</p>
+                    </td>
+                </tr>
+                <tr class="question_line">
+                    <td class="comment-content">
+                        <p class="question-message">{{ a_comment['message'] | safe }}</p>
+                    </td>
+                </tr>
+                <tr class="question_down_line">
+                    <td>
+                        <div id="question-submission-data-box">
+                            <div id="question-submission-data">{{ a_comment['submission_time'] }}</div>
+                        </div>
+                    </td>
+                     {% if user!=None and a_comment['username'] == user %}
+                    <td width="5%"><a href="{{ url_for('edit_comment', comment_id=a_comment['id']) }}" id="question_buttons"><button>Edit</button></a></td>
+                    <td><a href="{{ url_for('delete_comment', comment_id=a_comment['id']) }}" onclick="return confirm('Are you sure you want to delete the comment?');" id="question_buttons">
+                        <button>Delete</button></a></td>
+                    {% endif %}
+                </tr>
+                </table>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+    {% endfor %}
 {% endblock %}
