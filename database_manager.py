@@ -1,12 +1,15 @@
 import database_common
 from datetime import datetime
+from psycopg2 import sql
 from psycopg2.extensions import AsIs
 
 
 @database_common.connection_handler
-def get_all_questions_sorted(cursor, order_by='submission_time', order_direction='asc'):
+def get_all_questions_sorted_with_reputation(cursor, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
-                    SELECT * FROM question
+                    SELECT * 
+                    FROM question JOIN users
+                    ON question.username = users.user_name
                     ORDER BY {order_by} {order_direction};
                     """)
     all_questions_sorted = cursor.fetchall()
@@ -14,11 +17,13 @@ def get_all_questions_sorted(cursor, order_by='submission_time', order_direction
 
 
 @database_common.connection_handler
-def get_five_latest_questions_sorted(cursor, order_by='submission_time', order_direction='DESC'):
+def get_five_latest_questions_sorted_with_reputation(cursor, order_by='submission_time', order_direction='DESC'):
     cursor.execute(f"""
                     SELECT * FROM
                     (
-                        SELECT * FROM question
+                        SELECT *
+                        FROM question JOIN users
+                        ON question.username = users.user_name
                         ORDER BY submission_time DESC
                         LIMIT 5
                     ) AS T1 ORDER BY {order_by} {order_direction};
@@ -327,7 +332,7 @@ def get_hashed_pw_for_username(cursor, username):
 @database_common.connection_handler
 def all_user(cursor):
     cursor.execute("""
-                    SELECT user_name FROM users
+                    SELECT user_name, reputation FROM users
                     ORDER BY user_name;
     """)
     return cursor.fetchall()
@@ -361,3 +366,189 @@ def comment_of_user(cursor, user_name):
                     WHERE username = %(user_name)s
     """, {'user_name': user_name})
     return cursor.fetchall()
+
+
+@database_common.connection_handler
+def check_if_user_voted_for_question(cursor, user, question_id):
+    cursor.execute("""
+                    SELECT
+                    CASE WHEN EXISTS (SELECT vote_value FROM votes
+                                      WHERE user_name = %(user_name)s AND question_id = %(question_id)s)
+                         THEN 'True'
+                         ELSE 'False'
+                    END AS exist
+                    """, {'user_name': user, 'question_id': question_id})
+    if cursor.fetchone()['exist'] == 'True':
+        return True
+    else:
+        return False
+
+
+@database_common.connection_handler
+def get_user_vote_for_question(cursor, user, question_id):
+    if check_if_user_voted_for_question(user, question_id) is True:
+        cursor.execute("""
+                        SELECT vote_value FROM votes
+                        WHERE user_name = %(user_name)s AND question_id = %(question_id)s;
+                        """, {'user_name': user, 'question_id': question_id})
+        user_vote_for_question = cursor.fetchone()['vote_value']
+    else:
+        user_vote_for_question = None
+    return user_vote_for_question
+
+
+@database_common.connection_handler
+def add_user_vote_for_question(cursor, user, question_id, vote_value):
+    cursor.execute("""
+                    INSERT INTO votes
+                    (user_name, question_id, vote_value)
+                    VALUES (%(user_name)s, %(question_id)s, %(vote_value)s)
+                    """, {'user_name': user, 'question_id': question_id, 'vote_value': vote_value})
+
+
+@database_common.connection_handler
+def update_user_vote_for_question(cursor, user, question_id, vote_value):
+    cursor.execute("""
+                    UPDATE votes
+                    SET vote_value = %(vote_value)s
+                    WHERE user_name = %(user_name)s and question_id = %(question_id)s
+                    """, {'user_name': user, 'question_id': question_id, 'vote_value': vote_value})
+
+
+
+
+
+
+
+
+
+@database_common.connection_handler
+def check_if_user_voted_for_answer(cursor, user, answer_id):
+    cursor.execute("""
+                    SELECT
+                    CASE WHEN EXISTS (SELECT vote_value FROM votes
+                                      WHERE user_name = %(user_name)s AND answer_id = %(answer_id)s)
+                         THEN 'True'
+                         ELSE 'False'
+                    END AS exist
+                    """, {'user_name': user, 'answer_id': answer_id})
+    if cursor.fetchone()['exist'] == 'True':
+        return True
+    else:
+        return False
+
+
+@database_common.connection_handler
+def get_user_vote_for_answer(cursor, user, answer_id):
+    if check_if_user_voted_for_answer(user, answer_id) is True:
+        cursor.execute("""
+                        SELECT vote_value FROM votes
+                        WHERE user_name = %(user_name)s AND answer_id = %(answer_id)s;
+                        """, {'user_name': user, 'answer_id': answer_id})
+        user_vote_for_answer = cursor.fetchone()['vote_value']
+    else:
+        user_vote_for_answer = None
+    return user_vote_for_answer
+
+
+@database_common.connection_handler
+def add_user_vote_for_answer(cursor, user, answer_id, vote_value):
+    cursor.execute("""
+                    INSERT INTO votes
+                    (user_name, answer_id, vote_value)
+                    VALUES (%(user_name)s, %(answer_id)s, %(vote_value)s)
+                    """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
+
+
+@database_common.connection_handler
+def update_user_vote_for_answer(cursor, user, answer_id, vote_value):
+    cursor.execute("""
+                    UPDATE votes
+                    SET vote_value = %(vote_value)s
+                    WHERE user_name = %(user_name)s and answer_id = %(answer_id)s
+                    """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
+
+
+def update_reputation(user):
+    result_weighed_question_vote_value = get_weighed_question_vote_value(user)
+    if result_weighed_question_vote_value != None:
+        weighed_question_vote_value = result_weighed_question_vote_value['weighed_vote_value']
+    else:
+        weighed_question_vote_value = 0
+
+    result_weighed_answer_vote_value = get_weighed_answer_vote_value(user)
+    if result_weighed_answer_vote_value != None:
+        weighed_answer_vote_value = result_weighed_answer_vote_value['weighed_vote_value']
+    else:
+        weighed_answer_vote_value = 0
+
+    result_weighed_accepted_value = get_weighed_accepted_value(user)
+    if result_weighed_accepted_value != None:
+        weighed_accepted_value = result_weighed_accepted_value['weighed_accepted_value']
+    else:
+        weighed_accepted_value = 0
+
+    reputation = weighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
+    insert_updated_reputation(user, reputation)
+
+
+@database_common.connection_handler
+def insert_updated_reputation(cursor, user, reputation):
+    cursor.execute("""
+                    UPDATE users
+                    SET reputation = %(reputation)s
+                    WHERE user_name = %(user_name)s;
+                    """, {'reputation': reputation, 'user_name': user})
+
+
+@database_common.connection_handler
+def get_weighed_accepted_value(cursor, user):
+    cursor.execute("""
+                    SELECT answer.username, COUNT(*) * 15 AS weighed_accepted_value
+                    FROM question
+                             JOIN answer
+                                  ON question.accepted_answer_id = answer.id
+                    WHERE answer.username = %(user_name)s
+                    GROUP BY answer.username
+                    """, {'user_name': user})
+    result_weighed_accepted_value = cursor.fetchone()
+    return result_weighed_accepted_value
+
+
+@database_common.connection_handler
+def get_weighed_answer_vote_value(cursor, user):
+    cursor.execute("""
+                        SELECT answer.username,
+                               SUM(CASE votes.vote_value
+                                       WHEN 1 THEN 10
+                                       WHEN -1 THEN -2
+                                       ELSE 0
+                                   END) AS weighed_vote_value
+                        FROM votes
+                                 JOIN answer
+                                      ON votes.answer_id = answer.id
+                        WHERE answer.username = %(user_name)s
+                        GROUP BY answer.username; 
+                        """, {'user_name': user})
+    result_weighed_answer_vote_value = cursor.fetchone()
+    return result_weighed_answer_vote_value
+
+
+@database_common.connection_handler
+def get_weighed_question_vote_value(cursor, user):
+    cursor.execute("""
+                    SELECT question.username,
+                           SUM(CASE votes.vote_value
+                                   WHEN 1 THEN 5
+                                   WHEN -1 THEN -2
+                                   ELSE 0
+                               END) AS weighed_vote_value
+                    FROM votes
+                             JOIN question
+                                  ON votes.question_id = question.id
+                    WHERE question.username = %(user_name)s
+                    GROUP BY question.username;
+                    """, {'user_name': user})
+    result_weighed_question_vote_value = cursor.fetchone()
+    return result_weighed_question_vote_value
+
