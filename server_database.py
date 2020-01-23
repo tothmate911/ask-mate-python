@@ -271,6 +271,7 @@ def route_search():
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
     tags = database_manager.all_tag()
+    tags = data_handler.search_highlight(tags, search_phrase)
     return render_template('Search.html',
                            question=questions,
                            answer=answers,
@@ -404,6 +405,7 @@ def search_with_tag(tag_id):
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
     tag = database_manager.tag_by_tag_id(tag_id)[0]
+    tags = data_handler.search_highlight(tags, tag['name'])
     return render_template('Search.html',
                            question=questions_by_tag_id,
                            tag=tag,

@@ -2,11 +2,11 @@
 
 {% block content %}
     {% if type == 'search' %}
-        <h3>Search with: {{ search_word }}</h3>
-        <a href="{{ url_for('route_lists') }}"><button>Back</button></a>
+        <h3 class="search">Search with: {{ search_word }}</h3>
     {% else %}
-        <h3>Search with: {{ tag['name'] }} tag</h3>
+        <h3 class="search">Search with: {{ tag['name'] }} tag</h3>
     {% endif %}
+        <a href="{{ url_for('route_lists') }}" id="back_button"><button>Back</button></a>
     {% for quest in question %}
         <div id="question_listed">
         <table class="question">
@@ -26,11 +26,11 @@
                 <p class="show-big" >{{ quest['view_number'] }}</p>
             </td>
             <td class="question-content">
-                <p class="question-message">{{ quest['message'] }}</p>
+                <p class="question-message">{{ quest['message'] | safe }}</p>
                 <ul class="tags">
                     {% for tag in tags %}
                         {% if tag['question_id'] == quest['id'] %}
-                            <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] }}</ins></a></li>
+                            <li><a href="{{ url_for('search_with_tag', tag_id=tag['id']) }}"><ins>{{ tag['name'] | safe }}</ins></a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -61,14 +61,14 @@
                         <td class="question-statistics">
                             <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
                         </td>
-                        <td class="answer-statistics">
-                            <p>votes:</p>
-                        </td>
-                        <td class="answer-statistics"><p class="show-big">{{ comment['vote_number'] }}</p></td>
                     </tr>
                     <tr>
-                        <td class="answer-content">
-                            <p class="question-message">{{ comment['message'] }}</p>
+                        <td class="question-statistics">
+                            <p>votes:</p>
+                            <p class="show-big">{{ comment['vote_number'] }}</p>
+                        </td>
+                        <td class="question-content">
+                            <p class="question-message">{{ comment['message'] | safe }}</p>
                         </td>
                         <td class="question-image">
                             <div id="question-list-image">
