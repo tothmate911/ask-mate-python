@@ -65,20 +65,33 @@ def get_question_by_id(cursor, question_id):
     question = cursor.fetchall()
     return question
 
+@database_common.connection_handler
+def get_question_by_id_with_reputation(cursor, question_id):
+    cursor.execute("""
+                    SELECT * 
+                    FROM question JOIN users
+                    ON question.username = users.user_name
+                    WHERE id = %(question_id)s;
+                    """, {'question_id': question_id})
+    question_by_id_with_reputation = cursor.fetchone()
+    return question_by_id_with_reputation
+
 
 @database_common.connection_handler
-def get_all_comment_from_question_id(cursor, question_id):
+def get_all_comment_from_question_id_with_reputation(cursor, question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
+                    JOIN users ON comment.username = users.user_name
                     WHERE question_id={question_id} AND answer_id is null;""")
     question_comment = cursor.fetchall()
     return question_comment
 
 
 @database_common.connection_handler
-def get_all_comment_from_answer_id(cursor, question_id):
+def get_all_comment_from_answer_id_with_reputation(cursor, question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
+                    JOIN users ON comment.username = users.user_name
                     WHERE question_id={question_id} and answer_id is not null;""")
     answer_comment = cursor.fetchall()
     return answer_comment
@@ -105,10 +118,11 @@ def get_comment_by_id(cursor, comment_id):
 
 
 @database_common.connection_handler
-def get_all_answer_by_question_id_sorted(cursor, question_id, order_by='submission_time', order_direction='asc'):
+def get_all_answer_by_question_id_sorted_with_reputation(cursor, question_id, order_by='submission_time', order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
-                    WHERE question_id={question_id}
+                    JOIN users ON answer.username = users.user_name
+                    WHERE answer.question_id={question_id}
                     ORDER BY {order_by} {order_direction}
                     """)
     answers = cursor.fetchall()
@@ -551,4 +565,3 @@ def get_weighed_question_vote_value(cursor, user):
                     """, {'user_name': user})
     result_weighed_question_vote_value = cursor.fetchone()
     return result_weighed_question_vote_value
-

@@ -76,7 +76,7 @@
                 <p class="comment_user"><a href="{{ url_for('user_page', user_name=q_comment['username']) }}">{{ q_comment['username'] }}</a></p>
             </td>
             <td class="comment-statistics">
-                <p class="reputation">({{ question['reputation'] }} point)</p>
+                <p class="reputation">({{ q_comment['reputation'] }} point)</p>
             </td>
         </tr>
         <tr class="question_line">
@@ -209,7 +209,7 @@
             <tr>
                 <td class="question-statistics" width="100">
                     <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
-                    <p class="reputation">({{ question['reputation'] }} point)</p>
+                    <p class="reputation">({{ comment['reputation'] }} point)</p>
                 </td>
                 {% if question['accepted_answer_id'] == None and comment['username'] != user %}
                     <td id="accept_buttons" width="800"><a href="{{ url_for('accept_answer', question_id=question['id'], answer_id=comment['id']) }}"
@@ -268,7 +268,7 @@
                         <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
                     </td>
                     <td class="comment-statistics">
-                        <p class="reputation">({{ question['reputation'] }} point)</p>
+                        <p class="reputation">({{ a_comment['reputation'] }} point)</p>
                     </td>
                 </tr>
                 <tr class="question_line">
