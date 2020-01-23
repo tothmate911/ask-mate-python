@@ -144,6 +144,16 @@ a.question-title:hover, ul.ribbon a:hover {
     margin-left: 85px;
 }
 
+#accept_answer_listed {
+    background-color: lightgreen;
+    margin: 1em;
+    border-radius: 0.6em;
+    border: 1px darkred solid;
+    border-collapse: collapse;
+    width: 90%;
+    margin-left: 85px;
+}
+
 #comment_listed {
     background-color: gold;
     margin: 1em;
@@ -184,6 +194,8 @@ td.comment-statistics {
     text-align: left;
     list-style-type: none;
     padding: 0.5em;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 td.question-statistics p {
@@ -298,6 +310,13 @@ p.user {
     display: inline-block;
 }
 
+p.comment_user {
+    font-size: 15px;
+    font-weight: bold;
+    display: inline-block;
+    letter-spacing: 1px;
+}
+
 tr.question_line {
     border-top: #9C1A1C 1px solid;
 }
@@ -314,4 +333,8 @@ p.reputation {
     letter-spacing: 1px;
     font-size: 15px;
     word-spacing: 1px;
+}
+
+td.like_button {
+    text-align: right;
 }
