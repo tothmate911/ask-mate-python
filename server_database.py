@@ -544,8 +544,15 @@ def cancel_answer(question_id):
     if user == None:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
+
+    answer_id_to_be_canceled = question['accepted_answer_id']
+
     question['accepted_answer_id'] = 'null'
     database_manager.update_question(question)
+
+    canceled_answer_owner = database_manager.get_answer_by_id(answer_id_to_be_canceled)[0]['username']
+    database_manager.update_reputation(canceled_answer_owner)
+
     return redirect(f'/question/{question_id}')
 
 if __name__ == "__main__":
