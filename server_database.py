@@ -414,7 +414,7 @@ def delete_comment(comment_id):
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
     user = password_handler.get_logged_in_user()
-    question_owner = database_manager.get_answer_by_id(question_id)[0]['username']
+    question_owner = database_manager.get_question_by_id(question_id)[0]['username']
     if user == None or user != question_owner:
         return redirect('/')
     all_tag = database_manager.all_tag_name()
