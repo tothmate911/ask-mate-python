@@ -75,8 +75,11 @@
             <td class="comment-statistics">
                 <p class="comment_user"><a href="{{ url_for('user_page', user_name=q_comment['username']) }}">{{ q_comment['username'] }}</a></p>
             </td>
-            <td class="comment-statistics">
+            <td class="comment-statistics" width="600">
                 <p class="reputation">({{ question['reputation'] }} point)</p>
+            </td>
+            <td class="comment-statistics">
+                <p class="edit_count">Edited: {{ q_comment['edited_count'] }}x</p>
             </td>
         </tr>
         <tr class="question_line">
@@ -175,8 +178,11 @@
                     <td class="comment-statistics">
                         <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
                     </td>
-                    <td class="comment-statistics">
+                    <td class="comment-statistics" width="600">
                         <p class="reputation">({{ question['reputation'] }} point)</p>
+                    </td>
+                    <td class="comment-statistics">
+                        <p class="edit_count">Edited: {{ a_comment['edited_count'] }}x</p>
                     </td>
                 </tr>
                 <tr class="question_line">
@@ -267,8 +273,11 @@
                     <td class="comment-statistics">
                         <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
                     </td>
-                    <td class="comment-statistics">
+                    <td class="comment-statistics" width="600">
                         <p class="reputation">({{ question['reputation'] }} point)</p>
+                    </td>
+                    <td class="comment-statistics">
+                        <p class="edit_count">Edited: {{ a_comment['edited_count'] }}x</p>
                     </td>
                 </tr>
                 <tr class="question_line">

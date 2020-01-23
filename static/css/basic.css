@@ -321,6 +321,11 @@ p.comment_user {
     letter-spacing: 1px;
 }
 
+p.edit_count {
+    letter-spacing: 1px;
+    word-spacing: 1px;
+}
+
 tr.question_line {
     border-top: #9C1A1C 1px solid;
 }
@@ -337,6 +342,7 @@ p.reputation {
     letter-spacing: 1px;
     font-size: 15px;
     word-spacing: 1px;
+    text-align: left;
 }
 
 td.like_button {

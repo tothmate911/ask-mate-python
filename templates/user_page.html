@@ -71,11 +71,14 @@
                     <div id="comment_listed">
                     <table class="comment">
                     <tr>
-                        <td class="comment-statistics">
+                         <td class="comment-statistics">
                             <p class="comment_user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
                         </td>
-                        <td class="comment-statistics">
+                        <td class="comment-statistics" width="600">
                             <p class="reputation">({{ question['reputation'] }} point)</p>
+                        </td>
+                        <td class="comment-statistics">
+                            <p class="edit_count">Edited: {{ comment['edited_count'] }}x</p>
                         </td>
                     </tr>
                     <tr class="question_line">
@@ -156,11 +159,14 @@
                     <div id="comment_listed">
                     <table class="comment">
                     <tr>
-                        <td class="comment-statistics">
+                         <td class="comment-statistics">
                             <p class="comment_user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
                         </td>
-                        <td class="comment-statistics">
+                        <td class="comment-statistics" width="600">
                             <p class="reputation">({{ question['reputation'] }} point)</p>
+                        </td>
+                        <td class="comment-statistics">
+                            <p class="edit_count">Edited: {{ comment['edited_count'] }}x</p>
                         </td>
                     </tr>
                     <tr class="question_line">
