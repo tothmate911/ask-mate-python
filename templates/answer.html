@@ -7,7 +7,7 @@
     <div id="question_listed">
     <table class="question">
     <tr>
-        <td class="question-statistics" width="15%">
+        <td class="question-statistics" width="10%">
             <p class="user"><a href="{{ url_for('user_page', user_name=question['username']) }}">{{ question['username'] }}</a></p>
             <p class="reputation">({{ question['reputation'] }} point)</p>
         </td>
@@ -75,7 +75,7 @@
             <td class="comment-statistics">
                 <p class="comment_user"><a href="{{ url_for('user_page', user_name=q_comment['username']) }}">{{ q_comment['username'] }}</a></p>
             </td>
-            <td class="comment-statistics" width="600">
+            <td class="comment-statistics" width="80%">
                 <p class="reputation">({{ q_comment['reputation'] }} point)</p>
             </td>
             <td class="comment-statistics">
@@ -120,7 +120,7 @@
             <div id="accept_answer_listed">
             <table class="question">
             <tr>
-                <td class="question-statistics" width="15%">
+                <td class="question-statistics" width="10%">
                     <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
                     <p class="reputation">({{ comment['reputation'] }} point)</p>
                 </td>
@@ -178,7 +178,7 @@
                     <td class="comment-statistics">
                         <p class="comment_user"><a href="{{ url_for('user_page', user_name=a_comment['username']) }}">{{ a_comment['username'] }}</a></p>
                     </td>
-                    <td class="comment-statistics" width="600">
+                    <td class="comment-statistics" width="80%">
                         <p class="reputation">({{ a_comment['reputation'] }} point)</p>
                     </td>
                     <td class="comment-statistics">
@@ -213,7 +213,7 @@
             <div id="answer_listed">
             <table class="question">
             <tr>
-                <td class="question-statistics" width="100">
+                <td class="question-statistics" width="10%">
                     <p class="user"><a href="{{ url_for('user_page', user_name=comment['username']) }}">{{ comment['username'] }}</a></p>
                     <p class="reputation">({{ comment['reputation'] }} point)</p>
                 </td>

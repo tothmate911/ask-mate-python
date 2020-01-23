@@ -6,7 +6,7 @@
         <div id="question_listed">
         <table class="question">
         <tr>
-            <td class="question-statistics" width="15%">
+            <td class="question-statistics" width="8%">
                 <p class="user"><a href="{{ url_for('user_page', user_name=question['username']) }}">{{ question['username'] }}</a></p>
                 <p class="reputation">({{ question['reputation'] }} point)</p>
             </td>
@@ -107,7 +107,7 @@
             <div id="answer_listed">
             <table class="question">
             <tr>
-                <td class="question-statistics" width="100">
+                <td class="question-statistics" width="10%">
                     <p class="user"><a href="{{ url_for('user_page', user_name=answer['username']) }}">{{ answer['username'] }}</a></p>
                     <p class="reputation">({{ answer['reputation'] }} point)</p>
                 </td>

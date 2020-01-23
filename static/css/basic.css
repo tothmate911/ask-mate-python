@@ -293,8 +293,7 @@ ul.tag-buttons li a:hover {
 }
 
 p.login {
-    text-align: right;
-    float: right;
+    text-align: center;
     letter-spacing: 0em;
     font-weight: bold;
     margin: 1px 1px 1px 1px;
@@ -304,14 +303,19 @@ p.login {
 h2.login {
     align-items: start;
     float: left;
-    margin: 130px 10px 1px 1px;
+    margin: 1px 1px 1px 1px;
     background-color: gold;
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
 }
 
 p.user {
     font-size: 15px;
     font-weight: bold;
     display: inline-block;
+    text-align: left;
 }
 
 p.comment_user {
@@ -332,10 +336,6 @@ tr.question_line {
 
 tr.question_down_line {
     border-top: #9C1A1C 1px solid;
-}
-
-p.login {
-    margin: 95px 1px 1px 1px
 }
 
 p.reputation {
