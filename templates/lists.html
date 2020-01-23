@@ -1,9 +1,6 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<p>
-    <a href="{{url_for('registration')}}">User registration</a>
-</p>
     <form class="order_by" method="get">
         <label for="order_by">Order by</label>
         <select name="order_by" id="order_by">
@@ -26,14 +23,21 @@
     <table class="question">
     <tr>
         <td class="question-statistics">
-            <p>{{ quest['username'] }}</p>
+            <p class="user"><a href="{{ url_for('user_page', user_name=quest['username']) }}">{{ quest['username'] }}</a></p>
+            <p class="reputation">({{ quest['reputation'] }} point)</p>
+        </td>
+        <td>
+            <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
+        </td>
+    </tr>
+    <tr class="question_line">
+        <td class="question-statistics">
+            <p>votes:</p>
             <p class="show-big">{{ quest['vote_number'] }}</p>
-            <p>votes</p>
+            <p>views:</p>
             <p class="show-big" >{{ quest['view_number'] }}</p>
-            <p>views</p>
         </td>
         <td class="question-content">
-            <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
             <p class="question-message">{{ quest['message'] }}</p>
             <ul class="tags">
                 {% for tag in tags %}
@@ -42,10 +46,6 @@
                     {% endif %}
                 {% endfor %}
             </ul>
-            <div id="question-submission-data-box">
-                <p>Asked by {{ quest['username'] }}, reputation: {{ quest['reputation'] }}</p>
-                <div id="question-submission-data">Submission time: {{ quest['submission_time'] }}</div>
-            </div>
         </td>
         <td class="question-image">
             <div id="question-list-image">
@@ -55,8 +55,14 @@
             </div>
         </td>
     </tr>
+    <tr class="question_down_line">
+        <td>
+            <div id="question-submission-data-box">
+                <div id="question-submission-data">{{ quest['submission_time'] }}</div>
+            </div>
+        </td>
+    </tr>
     </table>
-
     </div>
     {% endfor %}
 {% endblock %}

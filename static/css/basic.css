@@ -7,21 +7,62 @@ body {
 
 #content {
     background-color: white;
+    background-size: 100% 100%;
     opacity: 0.9;
     margin: 5% 10%;
     padding: 2%;
 }
 
-h1 {
+h3.search {
+    display: inline-block;
+}
+
+#white_ground {
+    background-color: white;
+    opacity: 0.9;
+}
+
+#back_button{
+    position: relative;
+    float: right;
+    display: inline-block;
+}
+
+#question_buttons {
+    font-size : 20px
+}
+
+#button_line {
+    line-height: 20px;
+    border-top: #9C1A1C 1px solid;
+}
+
+#accept_buttons {
+    text-align: center;
+    font-size: 15px;
+}
+
+#question_back_button {
+    postion: relative;
+    display: inline;line-height: 20px;
+}
+
+table.search_back_line {
+    line-height: 1em;
+}
+
+h1.label {
     font-size: 4em;
     font-style: normal;
     margin: 2%;
     padding: 1% 9%;
     color : gold;
+    text-align: center;
 }
-strong {
+strong.label {
     color: darkred;
     font-style: italic;
+    text-align: center;
 }
 
 h5 {
@@ -69,15 +110,17 @@ ul.ribbon {
 
 ul.ribbon li {
     display: inline;
-    padding: 0 2%;
+    padding: 0 6.7%;
     text-transform: uppercase;
     color: gold;
     font-size: 20px;
+    font-weight: bold;
 }
 
 ul.ribbon li a {
     color: gold;
     font: normal 1em arial;
+    font-weight: bold;
 }
 
 a.question-title:hover, ul.ribbon a:hover {
@@ -89,6 +132,26 @@ a.question-title:hover, ul.ribbon a:hover {
     margin: 1em;
     border-radius: 0.6em;
     border: 1px darkred solid;
+}
+
+#answer_listed {
+    background-color: gold;
+    margin: 1em;
+    border-radius: 0.6em;
+    border: 1px darkred solid;
+    border-collapse: collapse;
+    width: 90%;
+    margin-left: 85px;
+}
+
+#comment_listed {
+    background-color: gold;
+    margin: 1em;
+    border-radius: 0.6em;
+    border: 1px darkred solid;
+    border-collapse: collapse;
+    width: 80%;
+    margin-left: 185px;
 }
 
 b {
@@ -117,11 +180,18 @@ td.question-statistics {
     padding: 0.5em;
 }
 
+td.comment-statistics {
+    text-align: left;
+    list-style-type: none;
+    padding: 0.5em;
+}
+
 td.question-statistics p {
     letter-spacing: normal;
     word-spacing: normal;
     margin: 0;
 }
+
 
 p.show-big {
     font-size: 1.6em;
@@ -134,17 +204,33 @@ table.question {
     position: relative;
 }
 
+table.comment {
+    width: 100%;
+    position: relative;
+}
+
 td.question-content {
     width: 100%;
     position: relative;
     border-left: darkred 1px solid;
+}
 
+td.comment-content {
+    width: 100%;
+    position: relative;
+}
+
+td.answer-content {
+    width: 100%;
+    position: relative;
 }
 
 a.question-title{
     color: black;
     font-weight: bold;
     display: inline-block;
+    align-content: center;
+    word-wrap: break-word;
 }
 
 p.question-message {
@@ -159,13 +245,12 @@ table.tags {
 
 #question-submission-data-box {
     display: inline-block;
-    float: right;
+    float: left;
 }
 
 #question-submission-data {
-    position: absolute;
-    bottom: 1em;
-    right: 1em;
+    position: relative;
+
 }
 
 ul.tags li {
@@ -173,6 +258,9 @@ ul.tags li {
     border: 1px solid darkred;
     border-radius: 5px;
     padding: 0.5em;
+    font-size: 10px;
+    float: left;
+    align-items: start;
 }
 
 ul.tag-buttons li {
@@ -181,9 +269,49 @@ ul.tag-buttons li {
 
 ul.tag-buttons li a {
     color: black;
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 ul.tag-buttons li a:hover {
     color: red;
+}
+
+p.login {
+    text-align: right;
+    float: right;
+    letter-spacing: 0em;
+    font-weight: bold;
+    margin: 1px 1px 1px 1px;
+    word-spacing: 3px;
+}
+
+h2.login {
+    align-items: start;
+    float: left;
+    margin: 130px 10px 1px 1px;
+    background-color: gold;
+}
+
+p.user {
+    font-size: 15px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+tr.question_line {
+    border-top: #9C1A1C 1px solid;
+}
+
+tr.question_down_line {
+    border-top: #9C1A1C 1px solid;
+}
+
+p.login {
+    margin: 95px 1px 1px 1px
+}
+
+p.reputation {
+    letter-spacing: 1px;
+    font-size: 15px;
+    word-spacing: 1px;
 }

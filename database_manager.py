@@ -149,7 +149,7 @@ def delete_comment(cursor, comment_id):
 @database_common.connection_handler
 def search_in_questions(cursor, search_phrase):
     cursor.execute(F"""
-        SELECT DISTINCT (question.id), question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image 
+        SELECT DISTINCT (question.id), question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, question.username
         FROM question 
         FULL JOIN answer a on question.id = a.question_id
         FULL JOIN question_tag qt on question.id = qt.question_id
@@ -284,7 +284,7 @@ def delete_tag(cursor, tag_id, question_id):
 @database_common.connection_handler
 def all_question_by_tag_id(cursor, tag_id):
     cursor.execute(f"""
-                    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image
+                    SELECT question.id, question.submission_time, question.view_number, question.vote_number, question.title, question.message, question.image, question.username
                     FROM question
                     FULL JOIN question_tag qt on question.id = qt.question_id
                     WHERE qt.tag_id = {tag_id}

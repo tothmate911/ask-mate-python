@@ -219,7 +219,7 @@ def question_vote_down(question_id):
 
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
     database_manager.update_reputation(question_owner)
-    
+
     return redirect(url_for('route_question', question_id=question_id))
 
 
@@ -242,7 +242,7 @@ def answer_vote_up(answer_id):
 
     answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
     database_manager.update_reputation(answer_owner)
-    
+
     return redirect(f'/question/{question_id}')
 
 
@@ -289,7 +289,8 @@ def edit_question(question_id):
     return render_template('edit_answer.html',
                            question=question,
                            from_url=url_for('edit_question', question_id=question_id),
-                           type='question')
+                           type='question',
+                           user=user)
 
 
 @app.route('/answer/<answer_id>/edit', methods=['GET', 'POST'])
@@ -310,7 +311,8 @@ def edit_answer(answer_id):
 
     return render_template('edit_answer.html',
                            answer=answer,
-                           from_url=url_for('edit_answer', answer_id=answer_id))
+                           from_url=url_for('edit_answer', answer_id=answer_id),
+                           user=user)
 
 
 @app.route('/search')
@@ -325,6 +327,7 @@ def route_search():
     answers = database_manager.search_in_answers(search_phrase)
     answers = data_handler.search_highlight(answers, search_phrase)
     tags = database_manager.all_tag()
+    tags = data_handler.search_highlight(tags, search_phrase)
     return render_template('Search.html',
                            question=questions,
                            answer=answers,
@@ -398,7 +401,8 @@ def edit_comment(comment_id):
     return render_template('edit_answer.html',
                            comment=comment,
                            type='comment',
-                           from_url=url_for('edit_comment', comment_id=comment_id))
+                           from_url=url_for('edit_comment', comment_id=comment_id),
+                           user=user)
 
 
 @app.route('/comment/<comment_id>/delete')
@@ -457,6 +461,7 @@ def search_with_tag(tag_id):
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
     tag = database_manager.tag_by_tag_id(tag_id)[0]
+    tags = data_handler.search_highlight(tags, tag['name'])
     return render_template('Search.html',
                            question=questions_by_tag_id,
                            tag=tag,
@@ -469,7 +474,6 @@ def all_user():
     users = database_manager.all_user()
     return render_template('list_users.html',
                            users=users,
-                           log_user=user,
                            user=user)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -528,7 +532,8 @@ def user_page(user_name):
     datas['answer'] = database_manager.answer_of_user(user_name)
     datas['comment'] = database_manager.comment_of_user(user_name)
     return render_template('user_page.html',
-                           data=datas)
+                           data=datas,
+                           user=user)
 
 @app.route('/accepted_answer/<question_id>/<answer_id>')
 def accept_answer(question_id, answer_id):
