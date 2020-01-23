@@ -92,17 +92,19 @@ def view_up(question_id):
 def route_question(question_id):
     user = password_handler.get_logged_in_user()
 
-    question = database_manager.get_question_by_id(question_id)
+    question_with_reputation = database_manager.get_question_by_id_with_reputation(question_id)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
-    sorted_answers = database_manager.get_all_answer_by_question_id_sorted(question_id, order_by, order_direction)
+    sorted_answers_with_reputation = database_manager.get_all_answer_by_question_id_sorted_with_reputation(question_id,
+                                                                                                           order_by,
+                                                                                                           order_direction)
 
     question_comment = database_manager.get_all_comment_from_question_id(question_id)
     answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
     tags = database_manager.all_tag()
     return render_template("answer.html",
-                           question=question[0],
-                           answer=sorted_answers,
+                           question=question_with_reputation,
+                           answer=sorted_answers_with_reputation,
                            question_comment=question_comment,
                            answer_comment=answer_comment,
                            order_by=order_by,

@@ -38,7 +38,7 @@ def allowed_image(filename):
 def get_image_path_for_question_by_id(question_id):
     delete_file = []
     question = database_manager.get_question_by_id(question_id)
-    answers_by_question = database_manager.get_all_answer_by_question_id_sorted(question_id)
+    answers_by_question = database_manager.get_all_answer_by_question_id_sorted_with_reputation(question_id)
     delete_file.append(question[0]['image'])
     for answer in answers_by_question:
         delete_file.append(answer['image'])
