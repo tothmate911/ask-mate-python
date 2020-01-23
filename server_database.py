@@ -99,14 +99,14 @@ def route_question(question_id):
                                                                                                            order_by,
                                                                                                            order_direction)
 
-    question_comment = database_manager.get_all_comment_from_question_id(question_id)
-    answer_comment = database_manager.get_all_comment_from_answer_id(question_id)
+    question_comment_with_reputation = database_manager.get_all_comment_from_question_id_with_reputation(question_id)
+    answer_comment_with_reputation = database_manager.get_all_comment_from_answer_id_with_reputation(question_id)
     tags = database_manager.all_tag()
     return render_template("answer.html",
                            question=question_with_reputation,
                            answer=sorted_answers_with_reputation,
-                           question_comment=question_comment,
-                           answer_comment=answer_comment,
+                           question_comment=question_comment_with_reputation,
+                           answer_comment=answer_comment_with_reputation,
                            order_by=order_by,
                            order_direction=order_direction,
                            tags=tags,

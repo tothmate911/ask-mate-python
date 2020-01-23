@@ -78,18 +78,20 @@ def get_question_by_id_with_reputation(cursor, question_id):
 
 
 @database_common.connection_handler
-def get_all_comment_from_question_id(cursor, question_id):
+def get_all_comment_from_question_id_with_reputation(cursor, question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
+                    JOIN users ON comment.username = users.user_name
                     WHERE question_id={question_id} AND answer_id is null;""")
     question_comment = cursor.fetchall()
     return question_comment
 
 
 @database_common.connection_handler
-def get_all_comment_from_answer_id(cursor, question_id):
+def get_all_comment_from_answer_id_with_reputation(cursor, question_id):
     cursor.execute(f"""
                     SELECT * FROM comment
+                    JOIN users ON comment.username = users.user_name
                     WHERE question_id={question_id} and answer_id is not null;""")
     answer_comment = cursor.fetchall()
     return answer_comment
