@@ -21,15 +21,16 @@
 {% for quest in question %}
     <div id="question_listed">
     <table class="question">
-    <tr class="question_line">
+    <tr>
         <td class="question-statistics">
             <p class="user"><a href="{{ url_for('user_page', user_name=quest['username']) }}">{{ quest['username'] }}</a></p>
+            <p class="reputation">({{ quest['reputation'] }} point)</p>
         </td>
         <td>
             <a class="question-title" href="{{ url_for('view_up', question_id=quest['id']) }}">{{ quest['title'] | safe }}</a>
         </td>
     </tr>
-    <tr>
+    <tr class="question_line">
         <td class="question-statistics">
             <p>votes:</p>
             <p class="show-big">{{ quest['vote_number'] }}</p>

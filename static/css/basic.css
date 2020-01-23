@@ -299,7 +299,7 @@ p.user {
 }
 
 tr.question_line {
-    border-bottom: #9C1A1C 1px solid;
+    border-top: #9C1A1C 1px solid;
 }
 
 tr.question_down_line {
@@ -308,4 +308,10 @@ tr.question_down_line {
 
 p.login {
     margin: 95px 1px 1px 1px
+}
+
+p.reputation {
+    letter-spacing: 1px;
+    font-size: 15px;
+    word-spacing: 1px;
 }
