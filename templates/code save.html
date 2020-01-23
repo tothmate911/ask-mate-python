@@ -1,10 +1,2 @@
 save:
 
-            {% if question['username'] == user %}
-                <tr>
-                    <td><a href="{{ url_for('cancel_answer', question_id=question['id'], answer_id=comment['id']) }}"
-                    onclick="return confirm('Are you sure how cancel your accepted answer?');">Cancel answer</a></td>
-                </tr>
-            {% endif %}
-
-
