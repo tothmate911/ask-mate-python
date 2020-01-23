@@ -92,6 +92,8 @@ def view_up(question_id):
 def route_question(question_id):
     user = password_handler.get_logged_in_user()
 
+    vote_ok = request.args.get('vote_ok', None)
+
     question_with_reputation = database_manager.get_question_by_id_with_reputation(question_id)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -110,7 +112,8 @@ def route_question(question_id):
                            order_by=order_by,
                            order_direction=order_direction,
                            tags=tags,
-                           user=user)
+                           user=user,
+                           vote_ok=vote_ok)
 
 
 @app.route('/question/<question_id>/<image>')
@@ -191,6 +194,9 @@ def question_vote_up(question_id):
         new_user_vote_for_question = current_user_vote_for_question + 1
         database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
         database_manager.vote(question_id, type='question', vote='+')
+    else:
+        vote_ok = False
+        return redirect(url_for('route_question', question_id=question_id, vote_ok=vote_ok))
 
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
     database_manager.update_reputation(question_owner)
@@ -317,16 +323,16 @@ def route_search():
     if user == None:
         return redirect('/')
     search_phrase = request.args.get('search')
-    questions = database_manager.search_in_questions(search_phrase)
-    data_handler.remove_from_list(questions)
-    questions = data_handler.search_highlight(questions, search_phrase)
-    answers = database_manager.search_in_answers(search_phrase)
-    answers = data_handler.search_highlight(answers, search_phrase)
+    questions_with_reputation = database_manager.search_in_questions_with_reputation(search_phrase)
+    data_handler.remove_from_list(questions_with_reputation)
+    questions_with_reputation = data_handler.search_highlight(questions_with_reputation, search_phrase)
+    answers_with_reputation = database_manager.search_in_answers_with_reputation(search_phrase)
+    answers_with_reputation = data_handler.search_highlight(answers_with_reputation, search_phrase)
     tags = database_manager.all_tag()
     tags = data_handler.search_highlight(tags, search_phrase)
     return render_template('Search.html',
-                           question=questions,
-                           answer=answers,
+                           question=questions_with_reputation,
+                           answer=answers_with_reputation,
                            type='search',
                            search_word=search_phrase,
                            tags=tags,
