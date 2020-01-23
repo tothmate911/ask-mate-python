@@ -92,6 +92,8 @@ def view_up(question_id):
 def route_question(question_id):
     user = password_handler.get_logged_in_user()
 
+    vote_ok = request.args.get('vote_ok', None)
+
     question = database_manager.get_question_by_id(question_id)
     order_by = request.args.get('order_by', 'submission_time')
     order_direction = request.args.get('order_direction', 'asc')
@@ -108,7 +110,8 @@ def route_question(question_id):
                            order_by=order_by,
                            order_direction=order_direction,
                            tags=tags,
-                           user=user)
+                           user=user,
+                           vote_ok=vote_ok)
 
 
 @app.route('/question/<question_id>/<image>')
@@ -190,7 +193,8 @@ def question_vote_up(question_id):
         database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
         database_manager.vote(question_id, type='question', vote='+')
     else:
-        alert = 'You have already voted up this question'
+        vote_ok = False
+        return redirect(url_for('route_question', question_id=question_id, vote_ok=vote_ok))
 
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
     database_manager.update_reputation(question_owner)

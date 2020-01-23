@@ -1,6 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    {% if vote_ok == False %}
+        <script>
+        alert('You have already voted this way!');
+        </script>
+    {% endif %}
     <table>
         <tr>
             <td><h5>ID:</h5></td>
