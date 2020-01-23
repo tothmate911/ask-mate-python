@@ -468,27 +468,55 @@ def update_user_vote_for_answer(cursor, user, answer_id, vote_value):
                     WHERE user_name = %(user_name)s and answer_id = %(answer_id)s
                     """, {'user_name': user, 'answer_id': answer_id, 'vote_value': vote_value})
 
-@database_common.connection_handler
-def update_reputation(cursor, user):
-    cursor.execute("""
-                    SELECT question.username,
-                           SUM(CASE votes.vote_value
-                                   WHEN 1 THEN 5
-                                   WHEN -1 THEN -2
-                                   ELSE 0
-                               END) AS weighed_vote_value
-                    FROM votes
-                             JOIN question
-                                  ON votes.question_id = question.id
-                    WHERE question.username = %(user_name)s
-                    GROUP BY question.username; 
-                    """, {'user_name': user})
-    if cursor.fetchone() == None:
-        weighed_question_vote_value = 0
-    elif type(cursor.fetchone()) != None:
-        weighed_question_vote_value = 100
-        # weighed_question_vote_value = cursor.fetchone()['weighed_vote_value']
 
+def update_reputation(user):
+    result_weighed_question_vote_value = get_weighed_question_vote_value(user)
+    if result_weighed_question_vote_value != None:
+        weighed_question_vote_value = result_weighed_question_vote_value['weighed_vote_value']
+    else:
+        weighed_question_vote_value = 0
+
+    result_weighed_answer_vote_value = get_weighed_answer_vote_value(user)
+    if result_weighed_answer_vote_value != None:
+        weighed_answer_vote_value = result_weighed_answer_vote_value['weighed_vote_value']
+    else:
+        weighed_answer_vote_value = 0
+
+    result_weighed_accepted_value = get_weighed_accepted_value(user)
+    if result_weighed_accepted_value != None:
+        weighed_accepted_value = result_weighed_accepted_value['weighed_accepted_value']
+    else:
+        weighed_accepted_value = 0
+
+    reputation = weighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
+    insert_updated_reputation(user, reputation)
+
+
+@database_common.connection_handler
+def insert_updated_reputation(cursor, user, reputation):
+    cursor.execute("""
+                    UPDATE users
+                    SET reputation = %(reputation)s
+                    WHERE user_name = %(user_name)s;
+                    """, {'reputation': reputation, 'user_name': user})
+
+
+@database_common.connection_handler
+def get_weighed_accepted_value(cursor, user):
+    cursor.execute("""
+                    SELECT answer.username, COUNT(*) * 15 AS weighed_accepted_value
+                    FROM question
+                             JOIN answer
+                                  ON question.accepted_answer_id = answer.id
+                    WHERE answer.username = %(user_name)s
+                    GROUP BY answer.username
+                    """, {'user_name': user})
+    result_weighed_accepted_value = cursor.fetchone()
+    return result_weighed_accepted_value
+
+
+@database_common.connection_handler
+def get_weighed_answer_vote_value(cursor, user):
     cursor.execute("""
                         SELECT answer.username,
                                SUM(CASE votes.vote_value
@@ -502,27 +530,25 @@ def update_reputation(cursor, user):
                         WHERE answer.username = %(user_name)s
                         GROUP BY answer.username; 
                         """, {'user_name': user})
-    if cursor.fetchone() == None:
-        weighed_answer_vote_value = 0
-    else:
-        weighed_answer_vote_value = cursor.fetchone()['weighed_vote_value']
+    result_weighed_answer_vote_value = cursor.fetchone()
+    return result_weighed_answer_vote_value
 
+
+@database_common.connection_handler
+def get_weighed_question_vote_value(cursor, user):
     cursor.execute("""
-                    SELECT answer.username, COUNT(*) * 15 AS weighed_accepted_value
-                    FROM question
-                             JOIN answer
-                                  ON question.accepted_answer_id = answer.id
-                    WHERE answer.username = %(user_name)s
-                    GROUP BY answer.username
+                    SELECT question.username,
+                           SUM(CASE votes.vote_value
+                                   WHEN 1 THEN 5
+                                   WHEN -1 THEN -2
+                                   ELSE 0
+                               END) AS weighed_vote_value
+                    FROM votes
+                             JOIN question
+                                  ON votes.question_id = question.id
+                    WHERE question.username = %(user_name)s
+                    GROUP BY question.username;
                     """, {'user_name': user})
-    if cursor.fetchone() == None:
-        weighed_accepted_value = 0
-    else:
-        weighed_accepted_value = cursor.fetchone()['weighed_accepted_value']
+    result_weighed_question_vote_value = cursor.fetchone()
+    return result_weighed_question_vote_value
 
-    reputation = weighed_question_vote_value + weighed_answer_vote_value + weighed_accepted_value
-    cursor.execute("""
-                    UPDATE users
-                    SET reputation = %(reputation)s
-                    WHERE user_name = %(user_name)s;
-                    """, {'reputation': reputation, 'user_name': user})

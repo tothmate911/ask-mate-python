@@ -532,6 +532,10 @@ def accept_answer(question_id, answer_id):
     question = database_manager.get_question_by_id(question_id)[0]
     question['accepted_answer_id'] = answer_id
     database_manager.update_question(question)
+
+    accepted_answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
+    database_manager.update_reputation(accepted_answer_owner)
+
     return redirect(f'/question/{question_id}')
 
 @app.route('/accepted_answer/cancel/<question_id>/')
