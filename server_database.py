@@ -189,6 +189,8 @@ def question_vote_up(question_id):
         new_user_vote_for_question = current_user_vote_for_question + 1
         database_manager.update_user_vote_for_question(user, question_id, new_user_vote_for_question)
         database_manager.vote(question_id, type='question', vote='+')
+    else:
+        alert = 'You have already voted up this question'
 
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
     database_manager.update_reputation(question_owner)
