@@ -163,10 +163,10 @@ CREATE TABLE votes (
     user_name varchar(15),
     question_id integer,
     answer_id integer,
-    vote_value integer CHECK (vote_value BETWEEN -1 and 1),
-    FOREIGN KEY (user_name) REFERENCES users(user_name),
-    FOREIGN KEY (question_id) REFERENCES question(id),
-    FOREIGN KEY (answer_id) REFERENCES answer(id)
+    vote_value integer CHECK (vote_value BETWEEN -1 and 1)
+--     FOREIGN KEY (user_name) REFERENCES users(user_name),
+--     FOREIGN KEY (question_id) REFERENCES question(id),
+--     FOREIGN KEY (answer_id) REFERENCES answer(id)
 );
 
 INSERT INTO  votes (user_name, question_id, vote_value) VALUES ('AskMate', 0, 1);

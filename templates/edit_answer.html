@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    {% if type=="comment"%}
+    {% if type=="comment" %}
         <h1>Edit comment</h1>
         <p>Comment id: {{ comment['id'] }}</p>
         <form action="{{ form_url }}" method="post">
@@ -26,7 +26,7 @@
             <button type="submit" value="Edit question">Edit question</button>
 
         </form>
-    {%else%}
+    {% else %}
         <h1>Edit answer</h1>
         <p>Answer id: {{ answer['id'] }}</p>
         <form action="{{ form_url }}" method="post">
@@ -36,5 +36,5 @@
             </p>
             <button type="submit" value="Edit answer">Edit answer</button>
         </form>
-    {%endif%}
+    {% endif %}
 {% endblock %}
