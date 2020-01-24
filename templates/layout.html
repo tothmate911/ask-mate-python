@@ -8,7 +8,7 @@
 <body>
 {% if user == None %}
     <p class="login"><a href="{{ url_for('login') }}">Login</a> or <a href="{{url_for('registration')}}">Registration</a></p>
-{% else %}
+{% elif user != None %}
     <h2 class="login"><a href="{{ url_for('user_page', user_name=user) }}">{{ user }}</a>
         <a href="{{ url_for('logout') }}"><img src="/static/images/new_logout.png" height="50" width="50"></a></h2>
 {% endif %}

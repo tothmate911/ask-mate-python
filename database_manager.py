@@ -134,7 +134,7 @@ def delete_question(cursor, question_id):
     delete_tag_by_question_id(question_id)
     cursor.execute(f"""
                     DELETE FROM comment
-                    WHERE question_id = {question_id}""")
+                    WHERE question_id = {question_id};""")
     cursor.execute(f"""
                     DELETE FROM answer
                     WHERE question_id = {question_id};""")
