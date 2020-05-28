@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, url_for, session, escape,make_response
+from flask import Flask, render_template, redirect, request, url_for, session, escape, make_response
 import data_handler
 import database_manager
 import password_handler
@@ -9,6 +9,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
 
 @app.route('/')
 def main_page():
@@ -47,7 +48,7 @@ def route_lists():
 @app.route('/add_question', methods=['GET', 'POST'])
 def route_new_question():
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     if request.method == 'POST':
         new_question = {'submission_time': datetime.now(),
@@ -123,10 +124,11 @@ def full_screen(question_id, image):
                            image=image_route,
                            question_id=question_id)
 
+
 @app.route('/question/<question_id>/new-answer', methods=['GET', 'POST'])
 def route_new_answer(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     if request.method == 'POST':
         new_answer = {'message': request.form.get('message'),
@@ -134,7 +136,7 @@ def route_new_answer(question_id):
                       'image': request.form.get('image'),
                       'question_id': request.form.get('question_id'),
                       'submission_time': datetime.now(),
-                      'username' : user}
+                      'username': user}
         if request.files['image'].filename != "":
             image = request.files['image']
             if not data_handler.allowed_image(image.filename):
@@ -161,7 +163,7 @@ def route_new_answer(question_id):
 def delete_question(question_id):
     user = password_handler.get_logged_in_user()
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
-    if user == None or user != question_owner:
+    if user is None or user != question_owner:
         return redirect('/')
     data_handler.delete_image_by_id(question_id)
     database_manager.delete_question(question_id)
@@ -172,7 +174,7 @@ def delete_question(question_id):
 def delete_answer(answer_id):
     user = password_handler.get_logged_in_user()
     answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
-    if user == None or user != answer_owner:
+    if user is None or user != answer_owner:
         return redirect('/')
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     data_handler.delete_image_by_id(answer_id, answer=True)
@@ -183,11 +185,11 @@ def delete_answer(answer_id):
 @app.route('/question/<question_id>/vote_up')
 def question_vote_up(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
 
     current_user_vote_for_question = database_manager.get_user_vote_for_question(user, question_id)
-    if current_user_vote_for_question == None:
+    if current_user_vote_for_question is None:
         database_manager.add_user_vote_for_question(user, question_id, 1)
         database_manager.vote(question_id, type='question', vote='+')
     elif current_user_vote_for_question < 1:
@@ -207,11 +209,11 @@ def question_vote_up(question_id):
 @app.route('/question/<question_id>/vote_down')
 def question_vote_down(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
 
     current_user_vote_for_question = database_manager.get_user_vote_for_question(user, question_id)
-    if current_user_vote_for_question == None:
+    if current_user_vote_for_question is None:
         database_manager.add_user_vote_for_question(user, question_id, -1)
         database_manager.vote(question_id, type='question', vote='-')
     elif current_user_vote_for_question > -1:
@@ -228,13 +230,13 @@ def question_vote_down(question_id):
 @app.route('/answer/<answer_id>/vote_up')
 def answer_vote_up(answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     question = database_manager.get_answer_by_id(answer_id)
     question_id = question[0]['question_id']
 
     current_user_vote_for_answer = database_manager.get_user_vote_for_answer(user, answer_id)
-    if current_user_vote_for_answer == None:
+    if current_user_vote_for_answer is None:
         database_manager.add_user_vote_for_answer(user, answer_id, 1)
         database_manager.vote(answer_id, type='answer', vote='+')
     elif current_user_vote_for_answer < 1:
@@ -251,13 +253,13 @@ def answer_vote_up(answer_id):
 @app.route('/answer/<answer_id>/vote_down')
 def answer_vote_down(answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     answer = database_manager.get_answer_by_id(answer_id)
     question_id = answer[0]['question_id']
 
     current_user_vote_for_answer = database_manager.get_user_vote_for_answer(user, answer_id)
-    if current_user_vote_for_answer == None:
+    if current_user_vote_for_answer is None:
         database_manager.add_user_vote_for_answer(user, answer_id, -1)
         database_manager.vote(answer_id, type='answer', vote='-')
     elif current_user_vote_for_answer > -1:
@@ -275,7 +277,7 @@ def answer_vote_down(answer_id):
 def edit_question(question_id):
     user = password_handler.get_logged_in_user()
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
-    if user == None or user != question_owner:
+    if user is None or user != question_owner:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
     if request.method == 'POST':
@@ -299,7 +301,7 @@ def edit_question(question_id):
 def edit_answer(answer_id):
     user = password_handler.get_logged_in_user()
     answer_owner = database_manager.get_answer_by_id(answer_id)[0]['username']
-    if user == None or user != answer_owner:
+    if user is None or user != answer_owner:
         return redirect('/')
     answer = database_manager.get_answer_by_id(answer_id)[0]
     if request.method == 'POST':
@@ -320,7 +322,7 @@ def edit_answer(answer_id):
 @app.route('/search')
 def route_search():
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     search_phrase = request.args.get('search')
     questions_with_reputation = database_manager.search_in_questions_with_reputation(search_phrase)
@@ -342,14 +344,10 @@ def route_search():
 @app.route('/question/<question_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_question(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     if request.method == 'POST':
-        new_comment = request.form.to_dict()
-        new_comment['submission_time'] = datetime.now()
-        new_comment['username'] = user
-        new_comment = data_handler.apostroph_change(new_comment)
-        database_manager.write_new_comment(new_comment)
+        database_manager.write_new_comment(request.form.to_dict())
         return redirect(f'/question/{question_id}')
 
     return render_template("new_comment.html",
@@ -363,15 +361,11 @@ def add_new_comment_to_question(question_id):
 @app.route('/answer/<answer_id>/new_comment', methods=['GET', 'POST'])
 def add_new_comment_to_answer(answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     question_id = database_manager.get_answer_by_id(answer_id)[0]['question_id']
     if request.method == 'POST':
-        new_comment = request.form.to_dict()
-        new_comment['submission_time'] = datetime.now()
-        new_comment['username'] = user
-        new_comment = data_handler.apostroph_change(new_comment)
-        database_manager.write_new_comment(new_comment)
+        database_manager.write_new_comment(request.form.to_dict())
         return redirect(f'/question/{question_id}')
 
     return render_template("new_comment.html",
@@ -388,7 +382,7 @@ def add_new_comment_to_answer(answer_id):
 def edit_comment(comment_id):
     user = password_handler.get_logged_in_user()
     comment_owner = database_manager.get_answer_by_id(comment_id)[0]['username']
-    if user == None or user != comment_owner:
+    if user is None or user != comment_owner:
         return redirect('/')
     comment = database_manager.get_comment_by_id(comment_id)[0]
     if request.method == 'POST':
@@ -411,17 +405,18 @@ def edit_comment(comment_id):
 def delete_comment(comment_id):
     user = password_handler.get_logged_in_user()
     comment_owner = database_manager.get_answer_by_id(comment_id)[0]['username']
-    if user == None or user != comment_owner:
+    if user is None or user != comment_owner:
         return redirect('/')
     comment = database_manager.get_comment_by_id(comment_id)[0]
     database_manager.delete_comment(comment_id)
     return redirect(url_for('route_question', question_id=comment['question_id']))
 
+
 @app.route('/question/<question_id>/new_tag', methods=['GET', 'POST'])
 def add_tag(question_id):
     user = password_handler.get_logged_in_user()
     question_owner = database_manager.get_question_by_id(question_id)[0]['username']
-    if user == None or user != question_owner:
+    if user is None or user != question_owner:
         return redirect('/')
     all_tag = database_manager.all_tag_name()
     if request.method == 'POST':
@@ -450,15 +445,16 @@ def add_tag(question_id):
 def delete_tag(question_id, tag_id):
     user = password_handler.get_logged_in_user()
     question_owner = database_manager.get_answer_by_id(question_id)[0]['username']
-    if user == None or user != question_owner:
+    if user is None or user != question_owner:
         return redirect('/')
     database_manager.delete_tag(tag_id, question_id)
     return redirect(f'/question/{question_id}')
 
+
 @app.route('/tag/search/<tag_id>')
 def search_with_tag(tag_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     questions_by_tag_id = database_manager.all_question_by_tag_id(tag_id)
     tags = database_manager.all_tag()
@@ -470,6 +466,7 @@ def search_with_tag(tag_id):
                            tags=tags,
                            user=user)
 
+
 @app.route('/all_user')
 def all_user():
     user = password_handler.get_logged_in_user()
@@ -477,6 +474,7 @@ def all_user():
     return render_template('list_users.html',
                            users=users,
                            user=user)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -498,16 +496,18 @@ def login():
                            user=None,
                            message=False)
 
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('route_lists'))
 
-@app.route('/registration', methods=['GET','POST'])
+
+@app.route('/registration', methods=['GET', 'POST'])
 def registration():
-    if request.method=='POST':
+    if request.method == 'POST':
         registration_username = request.form.get('username')
-        hashed_pw=utility.hash_password(request.form.get('password'))
+        hashed_pw = utility.hash_password(request.form.get('password'))
         users = database_manager.all_user()
         for user in users:
             if user['user_name'] == registration_username:
@@ -522,10 +522,11 @@ def registration():
     return render_template('registration.html',
                            type='registration')
 
+
 @app.route('/user/<user_name>')
 def user_page(user_name):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     datas = {}
     datas['tag'] = database_manager.all_tag()
@@ -537,10 +538,11 @@ def user_page(user_name):
                            data=datas,
                            user=user)
 
+
 @app.route('/accepted_answer/<question_id>/<answer_id>')
 def accept_answer(question_id, answer_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
     question['accepted_answer_id'] = answer_id
@@ -551,10 +553,11 @@ def accept_answer(question_id, answer_id):
 
     return redirect(f'/question/{question_id}')
 
+
 @app.route('/accepted_answer/cancel/<question_id>/')
 def cancel_answer(question_id):
     user = password_handler.get_logged_in_user()
-    if user == None:
+    if user is None:
         return redirect('/')
     question = database_manager.get_question_by_id(question_id)[0]
 
@@ -566,7 +569,9 @@ def cancel_answer(question_id):
     canceled_answer_owner = database_manager.get_answer_by_id(answer_id_to_be_canceled)[0]['username']
     database_manager.update_reputation(canceled_answer_owner)
 
+    # TODO url_for
     return redirect(f'/question/{question_id}')
+
 
 if __name__ == "__main__":
     app.run(

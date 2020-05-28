@@ -65,6 +65,7 @@ def get_question_by_id(cursor, question_id):
     question = cursor.fetchall()
     return question
 
+
 @database_common.connection_handler
 def get_question_by_id_with_reputation(cursor, question_id):
     cursor.execute("""
@@ -118,7 +119,8 @@ def get_comment_by_id(cursor, comment_id):
 
 
 @database_common.connection_handler
-def get_all_answer_by_question_id_sorted_with_reputation(cursor, question_id, order_by='submission_time', order_direction='asc'):
+def get_all_answer_by_question_id_sorted_with_reputation(cursor, question_id, order_by='submission_time',
+                                                         order_direction='asc'):
     cursor.execute(f"""
                     SELECT * FROM answer
                     JOIN users ON answer.username = users.user_name
@@ -191,9 +193,12 @@ def search_in_answers_with_reputation(cursor, search_phrase):
 
 
 @database_common.connection_handler
-def write_new_comment(cursor, to_write_dict):
-    columns = to_write_dict.keys()
-    values = [to_write_dict[column] for column in columns]
+def write_new_comment(cursor, new_comment):
+    new_comment['submission_time'] = datetime.now()
+    new_comment['username'] = user
+    new_comment = data_handler.apostroph_change(new_comment)
+    columns = new_comment.keys()
+    values = [new_comment[column] for column in columns]
 
     insert_statement = 'insert into comment (%s) values %s'
 
@@ -272,6 +277,7 @@ def add_tag(cursor, tag, question_id):
                     VALUES ({question_id}, {tag_id['id']});
     """)
 
+
 @database_common.connection_handler
 def add_old_tag(cursor, tag, question_id):
     tag_id = tag_id_by_tag_name(tag['name'])[0]
@@ -329,12 +335,14 @@ def all_tag(cursor):
     tags = cursor.fetchall()
     return tags
 
+
 @database_common.connection_handler
-def member_registration(cursor, username,hashed_pw):
+def member_registration(cursor, username, hashed_pw):
     cursor.execute(f"""
                     INSERT INTO users(user_name, hash_password, date)
                     VALUES (%s,%s,%s)""",
-                   (username,hashed_pw,datetime.now()))
+                   (username, hashed_pw, datetime.now()))
+
 
 @database_common.connection_handler
 def get_hashed_pw_for_username(cursor, username):
@@ -345,6 +353,7 @@ def get_hashed_pw_for_username(cursor, username):
     hashed_pw_for_username = cursor.fetchone().get('hash_password', None)
     return hashed_pw_for_username
 
+
 @database_common.connection_handler
 def all_user(cursor):
     cursor.execute("""
@@ -352,6 +361,7 @@ def all_user(cursor):
                     ORDER BY user_name;
     """)
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def question_of_user_with_reputation(cursor, user_name):
@@ -366,6 +376,7 @@ def question_of_user_with_reputation(cursor, user_name):
     """, {'user_name': user_name})
     return cursor.fetchall()
 
+
 @database_common.connection_handler
 def answer_of_user_with_reputation(cursor, user_name):
     cursor.execute("""
@@ -376,6 +387,7 @@ def answer_of_user_with_reputation(cursor, user_name):
                     OR c.username = %(user_name)s
     """, {'user_name': user_name})
     return cursor.fetchall()
+
 
 @database_common.connection_handler
 def comment_of_user_with_reputation(cursor, user_name):
@@ -432,13 +444,6 @@ def update_user_vote_for_question(cursor, user, question_id, vote_value):
                     SET vote_value = %(vote_value)s
                     WHERE user_name = %(user_name)s and question_id = %(question_id)s
                     """, {'user_name': user, 'question_id': question_id, 'vote_value': vote_value})
-
-
-
-
-
-
-
 
 
 @database_common.connection_handler

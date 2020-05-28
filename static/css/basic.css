@@ -348,3 +348,7 @@ p.reputation {
 td.like_button {
     text-align: right;
 }
+
+td.reputation-column{
+    width: 80%;
+}
